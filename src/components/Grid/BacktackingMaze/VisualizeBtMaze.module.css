@@ -1,0 +1,31 @@
+/* cellColors.css */
+
+.grey {
+  background-color: grey;
+}
+.current {
+  background: pink; /* Change to a bright color for visibility */
+}
+.closedList {
+  background-color: purple;
+}
+.openList {
+  background-color: lightblue;
+}
+
+.blueVisited {
+  background-color: blue;
+  /*background-clip: content-box;*/
+}
+
+.yellowPath {
+  background-color: yellow;
+}
+
+.greenStart {
+  background-color: green;
+}
+
+.redEnd {
+  background-color: red;
+}

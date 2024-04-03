@@ -1,0 +1,142 @@
+.title {
+  font-size: 2rem;
+  color: white;
+  font-weight: bold;
+}
+.current {
+  padding: 10px;
+  display: flex; /* Use flexbox layout */
+  align-items: center; /* Center the items vertically */
+  justify-content: center; /* Center the items horizontally */
+  cursor: pointer; /* Change the cursor to a hand when hovering */
+  border-top: 1px solid rgb(0, 0, 0); /* Add a black border on top */
+  border-right: 1px solid rgb(0, 0, 0); /* Add a black border on right */
+  border-bottom: 1px solid rgb(0, 0, 0); /* Remove the border on bottom */
+  border-left: 1px solid rgb(0, 0, 0); /* Remove the border on left */
+  background: pink; /* Change to a bright color for visibility */
+}
+.visited {
+  padding: 10px;
+  display: flex; /* Use flexbox layout */
+  align-items: center; /* Center the items vertically */
+  justify-content: center; /* Center the items horizontally */
+  cursor: pointer; /* Change the cursor to a hand when hovering */
+  border-top: 1px solid rgb(0, 0, 0); /* Add a black border on top */
+  border-right: 1px solid rgb(0, 0, 0); /* Add a black border on right */
+  border-bottom: 1px solid rgb(0, 0, 0); /* Remove the border on bottom */
+  border-left: 1px solid rgb(0, 0, 0); /* Remove the border on left */
+  background-color: rgb(111, 0, 255);
+}
+.closedList {
+  padding: 10px;
+  display: flex; /* Use flexbox layout */
+  align-items: center; /* Center the items vertically */
+  justify-content: center; /* Center the items horizontally */
+  cursor: pointer; /* Change the cursor to a hand when hovering */
+  border-top: 1px solid rgb(0, 0, 0); /* Add a black border on top */
+  border-right: 1px solid rgb(0, 0, 0); /* Add a black border on right */
+  border-bottom: 1px solid rgb(0, 0, 0); /* Remove the border on bottom */
+  border-left: 1px solid rgb(0, 0, 0); /* Remove the border on left */
+  background-color: purple;
+}
+.openList {
+  padding: 10px;
+  display: flex; /* Use flexbox layout */
+  align-items: center; /* Center the items vertically */
+  justify-content: center; /* Center the items horizontally */
+  cursor: pointer; /* Change the cursor to a hand when hovering */
+  border-top: 1px solid rgb(0, 0, 0); /* Add a black border on top */
+  border-right: 1px solid rgb(0, 0, 0); /* Add a black border on right */
+  border-bottom: 1px solid rgb(0, 0, 0); /* Remove the border on bottom */
+  border-left: 1px solid rgb(0, 0, 0); /* Remove the border on left */
+  background-color: lightblue;
+}
+
+.path {
+  padding: 10px;
+  display: flex; /* Use flexbox layout */
+  align-items: center; /* Center the items vertically */
+  justify-content: center; /* Center the items horizontally */
+  cursor: pointer; /* Change the cursor to a hand when hovering */
+  border-top: 1px solid rgb(0, 0, 0); /* Add a black border on top */
+  border-right: 1px solid rgb(0, 0, 0); /* Add a black border on right */
+  border-bottom: 1px solid rgb(0, 0, 0); /* Remove the border on bottom */
+  border-left: 1px solid rgb(0, 0, 0); /* Remove the border on left */
+  background-color: rgb(234, 255, 0);
+}
+/* Define a class for the start button */
+.start {
+  padding: 10px;
+  display: flex; /* Use flexbox layout */
+  align-items: center; /* Center the items vertically */
+  justify-content: center; /* Center the items horizontally */
+  cursor: pointer; /* Change the cursor to a hand when hovering */
+  border-top: 1px solid rgb(0, 0, 0); /* Add a black border on top */
+  border-right: 1px solid rgb(0, 0, 0); /* Add a black border on right */
+  border-bottom: 1px solid rgb(0, 0, 0); /* Remove the border on bottom */
+  border-left: 1px solid rgb(0, 0, 0); /* Remove the border on left */
+  background-color: limegreen; /* Set the background color to a lighter green */
+}
+
+/* Define a class for the end button */
+.end {
+  padding: 10px;
+  display: flex; /* Use flexbox layout */
+  align-items: center; /* Center the items vertically */
+  justify-content: center; /* Center the items horizontally */
+  cursor: pointer; /* Change the cursor to a hand when hovering */
+  border-top: 1px solid rgb(0, 0, 0); /* Add a black border on top */
+  border-right: 1px solid rgb(0, 0, 0); /* Add a black border on right */
+  border-bottom: 1px solid rgb(0, 0, 0); /* Remove the border on bottom */
+  border-left: 1px solid rgb(0, 0, 0); /* Remove the border on left */
+  background-color: crimson; /* Set the background color to a darker red */
+}
+/* Define a class for the table cells */
+.grid {
+  display: grid; /* Use grid layout instead of flex */
+  align-items: center; /* Center the items vertically */
+  justify-content: center; /* Center the items horizontally */
+  color: rgb(255, 255, 255); /* Set the text color to red */
+  border: none; /* Remove the border */
+}
+
+/* Define a class for the buttons */
+.button {
+  display: flex; /* Use flexbox layout */
+  align-items: center; /* Center the items vertically */
+  justify-content: center; /* Center the items horizontally */
+  padding: 10px;
+  border-top: 1px solid rgb(0, 0, 0); /* Add a black border on top */
+  border-right: 1px solid rgb(0, 0, 0); /* Add a black border on right */
+  border-bottom: none; /* Remove the border on bottom */
+  border-left: none; /* Remove the border on left */
+  cursor: pointer; /* Change the cursor to a hand when hovering */
+  background-color: rgb(255, 255, 255); /* Set the background color */
+}
+/* Add a border at the bottom of the last row */
+.grid:nth-last-child(1) .button {
+  border-bottom: 1px solid rgb(0, 0, 0);
+}
+
+/* Add a border on the left of the first column */
+.button:nth-child(1) {
+  border-left: 1px solid rgb(0, 0, 0);
+}
+.wall {
+  padding: 10px;
+  display: flex; /* Use flexbox layout */
+  align-items: center; /* Center the items vertically */
+  justify-content: center; /* Center the items horizontally */
+  cursor: pointer; /* Change the cursor to a hand when hovering */
+  border-top: 1px solid rgb(0, 0, 0); /* Add a black border on top */
+  border-right: 1px solid rgb(0, 0, 0); /* Add a black border on right */
+  border-bottom: 1px solid rgb(0, 0, 0); /* Remove the border on bottom */
+  border-left: 1px solid rgb(0, 0, 0); /* Remove the border on left */
+  background-color: rgb(0, 0, 0);
+}
+
+/* Define a class for the buttons when they are hovered */
+.button:not(.wall):hover {
+  /* Use a different background color for the hover effect */
+  background-color: rgba(215, 205, 250, 0.786);
+}

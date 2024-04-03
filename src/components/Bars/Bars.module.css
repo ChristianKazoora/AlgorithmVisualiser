@@ -1,0 +1,13 @@
+.bar {
+  /* Set the width of the border around the SVG element to 2 pixels */
+  stroke-width: 0px;
+  /* Set the color of the border around the SVG element to black */
+  stroke: black;
+}
+
+rect {
+  /* Set the width of the border around the rectangle elements to 1 pixel */
+  stroke-width: 2px;
+  /* Set the color of the border around the rectangle elements to gray */
+  stroke: black;
+}

@@ -1,0 +1,68 @@
+.strip {
+  width: 690px;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  background-color: #6fd177;
+  border-radius: 8px;
+  justify-content: space-between;
+  padding: 0 10%;
+  margin: 2rem auto;
+}
+
+.tittleDropdown {
+  font-size: 1.4rem;
+  color: rgba(44, 95, 53, 0.839);
+  font-weight: bold;
+  border-radius: 4px;
+  margin-right: 0.2rem;
+  padding: 0 0.1rem;
+  background-color: #ffffff; /* same as strip */
+  box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.1); /* add some shadow */
+}
+.button {
+  width: 3rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #387c41;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.2rem;
+  margin: 0 0.5rem;
+}
+.random {
+  width: 4.5rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #387c41;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.2rem;
+  margin: 0 0.5rem;
+}
+.select {
+  width: 10rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #387c41;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.2rem;
+  margin: 0;
+}
+
+.select:focus {
+  outline-offset: -2px;
+}
+
+.button,
+.random,
+.select {
+  cursor: pointer;
+}

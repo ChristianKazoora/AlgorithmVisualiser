@@ -1,23 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import HomePage from "./pages/HomePage";
+import PathFinderPage from "./pages/PathFindAlgo";
+import SearchAlgoPage from "./pages/SearchAlgo";
+import SortAlgoPage from "./pages/SortAlgo";
+import Layout from "./components/layout/Layout";
+import Menu from "./components/Menu/Menu";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div>
+        {/*      <Routes>
+          <Route
+            path="/"
+            element={
+              <HomePage>
+                <Menu page="/" />
+              </HomePage>
+            }
+          />
+          <Route
+            path="/pathfind-algo"
+            element={
+              <PathFinderPage>
+                <Menu page="/pathfind-algo" />
+              </PathFinderPage>
+            }
+          />
+          <Route
+            path="/search-algo"
+            element={
+              <SearchAlgoPage>
+                <Menu page="/search-algo" />
+              </SearchAlgoPage>
+            }
+          />
+          <Route
+            path="/sort-algo"
+            element={
+              <SortAlgoPage>
+                <Menu page="/sort-algo" />
+              </SortAlgoPage>
+            }
+          />
+        </Routes>*/}
+        <Menu page={"/"} />
+      </div>
     </div>
   );
 }

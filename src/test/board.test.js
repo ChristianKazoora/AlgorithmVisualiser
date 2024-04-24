@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { Board } from "./../model/board";
+import { Board } from "../model/subject/board";
 
 test("initialising the board", () => {
   new Board(3).board;

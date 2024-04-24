@@ -1,13 +1,15 @@
 import { Point } from "../../../../shared/point";
 import { PathfindingModel } from "../../../Interfaces/PathfindingModel";
 import { Cell } from "../../Cell";
+import { Set } from "../../../../shared/set";
 import { Board } from "../../board";
-import { Bfs } from "./Bfs";
+import { BfsModel } from "./bfsModel";
+import { Stack } from "../../../../shared/stack";
 
 export class Pathfinding implements PathfindingModel {
   algorithm: PathfindingModel;
   constructor(
-    _algo: PathfindingModel = new Bfs(),
+    _algo: PathfindingModel = new BfsModel(),
     startP: Point,
     endP: Point,
     board: Board,
@@ -50,5 +52,8 @@ export class Pathfinding implements PathfindingModel {
   }
   getVisited(): Set<Cell> {
     return this.algorithm.getVisited();
+  }
+  getCurrentPoints(): Stack<Cell> {
+    return this.algorithm.getCurrentPoints();
   }
 }

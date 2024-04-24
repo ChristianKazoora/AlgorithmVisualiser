@@ -4,19 +4,21 @@ export class Board {
   board: Array<Array<Cell>>;
 
   constructor(size: number) {
-    this.board = new Array(size);
-    for (let i = 0; i < size; i++) {
-      this.board[i] = new Array(size);
+    const row = size / 2;
+    const col = size;
+    this.board = new Array(row);
+    for (let i = 0; i < row; i++) {
+      this.board[i] = new Array(col);
     }
-    this.initializeBoard(size);
+    this.initializeBoard(row, col);
     this.settingNeighbors();
   }
 
-  initializeBoard(size: number): void {
-    for (let i = 0; i < size; i++) {
-      for (let j = 0; j < size; j++) {
+  initializeBoard(row: number, col: number): void {
+    for (let i = 0; i < row; i++) {
+      for (let j = 0; j < col; j++) {
         this.board[i][j] = new Cell(
-          i * size + j,
+          i * col + j,
           i,
           j,
           undefined, //top
@@ -31,31 +33,35 @@ export class Board {
       }
     }
   }
+
   settingNeighbors(): void {
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board[i].length; j++) {
+    const row = this.board.length;
+    const col = this.board[0].length;
+
+    for (let i = 0; i < row; i++) {
+      for (let j = 0; j < col; j++) {
         if (i > 0) {
           this.board[i][j].top = this.board[i - 1][j];
         }
-        if (i < this.board.length - 1) {
+        if (i < row - 1) {
           this.board[i][j].bottom = this.board[i + 1][j];
         }
         if (j > 0) {
           this.board[i][j].left = this.board[i][j - 1];
         }
-        if (j < this.board[i].length - 1) {
+        if (j < col - 1) {
           this.board[i][j].right = this.board[i][j + 1];
         }
         if (i > 0 && j > 0) {
           this.board[i][j].topLeft = this.board[i - 1][j - 1];
         }
-        if (i > 0 && j < this.board[i].length - 1) {
+        if (i > 0 && j < col - 1) {
           this.board[i][j].topRight = this.board[i - 1][j + 1];
         }
-        if (i < this.board.length - 1 && j > 0) {
+        if (i < row - 1 && j > 0) {
           this.board[i][j].bottomLeft = this.board[i + 1][j - 1];
         }
-        if (i < this.board.length - 1 && j < this.board[i].length - 1) {
+        if (i < row - 1 && j < col - 1) {
           this.board[i][j].bottomRight = this.board[i + 1][j + 1];
         }
       }

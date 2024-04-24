@@ -1,17 +1,18 @@
 import { Cell } from "../../Cell";
 import { Board } from "../../board";
 import { Queue } from "../../../../shared/queue";
+import { Set } from "../../../../shared/set";
 import { PathfindingModel } from "../../../Interfaces/PathfindingModel";
 import { Point } from "../../../../shared/point";
-export class Bfs implements PathfindingModel {
+import { Stack } from "../../../../shared/stack";
+export class BfsModel implements PathfindingModel {
   private grid: Array<Array<Cell>> | undefined;
   private board: Board | undefined;
   private queue: Queue<Cell> = new Queue<Cell>();
   private visited: Set<Cell> = new Set<Cell>();
   private path: Array<Cell> | undefined;
   private startP: Cell | undefined;
-  private endP: Cell | undefined;
-  private currentP: Cell | undefined;
+  private currentP: Stack<Cell> = new Stack<Cell>();
 
   bfs(): void {
     let start: Cell = this.ifNull(this.startP);
@@ -19,6 +20,7 @@ export class Bfs implements PathfindingModel {
     this.visited.add(start);
     while (!this.queue.isEmpty()) {
       let current: Cell = this.queue.dequeue() as Cell;
+      this.currentP.push(current);
       if (current.isEnd) {
         this.path = new Array<Cell>();
         this.path = this.backtrackPath(current);
@@ -30,7 +32,7 @@ export class Bfs implements PathfindingModel {
         current
       );
       for (let i = 0; i < neighbours.length; i++) {
-        if (!this.visited.has(neighbours[i])) {
+        if (!this.visited.contains(neighbours[i])) {
           this.queue.enqueue(neighbours[i]);
           this.visited.add(neighbours[i]);
           neighbours[i].previousCell = current;
@@ -77,7 +79,6 @@ export class Bfs implements PathfindingModel {
   }
   setEndPoint(pos: Point): void {
     this.ifNull(this.grid)[pos.x][pos.y].isEnd = true;
-    this.endP = this.ifNull(this.grid)[pos.x][pos.y];
   }
   toggleWall(pos: Point): void {
     let cell: Cell = this.ifNull(this.grid)[pos.x][pos.y];
@@ -90,7 +91,7 @@ export class Bfs implements PathfindingModel {
   getVisited(): Set<Cell> {
     return this.ifNull(this.visited);
   }
-  getCurrentPoint(): Cell {
+  getCurrentPoints(): Stack<Cell> {
     return this.ifNull(this.currentP);
   }
   getBoard(): Board {

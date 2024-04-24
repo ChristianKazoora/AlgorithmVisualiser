@@ -36,6 +36,24 @@ export class LinkedList<T> {
   isEmpty() {
     return this.head === null;
   }
+  includes(data: T) {
+    let current = this.head;
+    while (current !== null) {
+      if (current.data === data) {
+        return true;
+      }
+      current = current.next;
+    }
+    return false;
+  }
+
+  forEach(callback: (data: T) => void) {
+    let current = this.head;
+    while (current !== null) {
+      callback(current.data);
+      current = current.next;
+    }
+  }
 
   print() {
     let current = this.head;

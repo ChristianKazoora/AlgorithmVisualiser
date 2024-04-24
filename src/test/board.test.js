@@ -16,3 +16,9 @@ test("testing all neighboring positions", () => {
   expect(board[1][1].bottom.pos).toBe(7);
   expect(board[1][1].bottomRight.pos).toBe(8);
 });
+test("getting neighbours", () => {
+  const board = new Board(3);
+  const current = board.board[1][1];
+  expect(board.getNeighbours(current).length).toBe(4);
+  expect(board.getNeighboursDiagonal(current).length).toBe(8);
+});

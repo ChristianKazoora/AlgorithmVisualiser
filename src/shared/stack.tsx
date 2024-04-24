@@ -13,4 +13,10 @@ export class Stack<T> extends LinkedList<T> {
     this.head = this.head.next;
     return data;
   }
+  peek(): T | null {
+    if (this.head === null) {
+      return null;
+    }
+    return this.head.data;
+  }
 }

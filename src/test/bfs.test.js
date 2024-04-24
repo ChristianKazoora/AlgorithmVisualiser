@@ -28,21 +28,12 @@ test("BFS returns null if no path exists", () => {
   algo.start();
   expect(algo.path).toBe(undefined);
 });
-// test("getting neighbours", () => {
-//   const board = new Board(3);
-//   const current = board.board[1][1];
-//   expect(board.getNeighbours(current).length).toBe(4);
-//   expect(board.getNeighboursDiagonal(current).length).toBe(8);
-// });
 
-// test("each cell knows its previous cell after BFS traversal", () => {
-//   const board = new Board(3);
-//   const start = board.board[0][0];
-//   const end = board.board[2][2];
-//   const bfs = new Bfs(board, start, end);
-//   bfs.start();
+test("each cell knows its previous cell after BFS traversal", () => {
+  const algo = new Pathfinding(strategy, start, end, board);
+  algo.start();
 
-//   expect(board.board[0][1].previousCell).toBe(board.board[0][0]); // The cell to the right of the start cell
-//   expect(board.board[1][0].previousCell).toBe(board.board[0][0]); // The cell below the start cell
-//   expect(board.board[2][2].previousCell).not.toBe(board.board[0][0]); // The end cell
-// });
+  expect(board.board[0][1].previousCell).toBe(board.board[0][0]); // The cell to the right of the start cell
+  expect(board.board[1][0].previousCell).toBe(board.board[0][0]); // The cell below the start cell
+  expect(board.board[2][2].previousCell).not.toBe(board.board[0][0]); // The end cell
+});

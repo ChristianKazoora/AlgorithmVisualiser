@@ -18,17 +18,26 @@ export class Board {
     for (let i = 0; i < row; i++) {
       for (let j = 0; j < col; j++) {
         this.board[i][j] = new Cell(
-          i * col + j,
-          i,
-          j,
-          undefined, //top
-          undefined, //bottom
-          undefined, //left
-          undefined, //right
-          undefined, //topRight
-          undefined, //topLeft
-          undefined, //bottomLeft
-          undefined //bottomRight
+          false, // isWall
+          false, // isStart
+          false, // isEnd
+          i * col + j, // pos
+          i, // x
+          j, // y
+          undefined, // previousCell
+          undefined, // nextCell
+          undefined, // top
+          undefined, // bottom
+          undefined, // left
+          undefined, // right
+          undefined, // topRight
+          undefined, // topLeft
+          undefined, // bottomLeft
+          undefined, // bottomRight
+          false, // northW
+          false, // southW
+          false, // westW
+          false // eastW
         );
       }
     }

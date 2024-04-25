@@ -28,9 +28,9 @@ export class BfsModel implements PathfindingModel {
       } else if (current.isWall) {
         return;
       }
-      let neighbours: Array<Cell> = this.ifNull(this.board).getNeighbours(
-        current
-      );
+      let neighbours: Array<Cell> = this.ifNull(
+        this.board
+      ).getNeighboursDiagonal(current);
       for (let i = 0; i < neighbours.length; i++) {
         if (!this.visited.contains(neighbours[i])) {
           this.queue.enqueue(neighbours[i]);
@@ -48,8 +48,13 @@ export class BfsModel implements PathfindingModel {
     let current: Cell = end;
     while (current !== this.startP) {
       path.push(current);
+      if (current.previousCell != undefined) {
+        current.previousCell.nextCell = current;
+      }
       current = current.previousCell as Cell;
     }
+    path.reverse();
+    path.unshift(this.ifNull(this.startP));
     return path;
   }
   count: number = 0;

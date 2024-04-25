@@ -1,5 +1,5 @@
 import { Point } from "../../../../shared/point";
-import { PathfindingModel } from "../../../Interfaces/PathfindingModel";
+import { PathfindingModel } from "../../../Interfaces/pathfindingModel";
 import { Cell } from "../../Cell";
 import { Set } from "../../../../shared/set";
 import { Board } from "../../board";

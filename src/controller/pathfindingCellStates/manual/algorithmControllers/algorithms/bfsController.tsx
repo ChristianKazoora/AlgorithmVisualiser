@@ -1,7 +1,6 @@
-import { PathfindingModel } from "../../../../../model/Interfaces/PathfindingModel";
 import { Cell } from "../../../../../model/subject/Cell";
 import { BfsModel } from "../../../../../model/subject/algorithms/pathFinding/bfsModel";
-import { Board } from "../../../../../model/subject/board";
+import { Board } from "../../../../../model/subject/board/board";
 import { Point } from "../../../../../shared/point";
 import { AlgorithmController } from "../algorithmController";
 import { Set } from "../../../../../shared/set";
@@ -18,6 +17,11 @@ import { EndCellAnimation } from "../../../../cellDecorations/endCellAnimation";
 import { StartCellAnimation } from "../../../../cellDecorations/startCellAnimation";
 import { WallCellAnimation } from "../../../../cellDecorations/wallCellAnimation";
 import { EmptyCellAnimation } from "../../../../cellDecorations/emptyCellAnimation";
+import { PathfindingModel } from "../../../../../model/Interfaces/pathfindingModel";
+import { MainPath } from "../../../../cellDecorations/paths/mainPath";
+import { VisitedPath } from "../../../../cellDecorations/paths/visitedPath";
+import { GetNeigbourWD } from "../../../../../model/subject/board/strategies/getNeigbourWD";
+import { GetNeigbour } from "../../../../../model/subject/board/strategies/getNeighbours";
 export class BfsController implements AlgorithmController {
   board: Board | undefined;
   grid: Array<Array<Cell>> | undefined;
@@ -36,30 +40,15 @@ export class BfsController implements AlgorithmController {
       let row: JSX.Element[] = [];
       for (let j = 0; j < gridWidth; j++) {
         const cell = this.ifNull(this.grid)[i][j];
-        const isWall = cell.isWall;
-        const isStart = cell.isStart;
-        const isEnd = cell.isEnd;
         const isVisited = this.visited?.includes(cell);
-        const isPath = this.path?.includes(cell);
         const isCurrent = this.ifNull(this.currentPoints).peek() === cell;
         isCurrent ? this.ifNull(this.currentPoints).pop() : "";
 
-        const style = `${
-          isEnd
-            ? "bg-red-500"
-            : isWall
-              ? "bg-gray-500"
-              : isPath
-                ? "bg-green-500"
-                : isVisited
-                  ? "bg-yellow-500"
-                  : isCurrent
-                    ? "bg-purple-500"
-                    : ""
-        }`;
         let pos: JSX.Element | undefined;
         pos = new EmptyCellAnimation(cell).animate();
+        isVisited ? (pos = new VisitedPath(cell).animate()) : "";
 
+        //Path
         if (this.westEastMove(cell)) {
           pos = new WestEastAnimation(cell).animate();
         } else if (this.northSouthMove(cell)) {
@@ -98,7 +87,8 @@ export class BfsController implements AlgorithmController {
       this.ifNull(this.start),
       this.ifNull(this.end),
       this.ifNull(this.board),
-      walls
+      walls,
+      new GetNeigbour()
     );
     this.bfsModel.start();
     this.visited = this.ifNull(this.bfsModel).getVisited();
@@ -126,43 +116,55 @@ export class BfsController implements AlgorithmController {
   }
   westEastMove(cell: Cell): boolean {
     let result = false;
-    if (cell.nextCell == cell.right) {
-      result = true;
+    if (cell.nextCell !== undefined) {
+      if (cell.nextCell == cell.right) {
+        result = true;
+      }
     }
     return result;
   }
   northSouthMove(cell: Cell): boolean {
     let result = false;
-    if (cell.nextCell == cell.bottom) {
-      result = true;
+    if (cell.nextCell !== undefined) {
+      if (cell.nextCell == cell.bottom) {
+        result = true;
+      }
     }
     return result;
   }
   northEastTurn(cell: Cell): boolean {
     let result = false;
-    if (cell.nextCell == cell.topRight) {
-      result = true;
+    if (cell.nextCell !== undefined) {
+      if (cell.nextCell == cell.topRight) {
+        result = true;
+      }
     }
     return result;
   }
   southEastTurn(cell: Cell): boolean {
     let result = false;
-    if (cell.nextCell == cell.bottomRight) {
-      result = true;
+    if (cell.nextCell !== undefined) {
+      if (cell.nextCell == cell.bottomRight) {
+        result = true;
+      }
     }
     return result;
   }
   northWestTurn(cell: Cell): boolean {
     let result = false;
-    if (cell.nextCell == cell.topLeft) {
-      result = true;
+    if (cell.nextCell !== undefined) {
+      if (cell.nextCell == cell.topLeft) {
+        result = true;
+      }
     }
     return result;
   }
   southWestTurn(cell: Cell): boolean {
     let result = false;
-    if (cell.nextCell == cell.bottomLeft) {
-      result = true;
+    if (cell.nextCell !== undefined) {
+      if (cell.nextCell == cell.bottomLeft) {
+        result = true;
+      }
     }
     return result;
   }

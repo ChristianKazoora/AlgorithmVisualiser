@@ -1,13 +1,15 @@
 import { Cell } from "../../Cell";
-import { Board } from "../../board";
+import { Board } from "../../board/board";
 import { Queue } from "../../../../shared/queue";
 import { Set } from "../../../../shared/set";
-import { PathfindingModel } from "../../../Interfaces/PathfindingModel";
 import { Point } from "../../../../shared/point";
 import { Stack } from "../../../../shared/stack";
+import { MovementModel } from "../../../Interfaces/movementModel";
+import { PathfindingModel } from "../../../Interfaces/pathfindingModel";
 export class BfsModel implements PathfindingModel {
   private grid: Array<Array<Cell>> | undefined;
   private board: Board | undefined;
+  private movementStrategy: MovementModel | undefined;
   private queue: Queue<Cell> = new Queue<Cell>();
   private visited: Set<Cell> = new Set<Cell>();
   private path: Array<Cell> | undefined;
@@ -29,8 +31,8 @@ export class BfsModel implements PathfindingModel {
         return;
       }
       let neighbours: Array<Cell> = this.ifNull(
-        this.board
-      ).getNeighboursDiagonal(current);
+        this.movementStrategy
+      ).getNeighbours(current);
       for (let i = 0; i < neighbours.length; i++) {
         if (!this.visited.contains(neighbours[i])) {
           this.queue.enqueue(neighbours[i]);
@@ -64,6 +66,9 @@ export class BfsModel implements PathfindingModel {
     }
 
     throw new Error("Object is null or undefined");
+  }
+  setMovementModel(movementModel: MovementModel): void {
+    this.movementStrategy = movementModel;
   }
   setBoard(board: Board): void {
     this.board = board;

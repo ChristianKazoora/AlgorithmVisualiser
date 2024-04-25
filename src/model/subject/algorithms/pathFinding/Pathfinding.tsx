@@ -1,10 +1,14 @@
 import { Point } from "../../../../shared/point";
-import { PathfindingModel } from "../../../Interfaces/pathfindingModel";
 import { Cell } from "../../Cell";
 import { Set } from "../../../../shared/set";
-import { Board } from "../../board";
+import { Board } from "../../board/board";
 import { BfsModel } from "./bfsModel";
 import { Stack } from "../../../../shared/stack";
+import { MovementModel } from "../../../Interfaces/movementModel";
+import { GetNeigbour } from "../../board/strategies/getNeighbours";
+import { MovementManager } from "../../board/movementManager";
+import { PathfindingModel } from "../../../Interfaces/pathfindingModel";
+import { GetNeigbourWD } from "../../board/strategies/getNeigbourWD";
 
 export class Pathfinding implements PathfindingModel {
   algorithm: PathfindingModel;
@@ -13,13 +17,15 @@ export class Pathfinding implements PathfindingModel {
     startP: Point,
     endP: Point,
     board: Board,
-    wallP: Array<Point> = new Array<Point>()
+    wallP: Array<Point> = new Array<Point>(),
+    _movementStrategy: MovementModel = new GetNeigbourWD()
   ) {
     this.algorithm = _algo;
     this.setBoard(board);
     this.setStartPoint(startP);
     this.setEndPoint(endP);
     this.setWallPositions(wallP);
+    this.setMovementModel(_movementStrategy);
     // this.setCurrentPoint(current.x, current.y);
   }
   getBoard(): Board {
@@ -28,6 +34,9 @@ export class Pathfinding implements PathfindingModel {
 
   start(): void {
     this.algorithm.start();
+  }
+  setMovementModel(movementModel: MovementModel): void {
+    this.algorithm.setMovementModel(new MovementManager(movementModel));
   }
   setWallPositions(wallP: Array<Point>): void {
     this.algorithm.setWallPositions(wallP);

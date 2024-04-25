@@ -1,4 +1,4 @@
-import { Board } from "../subject/board";
+import { Board } from "../subject/board/board";
 
 interface Maze {
   generateMaze(): void;

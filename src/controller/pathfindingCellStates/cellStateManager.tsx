@@ -1,4 +1,4 @@
-import { Board } from "../../model/subject/board";
+import { Board } from "../../model/subject/board/board";
 import { Point } from "../../shared/point";
 import { CellState } from "./cellState";
 import { ManualCellState } from "./manual/manualCellState";
@@ -9,10 +9,10 @@ export class CellStateManager implements CellState {
   private cellState: CellState;
   constructor(
     board: Board,
-    _cellState: CellState = new ManualCellState(),
-    _algorithmController: AlgorithmController = new BfsController(),
     _start: Point = { x: 0, y: 0 },
-    _end: Point = { x: board.board.length - 1, y: board.board[0].length - 1 }
+    _end: Point = { x: board.board.length - 1, y: board.board[0].length - 1 },
+    _cellState: CellState = new ManualCellState(),
+    _algorithmController: AlgorithmController = new BfsController()
   ) {
     this.cellState = _cellState;
     this.setAlgorithmController(_algorithmController);

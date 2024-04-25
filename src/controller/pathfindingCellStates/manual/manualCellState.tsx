@@ -1,5 +1,5 @@
 import { Cell } from "../../../model/subject/Cell";
-import { Board } from "../../../model/subject/board";
+import { Board } from "../../../model/subject/board/board";
 import { Point } from "../../../shared/point";
 import { CellState } from "../cellState";
 import { AlgorithmController } from "./algorithmControllers/algorithmController";

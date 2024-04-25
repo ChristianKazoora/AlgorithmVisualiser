@@ -1,4 +1,4 @@
-import { Board } from "../../model/subject/board";
+import { Board } from "../../model/subject/board/board";
 import { Point } from "../../shared/point";
 import { mainController } from "../mainController";
 import { AlgorithmController } from "./manual/algorithmControllers/algorithmController";

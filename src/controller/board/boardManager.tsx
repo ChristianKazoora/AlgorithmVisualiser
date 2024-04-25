@@ -1,5 +1,6 @@
 import { Cell } from "../../model/subject/Cell";
-import { Board } from "../../model/subject/board";
+import { Board } from "../../model/subject/board/board";
+import { Point } from "../../shared/point";
 import { CellState } from "../pathfindingCellStates/cellState";
 import { CellStateManager } from "../pathfindingCellStates/cellStateManager";
 import { ManualCellState } from "../pathfindingCellStates/manual/manualCellState";
@@ -14,7 +15,12 @@ export class BoardManager implements BoardController {
     this.board = new Board(size);
     this.grid = this.board.board;
     this.cellState = _cellState;
-    this.cellStateManager = new CellStateManager(this.board, this.cellState);
+    this.cellStateManager = new CellStateManager(
+      this.board,
+      { x: 0, y: 20 },
+      { x: 20, y: 30 },
+      this.cellState
+    );
   }
   setBoard(board: any): void {
     this.board = board;
@@ -22,7 +28,17 @@ export class BoardManager implements BoardController {
   }
   setCellState(cellState: any): void {
     this.cellState = cellState;
-    this.cellStateManager = new CellStateManager(this.board, this.cellState);
+    const start: Point = { x: 10, y: 0 };
+    const end: Point = {
+      x: 20,
+      y: 20,
+    };
+    this.cellStateManager = new CellStateManager(
+      this.board,
+      start,
+      end,
+      this.cellState
+    );
   }
   draw(): any {
     return (

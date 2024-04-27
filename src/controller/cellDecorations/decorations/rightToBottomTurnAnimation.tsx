@@ -1,7 +1,6 @@
-import React from "react"; // Add missing import
 import { CellDecorator } from "../cellDecorator";
 import { Grid } from "@mui/material";
-export class EndCellAnimation extends CellDecorator {
+export class RightToBottomTurn extends CellDecorator {
   animate(): any {
     return (
       <Grid
@@ -10,7 +9,7 @@ export class EndCellAnimation extends CellDecorator {
         key={this.y}
         data-row={this.x}
         data-col={this.y}
-        className={`${this.classNames.concat(" bg-red-500")} `}
+        className={`${this.classNames.concat(" bg-yellow-500")} `}
         style={{
           width: "20px",
           height: "20px",

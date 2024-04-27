@@ -2,26 +2,30 @@ import { Cell } from "../../../../../model/subject/Cell";
 import { BfsModel } from "../../../../../model/subject/algorithms/pathFinding/bfsModel";
 import { Board } from "../../../../../model/subject/board/board";
 import { Point } from "../../../../../shared/point";
-import { AlgorithmController } from "../algorithmController";
+import { AlgorithmController } from "../../../../interfaces/algorithmController";
 import { Set } from "../../../../../shared/set";
-import { Grid } from "@mui/material";
 import { Pathfinding } from "../../../../../model/subject/algorithms/pathFinding/Pathfinding";
 import { Stack } from "../../../../../shared/stack";
-import { WestEastAnimation } from "../../../../cellDecorations/westEastAnimation";
-import { NorthSouthAnimation } from "../../../../cellDecorations/northSouthAnimation";
-import { NorthEastTurnAnimation } from "../../../../cellDecorations/northEastTurnAnimation";
-import { SouthEastTurnAnimation } from "../../../../cellDecorations/southEastTurnAnimation";
-import { NorthWestTurnAnimation } from "../../../../cellDecorations/northWestTurnAnimation";
-import { SouthWestTurnAnimation } from "../../../../cellDecorations/southWestTurnAnimation";
-import { EndCellAnimation } from "../../../../cellDecorations/endCellAnimation";
-import { StartCellAnimation } from "../../../../cellDecorations/startCellAnimation";
-import { WallCellAnimation } from "../../../../cellDecorations/wallCellAnimation";
-import { EmptyCellAnimation } from "../../../../cellDecorations/emptyCellAnimation";
+import { WestEastAnimation } from "../../../../cellDecorations/decorations/westEastAnimation";
+import { TopToRightTurn } from "../../../../cellDecorations/decorations/topToRightTurnAnimation";
+import { LeftToTopTurn } from "../../../../cellDecorations/decorations/leftToTopTurnAnimation";
+import { BottomToRightTurn } from "../../../../cellDecorations/decorations/bottomToRightTurnAnimation";
+import { BottomToLeftTurn } from "../../../../cellDecorations/decorations/bottomToLeftTurnAnimation";
+import { RightToTopTurn } from "../../../../cellDecorations/decorations/rightToTopTurnAnimation";
+import { RightToBottomTurn } from "../../../../cellDecorations/decorations/rightToBottomTurnAnimation";
+import { EndCellAnimation } from "../../../../cellDecorations/decorations/endCellAnimation";
+import { StartCellAnimation } from "../../../../cellDecorations/decorations/startCellAnimation";
+import { WallCellAnimation } from "../../../../cellDecorations/decorations/wallCellAnimation";
+import { EmptyCellAnimation } from "../../../../cellDecorations/decorations/emptyCellAnimation";
 import { PathfindingModel } from "../../../../../model/Interfaces/pathfindingModel";
 import { MainPath } from "../../../../cellDecorations/paths/mainPath";
 import { VisitedPath } from "../../../../cellDecorations/paths/visitedPath";
-import { GetNeigbourWD } from "../../../../../model/subject/board/strategies/getNeigbourWD";
-import { GetNeigbour } from "../../../../../model/subject/board/strategies/getNeighbours";
+import { TurnHelper } from "../../../turnHelper";
+import { MovementModel } from "../../../../../model/Interfaces/movementModel";
+import { LeftToBottomTurn } from "../../../../cellDecorations/decorations/leftToBottomTurnAnimation";
+import { TopToLeftTurn } from "../../../../cellDecorations/decorations/topToLeftTurnAnimation";
+import { useEffect } from "react";
+import { useAnimation } from "framer-motion";
 export class BfsController implements AlgorithmController {
   board: Board | undefined;
   grid: Array<Array<Cell>> | undefined;
@@ -31,6 +35,8 @@ export class BfsController implements AlgorithmController {
   visited: Set<Cell> | undefined;
   path: Array<Cell> | undefined;
   currentPoints: Stack<Cell> | undefined;
+  neighbourStrategy: MovementModel | undefined;
+  walls: Array<Point> | undefined;
   draw(): JSX.Element[][] {
     this.getData();
     const gridLength = this.ifNull(this.grid).length;
@@ -42,30 +48,100 @@ export class BfsController implements AlgorithmController {
         const cell = this.ifNull(this.grid)[i][j];
         const isVisited = this.visited?.includes(cell);
         const isCurrent = this.ifNull(this.currentPoints).peek() === cell;
+        const isPath = this.path?.includes(cell);
         isCurrent ? this.ifNull(this.currentPoints).pop() : "";
 
         let pos: JSX.Element | undefined;
-        pos = new EmptyCellAnimation(cell).animate();
-        isVisited ? (pos = new VisitedPath(cell).animate()) : "";
+        const yControls = useAnimation();
+        const xControls = useAnimation();
+        const duration = 0;
+        useEffect(() => {
+          const sequence = async () => {
+            await yControls.start({
+              scaleY: 0,
+              transition: { duration: duration },
+            });
+            await yControls.start({
+              scaleY: 1,
+              transition: { duration: duration },
+            });
+          };
+          const timeoutId = setTimeout(sequence, cell.posFromStart * 100);
+          return () => clearTimeout(timeoutId); // cleanup on unmount
+        }, [cell]);
 
-        //Path
-        if (this.westEastMove(cell)) {
-          pos = new WestEastAnimation(cell).animate();
-        } else if (this.northSouthMove(cell)) {
-          pos = new NorthSouthAnimation(cell).animate();
-        } else if (this.northEastTurn(cell)) {
-          pos = new NorthEastTurnAnimation(cell).animate();
-        } else if (this.southEastTurn(cell)) {
-          pos = new SouthEastTurnAnimation(cell).animate();
-        } else if (this.northWestTurn(cell)) {
-          pos = new NorthWestTurnAnimation(cell).animate();
-        } else if (this.southWestTurn(cell)) {
-          pos = new SouthWestTurnAnimation(cell).animate();
+        useEffect(() => {
+          const sequence = async () => {
+            await xControls.start({
+              scaleX: 0, // changed from scaleY to scaleX
+              transition: { duration: duration },
+            });
+            await xControls.start({
+              scaleX: 1, // changed from scaleY to scaleX
+              transition: { duration: duration },
+            });
+          };
+          const timeoutId = setTimeout(sequence, cell.posFromStart * 100);
+          return () => clearTimeout(timeoutId); // cleanup on unmount
+        }, [cell]);
+
+        const controls = { y: yControls, x: xControls };
+        pos = new EmptyCellAnimation(cell, controls).animate();
+        isVisited ? (pos = new VisitedPath(cell, controls).animate()) : "";
+        isPath ? (pos = new MainPath(cell, controls).animate()) : "";
+        //turns
+        if (TurnHelper.topToRightTurn(cell)) {
+          pos = new TopToRightTurn(cell, controls).animate();
+        } else if (TurnHelper.leftToTopTurn(cell)) {
+          pos = new LeftToTopTurn(cell, controls).animate();
+        } else if (TurnHelper.bottomToRightTurn(cell)) {
+          pos = new BottomToRightTurn(cell, controls).animate();
+        } else if (TurnHelper.leftToBottomTurn(cell)) {
+          pos = new LeftToBottomTurn(cell, controls).animate();
         }
+        //inverse turns
+        else if (TurnHelper.rightToBottomTurn(cell)) {
+          pos = new RightToBottomTurn(cell, controls).animate();
+        } else if (TurnHelper.bottomToLeftTurn(cell)) {
+          pos = new BottomToLeftTurn(cell, controls).animate();
+        } else if (TurnHelper.topToLeftTurn(cell)) {
+          pos = new TopToLeftTurn(cell, controls).animate();
+        } else if (TurnHelper.rightToTopTurn(cell)) {
+          pos = new RightToTopTurn(cell, controls).animate();
+        }
+        // else if (TurnHelper.bottomToNorthEastTurn(cell)) {
+        //   pos = new NorthWestTurnAnimation(cell).animate();
+        // } else if (TurnHelper.topToSouthEastTurn(cell)) {
+        //   pos = new WestEastAnimation(cell).animate();
+        // } else if (TurnHelper.bottomToNorthWestTurn(cell)) {
+        //   pos = new NorthWestTurnAnimation(cell).animate();
+        // } else if (TurnHelper.topToSouthWestTurn(cell)) {
+        //   pos = new WestEastAnimation(cell).animate();
+        // } else if (TurnHelper.bottomToRightTurn(cell)) {
+        //   pos = new WestEastAnimation(cell).animate();
+        // } else if (TurnHelper.leftToBottomTurn(cell)) {
+        //   pos = new WestEastAnimation(cell).animate();
+        // } else if (TurnHelper.topToLeftTurn(cell)) {
+        //   pos = new NorthWestTurnAnimation(cell).animate();
+        // } else if (TurnHelper.rightToTopTurn(cell)) {
+        //   pos = new WestEastAnimation(cell).animate();
+        // }
+        //apex
+        // else if (TurnHelper.topApexTurnToRight(cell)) {
+        //   pos = new NorthWestTurnAnimation(cell).animate();
+        // } else if (TurnHelper.bottomApexTurn(cell)) {
+        //   pos = new WestEastAnimation(cell).animate();
+        // }
 
-        cell.isEnd ? (pos = new EndCellAnimation(cell).animate()) : "";
-        cell.isStart ? (pos = new StartCellAnimation(cell).animate()) : "";
-        cell.isWall ? (pos = new WallCellAnimation(cell).animate()) : "";
+        cell.isEnd
+          ? (pos = new EndCellAnimation(cell, controls).animate())
+          : "";
+        cell.isStart
+          ? (pos = new StartCellAnimation(cell, controls).animate())
+          : "";
+        cell.isWall
+          ? (pos = new WallCellAnimation(cell, controls).animate())
+          : "";
 
         if (pos) {
           row.push(pos);
@@ -77,18 +153,13 @@ export class BfsController implements AlgorithmController {
     return result;
   }
   getData(): void {
-    const walls = [
-      { x: 1, y: 0 },
-      { x: 1, y: 1 },
-      { x: 1, y: 2 },
-    ];
     this.bfsModel = new Pathfinding(
       new BfsModel(),
       this.ifNull(this.start),
       this.ifNull(this.end),
       this.ifNull(this.board),
-      walls,
-      new GetNeigbour()
+      this.walls,
+      this.neighbourStrategy
     );
     this.bfsModel.start();
     this.visited = this.ifNull(this.bfsModel).getVisited();
@@ -98,6 +169,12 @@ export class BfsController implements AlgorithmController {
   setBoard(board: any): void {
     this.board = board;
     this.grid = this.ifNull(this.board).board;
+  }
+  setMovementStrategy(strategy: MovementModel): void {
+    this.neighbourStrategy = strategy;
+  }
+  setWalls(walls: Array<Point>): void {
+    this.walls = walls;
   }
   ifNull(object: any) {
     if (object) {
@@ -113,59 +190,5 @@ export class BfsController implements AlgorithmController {
   setEnd(pos: Point): void {
     this.end = pos;
     this.ifNull(this.grid)[pos.x][pos.y].isEnd = true;
-  }
-  westEastMove(cell: Cell): boolean {
-    let result = false;
-    if (cell.nextCell !== undefined) {
-      if (cell.nextCell == cell.right) {
-        result = true;
-      }
-    }
-    return result;
-  }
-  northSouthMove(cell: Cell): boolean {
-    let result = false;
-    if (cell.nextCell !== undefined) {
-      if (cell.nextCell == cell.bottom) {
-        result = true;
-      }
-    }
-    return result;
-  }
-  northEastTurn(cell: Cell): boolean {
-    let result = false;
-    if (cell.nextCell !== undefined) {
-      if (cell.nextCell == cell.topRight) {
-        result = true;
-      }
-    }
-    return result;
-  }
-  southEastTurn(cell: Cell): boolean {
-    let result = false;
-    if (cell.nextCell !== undefined) {
-      if (cell.nextCell == cell.bottomRight) {
-        result = true;
-      }
-    }
-    return result;
-  }
-  northWestTurn(cell: Cell): boolean {
-    let result = false;
-    if (cell.nextCell !== undefined) {
-      if (cell.nextCell == cell.topLeft) {
-        result = true;
-      }
-    }
-    return result;
-  }
-  southWestTurn(cell: Cell): boolean {
-    let result = false;
-    if (cell.nextCell !== undefined) {
-      if (cell.nextCell == cell.bottomLeft) {
-        result = true;
-      }
-    }
-    return result;
   }
 }

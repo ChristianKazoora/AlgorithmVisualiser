@@ -4,7 +4,7 @@ export interface CellModel {
   isWall: boolean;
   isStart: boolean;
   isEnd: boolean;
-  pos: number;
+  posFromStart: number;
   x: number;
   y: number;
   previousCell?: Cell;
@@ -22,4 +22,5 @@ export interface CellModel {
   westW: boolean;
   eastW: boolean;
   classNames: string;
+  animateControls: any;
 }

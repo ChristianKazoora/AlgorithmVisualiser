@@ -1,4 +1,4 @@
-import { mainController } from "../mainController";
+import { mainController } from "./mainController";
 
 export interface BoardController extends mainController {
   draw(): any;

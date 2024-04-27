@@ -21,7 +21,7 @@ export class Board {
           false, // isWall
           false, // isStart
           false, // isEnd
-          i * col + j, // pos
+          undefined,
           i, // x
           j, // y
           undefined, // previousCell

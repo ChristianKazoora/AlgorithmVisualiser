@@ -1,8 +1,9 @@
+import { MovementModel } from "../../../model/Interfaces/movementModel";
 import { Cell } from "../../../model/subject/Cell";
 import { Board } from "../../../model/subject/board/board";
 import { Point } from "../../../shared/point";
-import { CellState } from "../cellState";
-import { AlgorithmController } from "./algorithmControllers/algorithmController";
+import { CellState } from "../../interfaces/cellState";
+import { AlgorithmController } from "../../interfaces/algorithmController";
 export class ManualCellState implements CellState {
   board: Board | undefined;
   grid: Array<Array<Cell>> | undefined;
@@ -10,7 +11,9 @@ export class ManualCellState implements CellState {
   draw(): JSX.Element[][] {
     return this.algorithmController?.draw();
   }
-
+  setWalls(walls: Point[]): void {
+    this.algorithmController?.setWalls(walls);
+  }
   setBoard(board: any): void {
     this.algorithmController?.setBoard(board);
   }
@@ -22,5 +25,8 @@ export class ManualCellState implements CellState {
   }
   setEnd(pos: Point): void {
     this.algorithmController?.setEnd(pos);
+  }
+  setMovementStrategy(strategy: MovementModel): void {
+    this.algorithmController?.setMovementStrategy(strategy);
   }
 }

@@ -1,6 +1,6 @@
 import { CellDecorator } from "../cellDecorator";
 import { Grid } from "@mui/material";
-export class NorthEastTurnAnimation extends CellDecorator {
+export class RightToTopTurn extends CellDecorator {
   animate(): any {
     return (
       <Grid
@@ -9,7 +9,7 @@ export class NorthEastTurnAnimation extends CellDecorator {
         key={this.y}
         data-row={this.x}
         data-col={this.y}
-        className={`${this.classNames.concat(" bg-sky-400")} `}
+        className={`${this.classNames.concat(" bg-lime-400")} `}
         style={{
           width: "20px",
           height: "20px",

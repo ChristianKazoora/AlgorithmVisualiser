@@ -37,6 +37,7 @@ export class BfsModel implements PathfindingModel {
         if (!this.visited.contains(neighbours[i])) {
           this.queue.enqueue(neighbours[i]);
           this.visited.add(neighbours[i]);
+          neighbours[i].posFromStart = current.posFromStart + 1;
           neighbours[i].previousCell = current;
         }
       }
@@ -48,6 +49,7 @@ export class BfsModel implements PathfindingModel {
   backtrackPath(end: Cell): Array<Cell> {
     let path: Array<Cell> = new Array<Cell>();
     let current: Cell = end;
+
     while (current !== this.startP) {
       path.push(current);
       if (current.previousCell != undefined) {
@@ -57,6 +59,10 @@ export class BfsModel implements PathfindingModel {
     }
     path.reverse();
     path.unshift(this.ifNull(this.startP));
+    for (let i = 0; i < path.length; i++) {
+      path[i].posFromStart = i;
+    }
+
     return path;
   }
   count: number = 0;

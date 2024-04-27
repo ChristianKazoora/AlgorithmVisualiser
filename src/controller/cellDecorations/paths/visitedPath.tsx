@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { CellDecorator } from "../../cellDecorator";
+import { CellDecorator } from "../cellDecorator";
 
 export class VisitedPath extends CellDecorator {
   animate(): any {

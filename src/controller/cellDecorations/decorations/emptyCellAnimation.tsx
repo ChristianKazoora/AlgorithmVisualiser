@@ -1,6 +1,7 @@
 import { CellDecorator } from "../cellDecorator";
 import { Grid } from "@mui/material";
-export class NorthSouthAnimation extends CellDecorator {
+
+export class EmptyCellAnimation extends CellDecorator {
   animate(): any {
     return (
       <Grid
@@ -9,7 +10,7 @@ export class NorthSouthAnimation extends CellDecorator {
         key={this.y}
         data-row={this.x}
         data-col={this.y}
-        className={`${this.classNames.concat(" bg-amber-200")} `}
+        className={`${this.classNames.concat("  bg-white")} `}
         style={{
           width: "20px",
           height: "20px",

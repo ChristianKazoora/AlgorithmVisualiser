@@ -1,11 +1,11 @@
-import { CellModel } from "../model/Interfaces/cellModel";
-import { Cell } from "../model/subject/Cell";
+import { CellModel } from "../../model/Interfaces/cellModel";
+import { Cell } from "../../model/subject/Cell";
 
 export class CellDecorator implements CellModel {
   isWall: boolean;
   isStart: boolean;
   isEnd: boolean;
-  pos: number;
+  posFromStart: number;
   x: number;
   y: number;
   previousCell?: Cell | undefined;
@@ -23,12 +23,13 @@ export class CellDecorator implements CellModel {
   westW: boolean;
   eastW: boolean;
   classNames: string = "";
+  animateControls: any;
 
-  constructor(cell: Cell) {
+  constructor(cell: Cell, animateControls: any) {
     this.isWall = cell.isWall;
     this.isStart = cell.isStart;
     this.isEnd = cell.isEnd;
-    this.pos = cell.pos;
+    this.posFromStart = cell.posFromStart;
     this.x = cell.x;
     this.y = cell.y;
     this.previousCell = cell.previousCell;
@@ -46,18 +47,11 @@ export class CellDecorator implements CellModel {
     this.westW = cell.westW;
     this.eastW = cell.eastW;
     this.classNames = cell.classNames;
+    this.animateControls = animateControls;
+  }
+  print(): void {
+    console.log(
+      `Cell: ${this.posFromStart} x: ${this.x} y: ${this.y} isWall: ${this.isWall} isStart: ${this.isStart} isEnd: ${this.isEnd}`
+    );
   }
 }
-// <Grid
-//   item
-//   xs={0}
-//   key={j}
-//   data-row={i}
-//   data-col={j}
-//   className={style}
-//   style={{
-//     width: "20px",
-//     height: "20px",
-//     border: "1px solid black",
-//   }}
-// />;

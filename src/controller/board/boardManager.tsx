@@ -7,6 +7,8 @@ import { CellStateManager } from "../pathfindingCellStates/cellStateManager";
 import { ManualCellState } from "../pathfindingCellStates/manual/manualCellState";
 import { BoardController } from "../interfaces/boardController";
 import { Grid } from "@mui/material";
+import { MovementModel } from "../../model/Interfaces/movementModel";
+import { Point } from "../../shared/point";
 export class BoardManager implements BoardController {
   board: Board;
   grid: Array<Array<Cell>>;
@@ -134,14 +136,29 @@ export class BoardManager implements BoardController {
     this.cellState = _cellState;
     this.cellStateManager = new CellStateManager(
       this.board,
-      { x: 0, y: 0 },
+      { x: 24, y: 0 },
 
-      { x: 0, y: 49 },
+      { x: 12, y: 24 },
 
       new GetNeigbour(),
       this.cellState,
       this.walls
     );
+  }
+  setStart(pos: Point): void {
+    throw new Error("Method not implemented.");
+  }
+  setEnd(pos: Point): void {
+    throw new Error("Method not implemented.");
+  }
+  setMovementStrategy(strategy: MovementModel): void {
+    throw new Error("Method not implemented.");
+  }
+  setWalls(walls: Point[]): void {
+    throw new Error("Method not implemented.");
+  }
+  getData(): void {
+    throw new Error("Method not implemented.");
   }
   setBoard(board: any): void {
     this.board = board;
@@ -161,7 +178,7 @@ export class BoardManager implements BoardController {
     return (
       <div className=" border-black border-[5px] flex m-auto items-center justify-center">
         <Grid>
-          {this.cellStateManager.draw().map((row, i) => (
+          {this.cellStateManager.draw().map((row: number, i: number) => (
             <Grid container item key={i}>
               {row}
             </Grid>

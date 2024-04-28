@@ -6,26 +6,17 @@ import { AlgorithmController } from "../../../../interfaces/algorithmController"
 import { Set } from "../../../../../shared/set";
 import { Pathfinding } from "../../../../../model/subject/algorithms/pathFinding/Pathfinding";
 import { Stack } from "../../../../../shared/stack";
-import { WestEastAnimation } from "../../../../cellDecorations/decorations/westEastAnimation";
-import { TopToRightTurn } from "../../../../cellDecorations/decorations/topToRightTurnAnimation";
-import { LeftToTopTurn } from "../../../../cellDecorations/decorations/leftToTopTurnAnimation";
-import { BottomToRightTurn } from "../../../../cellDecorations/decorations/bottomToRightTurnAnimation";
-import { BottomToLeftTurn } from "../../../../cellDecorations/decorations/bottomToLeftTurnAnimation";
-import { RightToTopTurn } from "../../../../cellDecorations/decorations/rightToTopTurnAnimation";
-import { RightToBottomTurn } from "../../../../cellDecorations/decorations/rightToBottomTurnAnimation";
-import { EndCellAnimation } from "../../../../cellDecorations/decorations/endCellAnimation";
-import { StartCellAnimation } from "../../../../cellDecorations/decorations/startCellAnimation";
-import { WallCellAnimation } from "../../../../cellDecorations/decorations/wallCellAnimation";
-import { EmptyCellAnimation } from "../../../../cellDecorations/decorations/emptyCellAnimation";
 import { PathfindingModel } from "../../../../../model/Interfaces/pathfindingModel";
 import { MainPath } from "../../../../cellDecorations/paths/mainPath";
 import { VisitedPath } from "../../../../cellDecorations/paths/visitedPath";
-import { TurnHelper } from "../../../turnHelper";
 import { MovementModel } from "../../../../../model/Interfaces/movementModel";
-import { LeftToBottomTurn } from "../../../../cellDecorations/decorations/leftToBottomTurnAnimation";
-import { TopToLeftTurn } from "../../../../cellDecorations/decorations/topToLeftTurnAnimation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAnimation } from "framer-motion";
+import { EmptyCellAnimation } from "../../../../cellDecorations/decorators/emptyCellAnimation";
+import { EndCellAnimation } from "../../../../cellDecorations/decorators/endCellAnimation";
+import { StartCellAnimation } from "../../../../cellDecorations/decorators/startCellAnimation";
+import { WallCellAnimation } from "../../../../cellDecorations/decorators/wallCellAnimation";
+
 export class BfsController implements AlgorithmController {
   board: Board | undefined;
   grid: Array<Array<Cell>> | undefined;
@@ -37,8 +28,9 @@ export class BfsController implements AlgorithmController {
   currentPoints: Stack<Cell> | undefined;
   neighbourStrategy: MovementModel | undefined;
   walls: Array<Point> | undefined;
-  draw(): JSX.Element[][] {
-    this.getData();
+  draw(): any {
+    const [currentCell, setCurrentCell] = useState(0);
+
     const gridLength = this.ifNull(this.grid).length;
     const gridWidth = this.ifNull(this.grid)[0].length;
     let result: JSX.Element[][] = [];
@@ -54,19 +46,20 @@ export class BfsController implements AlgorithmController {
         let pos: JSX.Element | undefined;
         const yControls = useAnimation();
         const xControls = useAnimation();
-        const duration = 0;
+        const cellDuration = 0.5;
+        const duration = 20;
         useEffect(() => {
           const sequence = async () => {
             await yControls.start({
               scaleY: 0,
-              transition: { duration: duration },
+              transition: { duration: cellDuration },
             });
             await yControls.start({
               scaleY: 1,
-              transition: { duration: duration },
+              transition: { duration: cellDuration },
             });
           };
-          const timeoutId = setTimeout(sequence, cell.posFromStart * 100);
+          const timeoutId = setTimeout(sequence, cell.posFromStart * duration);
           return () => clearTimeout(timeoutId); // cleanup on unmount
         }, [cell]);
 
@@ -74,14 +67,14 @@ export class BfsController implements AlgorithmController {
           const sequence = async () => {
             await xControls.start({
               scaleX: 0, // changed from scaleY to scaleX
-              transition: { duration: duration },
+              transition: { duration: cellDuration },
             });
             await xControls.start({
               scaleX: 1, // changed from scaleY to scaleX
-              transition: { duration: duration },
+              transition: { duration: cellDuration },
             });
           };
-          const timeoutId = setTimeout(sequence, cell.posFromStart * 100);
+          const timeoutId = setTimeout(sequence, cell.posFromStart * duration);
           return () => clearTimeout(timeoutId); // cleanup on unmount
         }, [cell]);
 
@@ -89,49 +82,6 @@ export class BfsController implements AlgorithmController {
         pos = new EmptyCellAnimation(cell, controls).animate();
         isVisited ? (pos = new VisitedPath(cell, controls).animate()) : "";
         isPath ? (pos = new MainPath(cell, controls).animate()) : "";
-        //turns
-        if (TurnHelper.topToRightTurn(cell)) {
-          pos = new TopToRightTurn(cell, controls).animate();
-        } else if (TurnHelper.leftToTopTurn(cell)) {
-          pos = new LeftToTopTurn(cell, controls).animate();
-        } else if (TurnHelper.bottomToRightTurn(cell)) {
-          pos = new BottomToRightTurn(cell, controls).animate();
-        } else if (TurnHelper.leftToBottomTurn(cell)) {
-          pos = new LeftToBottomTurn(cell, controls).animate();
-        }
-        //inverse turns
-        else if (TurnHelper.rightToBottomTurn(cell)) {
-          pos = new RightToBottomTurn(cell, controls).animate();
-        } else if (TurnHelper.bottomToLeftTurn(cell)) {
-          pos = new BottomToLeftTurn(cell, controls).animate();
-        } else if (TurnHelper.topToLeftTurn(cell)) {
-          pos = new TopToLeftTurn(cell, controls).animate();
-        } else if (TurnHelper.rightToTopTurn(cell)) {
-          pos = new RightToTopTurn(cell, controls).animate();
-        }
-        // else if (TurnHelper.bottomToNorthEastTurn(cell)) {
-        //   pos = new NorthWestTurnAnimation(cell).animate();
-        // } else if (TurnHelper.topToSouthEastTurn(cell)) {
-        //   pos = new WestEastAnimation(cell).animate();
-        // } else if (TurnHelper.bottomToNorthWestTurn(cell)) {
-        //   pos = new NorthWestTurnAnimation(cell).animate();
-        // } else if (TurnHelper.topToSouthWestTurn(cell)) {
-        //   pos = new WestEastAnimation(cell).animate();
-        // } else if (TurnHelper.bottomToRightTurn(cell)) {
-        //   pos = new WestEastAnimation(cell).animate();
-        // } else if (TurnHelper.leftToBottomTurn(cell)) {
-        //   pos = new WestEastAnimation(cell).animate();
-        // } else if (TurnHelper.topToLeftTurn(cell)) {
-        //   pos = new NorthWestTurnAnimation(cell).animate();
-        // } else if (TurnHelper.rightToTopTurn(cell)) {
-        //   pos = new WestEastAnimation(cell).animate();
-        // }
-        //apex
-        // else if (TurnHelper.topApexTurnToRight(cell)) {
-        //   pos = new NorthWestTurnAnimation(cell).animate();
-        // } else if (TurnHelper.bottomApexTurn(cell)) {
-        //   pos = new WestEastAnimation(cell).animate();
-        // }
 
         cell.isEnd
           ? (pos = new EndCellAnimation(cell, controls).animate())
@@ -149,7 +99,6 @@ export class BfsController implements AlgorithmController {
       }
       result.push(row);
     }
-
     return result;
   }
   getData(): void {

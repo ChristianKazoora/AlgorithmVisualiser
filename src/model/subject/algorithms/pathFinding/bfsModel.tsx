@@ -59,9 +59,9 @@ export class BfsModel implements PathfindingModel {
     }
     path.reverse();
     path.unshift(this.ifNull(this.startP));
-    for (let i = 0; i < path.length; i++) {
-      path[i].posFromStart = i;
-    }
+    // for (let i = 0; i < path.length; i++) {
+    //   path[i].posFromStart = i;
+    // }
 
     return path;
   }

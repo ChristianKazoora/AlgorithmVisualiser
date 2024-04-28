@@ -25,6 +25,13 @@ export class CellStateManager implements CellState {
     this.setEnd(_end);
     this.setWalls(_walls);
     this.setMovementStrategy(_movementStrategy);
+    this.getData();
+  }
+  setAlgorithmController(algorithmController: AlgorithmController): void {
+    this.cellState.setAlgorithmController(algorithmController);
+  }
+  getData(): void {
+    this.cellState.getData();
   }
   setWalls(walls: Point[]): void {
     this.cellState.setWalls(walls);
@@ -40,9 +47,6 @@ export class CellStateManager implements CellState {
   }
   setBoard(board: Board): void {
     this.cellState.setBoard(board);
-  }
-  setAlgorithmController(algorithm: AlgorithmController): void {
-    this.cellState.setAlgorithmController(algorithm);
   }
   draw(): JSX.Element[][] {
     return this.cellState.draw();

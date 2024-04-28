@@ -1,12 +1,9 @@
 import { Grid } from "@mui/material";
 import { CellDecorator } from "../cellDecorator";
-import { TurnHelper } from "../../pathfindingCellStates/turnHelper";
-import { up_Down } from "../decorations/up_DownAnimation";
-import { motion, useAnimation } from "framer-motion";
-import { useEffect } from "react";
-import { Left_Right } from "../decorations/left_RightAnimation";
+import { Line } from "./line";
 export class MainPath extends CellDecorator {
   animate(): any {
+    this.classNames = " bg-red-500";
     return (
       <Grid
         item
@@ -14,7 +11,6 @@ export class MainPath extends CellDecorator {
         key={this.y}
         data-row={this.x}
         data-col={this.y}
-        className={`${this.classNames.concat(" bg-red-500")} `}
         style={{
           width: "20px",
           height: "20px",
@@ -22,17 +18,10 @@ export class MainPath extends CellDecorator {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          position: "relative",
         }}
       >
-        {/* if cell is going left-right or up-down */}
-        <motion.div>
-          {TurnHelper.left_Right(this)
-            ? new Left_Right(this, this.animateControls).animate()
-            : ""}
-          {TurnHelper.up_Down(this)
-            ? new up_Down(this, this.animateControls).animate()
-            : ""}
-        </motion.div>
+        {new Line(this, this.animateControls).animate()}
       </Grid>
     );
   }

@@ -29,4 +29,7 @@ export class ManualCellState implements CellState {
   setMovementStrategy(strategy: MovementModel): void {
     this.algorithmController?.setMovementStrategy(strategy);
   }
+  getData(): void {
+    this.algorithmController?.getData();
+  }
 }

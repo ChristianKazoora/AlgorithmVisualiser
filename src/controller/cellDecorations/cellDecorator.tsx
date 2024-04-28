@@ -1,7 +1,6 @@
 import { CellModel } from "../../model/Interfaces/cellModel";
 import { Cell } from "../../model/subject/Cell";
-
-export class CellDecorator implements CellModel {
+export abstract class CellDecorator implements CellModel {
   isWall: boolean;
   isStart: boolean;
   isEnd: boolean;
@@ -24,7 +23,7 @@ export class CellDecorator implements CellModel {
   eastW: boolean;
   classNames: string = "";
   animateControls: any;
-
+  abstract animate(): JSX.Element;
   constructor(cell: Cell, animateControls: any) {
     this.isWall = cell.isWall;
     this.isStart = cell.isStart;

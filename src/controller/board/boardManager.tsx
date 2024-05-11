@@ -9,6 +9,7 @@ import { BoardController } from "../interfaces/boardController";
 import { Grid } from "@mui/material";
 import { MovementModel } from "../../model/Interfaces/movementModel";
 import { Point } from "../../shared/point";
+import { useEffect, useState } from "react";
 export class BoardManager implements BoardController {
   board: Board;
   grid: Array<Array<Cell>>;
@@ -136,9 +137,9 @@ export class BoardManager implements BoardController {
     this.cellState = _cellState;
     this.cellStateManager = new CellStateManager(
       this.board,
-      { x: 24, y: 0 },
+      { x: 0, y: 46 },
 
-      { x: 12, y: 24 },
+      { x: 0, y: 0 },
 
       new GetNeigbour(),
       this.cellState,
@@ -174,9 +175,25 @@ export class BoardManager implements BoardController {
       this.cellState
     );
   }
+
   draw(): any {
+    // const [rows, setRows] = useState<any[]>([]);
+
+    // // useEffect(() => {
+    // const iterator = this.cellStateManager.draw();
+    // //   let result = iterator.next();
+    // //   let values = [];
+
+    // //   while (!result.done) {
+    // //     values.push(result.value);
+    // //     result = iterator.next();
+    // //   }
+
+    // setRows(iterator);
+    // // }, []); // Empty dependency array means this effect runs once on mount
+
     return (
-      <div className=" border-black border-[5px] flex m-auto items-center justify-center">
+      <div className=" border-black border-[5px] flex m-auto  justify-center">
         <Grid>
           {this.cellStateManager.draw().map((row: number, i: number) => (
             <Grid container item key={i}>

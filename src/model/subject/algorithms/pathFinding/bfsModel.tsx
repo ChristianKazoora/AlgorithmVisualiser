@@ -20,10 +20,11 @@ export class BfsModel implements PathfindingModel {
     let start: Cell = this.ifNull(this.startP);
     this.queue.enqueue(start);
     this.visited.add(start);
+    this.currentP.push(start);
     while (!this.queue.isEmpty()) {
       let current: Cell = this.queue.dequeue() as Cell;
-      this.currentP.push(current);
       if (current.isEnd) {
+        this.visited.add(current);
         this.path = new Array<Cell>();
         this.path = this.backtrackPath(current);
         return;

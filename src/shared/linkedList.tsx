@@ -4,6 +4,13 @@ export class LinkedList<T> {
   constructor() {
     this.head = null;
   }
+  *[Symbol.iterator]() {
+    let current = this.head;
+    while (current !== null) {
+      yield current.data;
+      current = current.next;
+    }
+  }
   insert(data: T) {
     let newNode: Node<T> = { data: data, next: null };
     if (this.head === null) {
@@ -47,12 +54,33 @@ export class LinkedList<T> {
     return false;
   }
 
+  size(): number {
+    let current = this.head;
+    let count = 0;
+    while (current !== null) {
+      count++;
+      current = current.next;
+    }
+    return count;
+  }
   forEach(callback: (data: T) => void) {
     let current = this.head;
     while (current !== null) {
       callback(current.data);
       current = current.next;
     }
+  }
+  reverse() {
+    let current = this.head;
+    let prev = null;
+    let next = null;
+    while (current !== null) {
+      next = current.next;
+      current.next = prev;
+      prev = current;
+      current = next;
+    }
+    this.head = prev;
   }
 
   print() {

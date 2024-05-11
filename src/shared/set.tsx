@@ -18,14 +18,4 @@ export class Set<T> extends LinkedList<T> {
   contains(value: T): boolean {
     return this.includes(value);
   }
-
-  size(): number {
-    let current = this.head;
-    let count = 0;
-    while (current !== null) {
-      count++;
-      current = current.next;
-    }
-    return count;
-  }
 }

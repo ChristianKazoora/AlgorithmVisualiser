@@ -19,4 +19,14 @@ export class Stack<T> extends LinkedList<T> {
     }
     return this.head.data;
   }
+  includes(data: T): boolean {
+    let current = this.head;
+    while (current !== null) {
+      if (current.data === data) {
+        return true;
+      }
+      current = current.next;
+    }
+    return false;
+  }
 }

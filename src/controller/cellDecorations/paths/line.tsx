@@ -22,26 +22,26 @@ export class Line extends CellDecorator {
         } else if (TurnHelper.up_Down(this)) {
           pos = new up_Down(this, this.animateControls).animate();
         }
-        // //turns
-        // else if (TurnHelper.topToRightTurn(this)) {
-        //   pos = new TopToRightTurn(this, this.animateControls).animate();
-        // } else if (TurnHelper.leftToTopTurn(this)) {
-        //   pos = new LeftToTopTurn(this, this.animateControls).animate();
-        // } else if (TurnHelper.bottomToRightTurn(this)) {
-        //   pos = new BottomToRightTurn(this, this.animateControls).animate();
-        // } else if (TurnHelper.leftToBottomTurn(this)) {
-        //   pos = new LeftToBottomTurn(this, this.animateControls).animate();
-        // }
-        // //inverse turns
-        // else if (TurnHelper.rightToBottomTurn(this)) {
-        //   pos = new RightToBottomTurn(this, this.animateControls).animate();
-        // } else if (TurnHelper.bottomToLeftTurn(this)) {
-        //   pos = new BottomToLeftTurn(this, this.animateControls).animate();
-        // } else if (TurnHelper.topToLeftTurn(this)) {
-        //   pos = new TopToLeftTurn(this, this.animateControls).animate();
-        // } else if (TurnHelper.rightToTopTurn(this)) {
-        //   pos = new RightToTopTurn(this, this.animateControls).animate();
-        // }
+        //turns
+        else if (TurnHelper.topToRightTurn(this)) {
+          pos = new TopToRightTurn(this, this.animateControls).animate();
+        } else if (TurnHelper.leftToTopTurn(this)) {
+          pos = new LeftToTopTurn(this, this.animateControls).animate();
+        } else if (TurnHelper.bottomToRightTurn(this)) {
+          pos = new BottomToRightTurn(this, this.animateControls).animate();
+        } else if (TurnHelper.leftToBottomTurn(this)) {
+          pos = new LeftToBottomTurn(this, this.animateControls).animate();
+        }
+        //inverse turns
+        else if (TurnHelper.rightToBottomTurn(this)) {
+          pos = new RightToBottomTurn(this, this.animateControls).animate();
+        } else if (TurnHelper.bottomToLeftTurn(this)) {
+          pos = new BottomToLeftTurn(this, this.animateControls).animate();
+        } else if (TurnHelper.topToLeftTurn(this)) {
+          pos = new TopToLeftTurn(this, this.animateControls).animate();
+        } else if (TurnHelper.rightToTopTurn(this)) {
+          pos = new RightToTopTurn(this, this.animateControls).animate();
+        }
 
         return <motion.div>{pos}</motion.div>;
       })();

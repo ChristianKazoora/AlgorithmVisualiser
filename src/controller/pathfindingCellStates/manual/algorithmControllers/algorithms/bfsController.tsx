@@ -16,11 +16,14 @@ import { EmptyCellAnimation } from "../../../../cellDecorations/decorators/empty
 import { EndCellAnimation } from "../../../../cellDecorations/decorators/endCellAnimation";
 import { StartCellAnimation } from "../../../../cellDecorations/decorators/startCellAnimation";
 import { WallCellAnimation } from "../../../../cellDecorations/decorators/wallCellAnimation";
+import { GetDataController } from "../../../../interfaces/getDataController";
+import { BfsData } from "../../../getData/bfsData";
+import { GridRenderManager } from "../../../renderer/gridRenderManager";
+import { GridRenderer } from "../../../../interfaces/gridRenderer";
 
 export class BfsController implements AlgorithmController {
   board: Board | undefined;
   grid: Array<Array<Cell>> | undefined;
-  bfsModel: PathfindingModel | undefined;
   start: Point | undefined;
   end: Point | undefined;
   visited: Set<Cell> | undefined;
@@ -28,92 +31,36 @@ export class BfsController implements AlgorithmController {
   currentPoints: Stack<Cell> | undefined;
   neighbourStrategy: MovementModel | undefined;
   walls: Array<Point> | undefined;
+  data: GetDataController | undefined;
+  constructor() {
+    this.data = new BfsData();
+  }
   draw(): any {
-    const [currentCell, setCurrentCell] = useState(0);
+    const renderer: GridRenderer = new GridRenderManager();
+    renderer.setBoard(this.ifNull(this.board));
+    let i: number = 0;
 
-    const gridLength = this.ifNull(this.grid).length;
-    const gridWidth = this.ifNull(this.grid)[0].length;
-    let result: JSX.Element[][] = [];
-    for (let i = 0; i < gridLength; i++) {
-      let row: JSX.Element[] = [];
-      for (let j = 0; j < gridWidth; j++) {
-        const cell = this.ifNull(this.grid)[i][j];
-        const isVisited = this.visited?.includes(cell);
-        const isCurrent = this.ifNull(this.currentPoints).peek() === cell;
-        const isPath = this.path?.includes(cell);
-        isCurrent ? this.ifNull(this.currentPoints).pop() : "";
-
-        let pos: JSX.Element | undefined;
-        const yControls = useAnimation();
-        const xControls = useAnimation();
-        const cellDuration = 0.5;
-        const duration = 20;
-        useEffect(() => {
-          const sequence = async () => {
-            await yControls.start({
-              scaleY: 0,
-              transition: { duration: cellDuration },
-            });
-            await yControls.start({
-              scaleY: 1,
-              transition: { duration: cellDuration },
-            });
-          };
-          const timeoutId = setTimeout(sequence, cell.posFromStart * duration);
-          return () => clearTimeout(timeoutId); // cleanup on unmount
-        }, [cell]);
-
-        useEffect(() => {
-          const sequence = async () => {
-            await xControls.start({
-              scaleX: 0, // changed from scaleY to scaleX
-              transition: { duration: cellDuration },
-            });
-            await xControls.start({
-              scaleX: 1, // changed from scaleY to scaleX
-              transition: { duration: cellDuration },
-            });
-          };
-          const timeoutId = setTimeout(sequence, cell.posFromStart * duration);
-          return () => clearTimeout(timeoutId); // cleanup on unmount
-        }, [cell]);
-
-        const controls = { y: yControls, x: xControls };
-        pos = new EmptyCellAnimation(cell, controls).animate();
-        isVisited ? (pos = new VisitedPath(cell, controls).animate()) : "";
-        isPath ? (pos = new MainPath(cell, controls).animate()) : "";
-
-        cell.isEnd
-          ? (pos = new EndCellAnimation(cell, controls).animate())
-          : "";
-        cell.isStart
-          ? (pos = new StartCellAnimation(cell, controls).animate())
-          : "";
-        cell.isWall
-          ? (pos = new WallCellAnimation(cell, controls).animate())
-          : "";
-
-        if (pos) {
-          row.push(pos);
-        }
-      }
-      result.push(row);
+    while (!this.currentPoints?.isEmpty()) {
+      let curr = this.ifNull(this.currentPoints).pop() as Cell;
+      renderer.setCurrentCell(curr);
+      console.log(this.ifNull(this.currentPoints).size());
     }
-    return result;
+
+    return renderer.render();
   }
   getData(): void {
-    this.bfsModel = new Pathfinding(
-      new BfsModel(),
-      this.ifNull(this.start),
-      this.ifNull(this.end),
-      this.ifNull(this.board),
-      this.walls,
-      this.neighbourStrategy
-    );
-    this.bfsModel.start();
-    this.visited = this.ifNull(this.bfsModel).getVisited();
-    this.path = this.ifNull(this.bfsModel).getPath();
-    this.currentPoints = this.ifNull(this.bfsModel).getCurrentPoints();
+    this.data?.setBoard(this.ifNull(this.board));
+    this.data?.setEnd(this.ifNull(this.end));
+    this.data?.setStart(this.ifNull(this.start));
+    this.data?.setWalls(this.ifNull(this.walls));
+    this.data?.setMovementStrategy(this.ifNull(this.neighbourStrategy));
+    this.data?.getData();
+
+    this.visited = this.data?.getVisited() as Set<Cell> | undefined;
+    this.currentPoints = new Stack<Cell>(); // Create a new Stack object
+    this.visited?.forEach((cell) => this.currentPoints?.push(cell)); // Copy elements from the Set to the Stack
+    this.currentPoints?.reverse(); // Reverse the order of the elements in the Stack
+    this.path = this.data?.getPath() as Array<Cell> | undefined;
   }
   setBoard(board: any): void {
     this.board = board;

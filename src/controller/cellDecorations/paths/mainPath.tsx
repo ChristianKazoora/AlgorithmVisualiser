@@ -15,10 +15,10 @@ export class MainPath extends CellDecorator {
           width: "20px",
           height: "20px",
           border: "1px solid black",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          position: "relative",
+          // display: "flex",
+          // justifyContent: "center",
+          // alignItems: "center",
+          // position: "relative",
         }}
       >
         {new Line(this, this.animateControls).animate()}

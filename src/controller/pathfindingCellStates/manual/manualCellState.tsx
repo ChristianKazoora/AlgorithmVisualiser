@@ -11,6 +11,9 @@ export class ManualCellState implements CellState {
   draw(): JSX.Element[][] {
     return this.algorithmController?.draw();
   }
+  animatePath(): void {
+    this.algorithmController?.animatePath();
+  }
   setWalls(walls: Point[]): void {
     this.algorithmController?.setWalls(walls);
   }

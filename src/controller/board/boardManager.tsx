@@ -146,6 +146,9 @@ export class BoardManager implements BoardController {
       this.walls
     );
   }
+  animatePath(): void {
+    this.cellState.animatePath();
+  }
   setStart(pos: Point): void {
     throw new Error("Method not implemented.");
   }
@@ -176,26 +179,55 @@ export class BoardManager implements BoardController {
     );
   }
 
-  draw(): any {
-    // const [rows, setRows] = useState<any[]>([]);
+  draw() {
+    let [rows, setRows] = useState<any[]>([]);
+    const [generator, setGenerator] = useState<any>(); // specify the type of the generator state variable
+    const state = this.cellStateManager;
+    const iterator = state.draw();
+    // useEffect(() => {
+    // setGenerator(this.cellStateManager.draw());
 
-    // // useEffect(() => {
-    // const iterator = this.cellStateManager.draw();
-    // //   let result = iterator.next();
-    // //   let values = [];
+    //   if (generator) {
+    //     console.log(generator);
+    //     const { value, done } = generator.next; // get the value and done properties from the returned object by next()
+    //     setRows(value);
 
-    // //   while (!result.done) {
-    // //     values.push(result.value);
-    // //     result = iterator.next();
-    // //   }
+    //     if (done) {
+    //       return;
+    //     }
+    //   }
+    // }, [generator]); // Run this effect whenever generator changes
 
-    // setRows(iterator);
-    // // }, []); // Empty dependency array means this effect runs once on mount
+    // useEffect(() => {
+    //   setGenerator(this.cellStateManager);
+    // }, []); // Empty dependency array means this effect runs once on mount
 
+    // // let result = iterator.next();
+    // let theRows: any[] = [];
+    // // while (!result.done) {
+    // // theRows = result.value;
+    // useEffect(() => {
+    //   // setGenerator(iterator);
+    //   // setGenerator(this.cellStateManager);
+    //   console.log(generator);
+    //   if (generator) {
+    //     const { value, done } = generator.next(); // get the value and done properties from the returned object by next()
+    //     // setRows(value);
+
+    //     if (done) {
+    //       return;
+    //     }
+    //   }
+
+    //   // iterator.next();
+    // }, []); // Empty dependency array means this effect runs once on mount
+    // setRows(theRows);
+    // result = iterator.next();
+    // }
     return (
-      <div className=" border-black border-[5px] flex m-auto  justify-center">
-        <Grid>
-          {this.cellStateManager.draw().map((row: number, i: number) => (
+      <div className="border-black border-[5px] flex m-auto justify-center">
+        <Grid id="board">
+          {iterator.map((row: number, i: number) => (
             <Grid container item key={i}>
               {row}
             </Grid>
@@ -205,3 +237,31 @@ export class BoardManager implements BoardController {
     );
   }
 }
+//  draw(): any {
+//   // const [rows, setRows] = useState<any[]>([]);
+
+//   // // useEffect(() => {
+//   // const iterator = this.cellStateManager.draw();
+//   // //   let result = iterator.next();
+//   // //   let values = [];
+
+//   // //   while (!result.done) {
+//   // //     values.push(result.value);
+//   // //     result = iterator.next();
+//   // //   }
+
+//   // setRows(iterator);
+//   // // }, []); // Empty dependency array means this effect runs once on mount
+
+//   return (
+//     <div className=" border-black border-[5px] flex m-auto  justify-center">
+//       <Grid>
+//         {this.cellStateManager.draw().map((row: number, i: number) => (
+//           <Grid container item key={i}>
+//             {row}
+//           </Grid>
+//         ))}
+//       </Grid>
+//     </div>
+//   );
+// }

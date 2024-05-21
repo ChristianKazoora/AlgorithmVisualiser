@@ -5,6 +5,7 @@ export class WestEastAnimation extends CellDecorator {
     return (
       <Grid
         item
+        id={`cell-${this.x}-${this.y}`}
         xs={0}
         key={this.y}
         data-row={this.x}

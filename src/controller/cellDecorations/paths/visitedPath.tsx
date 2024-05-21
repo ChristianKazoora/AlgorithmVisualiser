@@ -5,10 +5,13 @@ import { Line } from "./line";
 
 export class VisitedPath extends CellDecorator {
   animate(): any {
-    this.classNames = " bg-slate-500 ";
+    {
+      console.log("visited path");
+    }
 
     return (
       <Grid
+        id={`cell-${this.x}-${this.y}`}
         item
         xs={0}
         key={this.y}
@@ -21,12 +24,11 @@ export class VisitedPath extends CellDecorator {
           border: "1px solid black",
         }}
       >
-        {/* {new Line(this, this.animateControls).animate()} */}
-
-        <motion.div
-          animate={this.animateControls.x}
-          className="mt-[1px] ml-[-15px]  w-[1rem] relative bg-slate-500  h-[1rem] rounded-full"
-          initial={{ scaleX: 0, x: "100%" }} // initial state
+        <div
+          id={`cell-${this.x}-${this.y}-animation`}
+          className={`bg-slate-500 h-[1.13rem]`}
+          // animate={this.animateControls.x}
+          // initial={{ scaleX: 0, x: "100%" }} // initial state
         />
         {/* {new Line(this, this.animateControls).animate()} */}
       </Grid>

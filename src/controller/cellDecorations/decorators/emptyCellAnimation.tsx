@@ -8,6 +8,7 @@ export class EmptyCellAnimation
   animate(): any {
     return (
       <Grid
+        id={`cell-${this.x}-${this.y}`}
         item
         xs={0}
         key={this.y}

@@ -4,6 +4,7 @@ import { mainController } from "./mainController";
 import { MovementModel } from "../../model/Interfaces/movementModel";
 
 export interface AlgorithmController extends mainController {
+  animatePath(): void;
   setBoard(board: Board): void;
   setStart(pos: Point): void;
   setEnd(pos: Point): void;

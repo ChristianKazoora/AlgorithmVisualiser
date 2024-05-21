@@ -32,19 +32,25 @@ export class BfsController implements AlgorithmController {
   neighbourStrategy: MovementModel | undefined;
   walls: Array<Point> | undefined;
   data: GetDataController | undefined;
+  renderer: GridRenderer = new GridRenderManager();
   constructor() {
     this.data = new BfsData();
   }
+
   draw(): any {
-    const renderer: GridRenderer = new GridRenderManager();
+    const renderer = this.renderer;
     renderer.setBoard(this.ifNull(this.board));
     let i: number = 0;
 
-    while (!this.currentPoints?.isEmpty()) {
-      let curr = this.ifNull(this.currentPoints).pop() as Cell;
-      renderer.setCurrentCell(curr);
-      console.log(this.ifNull(this.currentPoints).size());
-    }
+    // while (!this.currentPoints?.isEmpty()) {
+    //   this.ifNull(this.currentPoints).pop();
+
+    //   let curr = this.ifNull(this.currentPoints).pop() as Cell;
+    renderer.setCurrentPoints(this.ifNull(this.currentPoints));
+    renderer.setPath(this.ifNull(this.path));
+    //   console.log(this.ifNull(this.currentPoints).size());
+    //   // yield renderer.render();
+    // }
 
     return renderer.render();
   }
@@ -71,6 +77,9 @@ export class BfsController implements AlgorithmController {
   }
   setWalls(walls: Array<Point>): void {
     this.walls = walls;
+  }
+  animatePath(): void {
+    this.renderer.animatePath();
   }
   ifNull(object: any) {
     if (object) {

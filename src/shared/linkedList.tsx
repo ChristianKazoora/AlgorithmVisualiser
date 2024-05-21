@@ -82,6 +82,21 @@ export class LinkedList<T> {
     }
     this.head = prev;
   }
+  get(index: number): T | null {
+    if (index < 0) {
+      return null;
+    }
+    let current = this.head;
+    let count = 0;
+    while (current !== null) {
+      if (count === index) {
+        return current.data;
+      }
+      count++;
+      current = current.next;
+    }
+    return null;
+  }
 
   print() {
     let current = this.head;

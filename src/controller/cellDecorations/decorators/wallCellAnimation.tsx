@@ -6,6 +6,7 @@ export class WallCellAnimation extends CellDecorator {
       <Grid
         item
         xs={0}
+        id={`cell-${this.x}-${this.y}`}
         key={this.y}
         data-row={this.x}
         data-col={this.y}

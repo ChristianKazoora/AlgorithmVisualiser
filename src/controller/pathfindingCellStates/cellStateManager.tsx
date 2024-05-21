@@ -27,6 +27,9 @@ export class CellStateManager implements CellState {
     this.setMovementStrategy(_movementStrategy);
     this.getData();
   }
+  animatePath(): void {
+    this.cellState.animatePath();
+  }
   setAlgorithmController(algorithmController: AlgorithmController): void {
     this.cellState.setAlgorithmController(algorithmController);
   }

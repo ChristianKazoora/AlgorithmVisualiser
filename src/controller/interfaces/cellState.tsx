@@ -5,6 +5,7 @@ import { mainController } from "../interfaces/mainController";
 import { AlgorithmController } from "./algorithmController";
 
 export interface CellState extends mainController {
+  animatePath(): void;
   setBoard(board: Board): void;
   setStart(pos: Point): void;
   setEnd(pos: Point): void;

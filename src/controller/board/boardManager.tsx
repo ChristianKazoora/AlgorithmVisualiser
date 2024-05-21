@@ -137,9 +137,9 @@ export class BoardManager implements BoardController {
     this.cellState = _cellState;
     this.cellStateManager = new CellStateManager(
       this.board,
-      { x: 0, y: 46 },
+      { x: 0, y: 44 },
 
-      { x: 0, y: 0 },
+      { x: 24, y: 0 },
 
       new GetNeigbour(),
       this.cellState,

@@ -1,11 +1,12 @@
+import { Point } from "../../../shared/point";
 import { Cell } from "../Cell";
 
 export class Board {
   board: Array<Array<Cell>>;
 
-  constructor(size: number) {
-    const row = size / 2;
-    const col = size;
+  constructor(size: Point) {
+    const row = size.x;
+    const col = size.y;
     this.board = new Array(row);
     for (let i = 0; i < row; i++) {
       this.board[i] = new Array(col);

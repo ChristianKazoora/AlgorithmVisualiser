@@ -132,18 +132,21 @@ export class BoardManager implements BoardController {
     { x: 4, y: 35 },
   ];
   constructor(size: number, _cellState: CellState = new ManualCellState()) {
-    this.board = new Board(size);
+    let height = Math.floor((document.documentElement.clientHeight - 18) / 25);
+    let width = Math.floor(document.documentElement.clientWidth / 25);
+    this.board = new Board({ x: height, y: width });
     this.grid = this.board.board;
     this.cellState = _cellState;
+
     this.cellStateManager = new CellStateManager(
       this.board,
-      { x: 0, y: 49 },
+      { x: height - 1, y: width - 1 },
 
       { x: 0, y: 0 },
 
       new GetNeigbour(),
-      this.cellState,
-      this.walls
+      this.cellState
+      // this.walls
     );
   }
   animatePath(): void {

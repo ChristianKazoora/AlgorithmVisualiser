@@ -22,5 +22,4 @@ export interface CellModel {
   westW: boolean;
   eastW: boolean;
   classNames: string;
-  animateControls: any;
 }

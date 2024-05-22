@@ -5,10 +5,6 @@ import { Line } from "./line";
 
 export class VisitedPath extends CellDecorator {
   animate(): any {
-    {
-      console.log("visited path");
-    }
-
     return (
       <Grid
         id={`cell-${this.x}-${this.y}`}
@@ -17,7 +13,7 @@ export class VisitedPath extends CellDecorator {
         key={this.y}
         data-row={this.x}
         data-col={this.y}
-        // className={`flex justify-center align-middle } `}
+        // className={`  `}
         style={{
           width: "20px",
           height: "20px",
@@ -26,7 +22,6 @@ export class VisitedPath extends CellDecorator {
       >
         <div
           id={`cell-${this.x}-${this.y}-animation`}
-          className={`bg-slate-500 h-[1.13rem]`}
           // animate={this.animateControls.x}
           // initial={{ scaleX: 0, x: "100%" }} // initial state
         />

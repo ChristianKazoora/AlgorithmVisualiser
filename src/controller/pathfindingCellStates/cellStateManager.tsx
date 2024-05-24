@@ -27,6 +27,9 @@ export class CellStateManager implements CellState {
     this.setMovementStrategy(_movementStrategy);
     this.getData();
   }
+  addEventListeners(): void {
+    this.cellState.addEventListeners();
+  }
   animatePath(): void {
     this.cellState.animatePath();
   }

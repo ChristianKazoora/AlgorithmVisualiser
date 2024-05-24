@@ -25,4 +25,7 @@ export class GridRenderManager implements GridRenderer {
   setCurrentPoints(points: Stack<Cell>): void {
     this.renderer?.setCurrentPoints(points);
   }
+  reRenderCss(): void {
+    this.renderer?.reRenderCss();
+  }
 }

@@ -77,6 +77,17 @@ export class BfsController implements AlgorithmController {
   }
   setWalls(walls: Array<Point>): void {
     this.walls = walls;
+    this.setGridWallsToFalse();
+    this.ifNull(this.walls).forEach((wall: any) => {
+      this.ifNull(this.grid)[wall.x][wall.y].isWall = true;
+    });
+  }
+  setGridWallsToFalse(): void {
+    this.ifNull(this.grid).forEach((row: any) => {
+      row.forEach((cell: Cell) => {
+        cell.isWall = false;
+      });
+    });
   }
   animatePath(): void {
     this.renderer.animatePath();
@@ -95,5 +106,8 @@ export class BfsController implements AlgorithmController {
   setEnd(pos: Point): void {
     this.end = pos;
     this.ifNull(this.grid)[pos.x][pos.y].isEnd = true;
+  }
+  reRenderCss(): void {
+    this.renderer.reRenderCss();
   }
 }

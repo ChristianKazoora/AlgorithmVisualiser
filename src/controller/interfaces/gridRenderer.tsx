@@ -9,4 +9,5 @@ export interface GridRenderer {
   clear(): void;
   setBoard(board: Board): void;
   setCurrentPoints(points: Stack<Cell>): void;
+  reRenderCss(): void;
 }

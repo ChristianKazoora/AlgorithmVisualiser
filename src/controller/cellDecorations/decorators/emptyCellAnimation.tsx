@@ -14,13 +14,15 @@ export class EmptyCellAnimation
         key={this.y}
         data-row={this.x}
         data-col={this.y}
-        className={`${this.classNames.concat("  bg-white")} `}
+        // className={`${this.classNames.concat("  bg-white")} `}
         style={{
           width: "20px",
           height: "20px",
           border: "1px solid black",
         }}
-      />
+      >
+        <div id={`cell-${this.x}-${this.y}-animation`} />
+      </Grid>
     );
   }
 }

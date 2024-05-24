@@ -140,14 +140,17 @@ export class BoardManager implements BoardController {
 
     this.cellStateManager = new CellStateManager(
       this.board,
-      { x: height - 1, y: width - 1 },
-
       { x: 0, y: 0 },
 
+      { x: height - 1, y: 49 },
+
       new GetNeigbour(),
-      this.cellState
-      // this.walls
+      this.cellState,
+      this.walls
     );
+  }
+  addEventListeners(): void {
+    this.cellState.addEventListeners();
   }
   animatePath(): void {
     this.cellState.animatePath();
@@ -185,7 +188,6 @@ export class BoardManager implements BoardController {
   draw() {
     const state = this.cellStateManager;
     const iterator = state.draw();
-    console.log(state.getData());
     return (
       <div className="border-black border-[5px] flex m-auto justify-center">
         <Grid id="board">

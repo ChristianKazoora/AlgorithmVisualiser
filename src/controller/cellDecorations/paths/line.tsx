@@ -15,7 +15,7 @@ export class Line extends CellDecorator {
     {
       return (() => {
         let pos: JSX.Element | undefined;
-        this.classNames = "fixed bg-green-500";
+        this.classNames = "absolute bg-green-500";
 
         if (TurnHelper.left_Right(this)) {
           pos = new Left_Right(this).animate();
@@ -43,7 +43,20 @@ export class Line extends CellDecorator {
         } else if (TurnHelper.rightToTopTurn(this)) {
           pos = new RightToTopTurn(this).animate();
         }
-        return pos;
+        return (
+          <div
+          // id={`cell-${this.x}-${this.y}`}
+          // style={{
+          //   width: "20px",
+          //   height: "20px",
+          //   border: "1px solid black",
+          // }}
+          >
+            <div id={`cell-${this.x}-${this.y}-path`} className="hidden">
+              {pos}
+            </div>
+          </div>
+        );
       })();
     }
   }

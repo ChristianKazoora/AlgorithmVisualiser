@@ -13,4 +13,7 @@ export interface CellState extends mainController {
   setWalls(walls: Array<Point>): void;
   getData(): void;
   setAlgorithmController(algorithmController: AlgorithmController): void;
+  // addWalls(pos: Point): void;
+  // removeWalls(pos: Point): void;
+  addEventListeners(): void;
 }

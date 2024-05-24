@@ -6,13 +6,9 @@ import { Line } from "./line";
 export class VisitedPath extends CellDecorator {
   animate(): any {
     return (
-      <Grid
+      <div
         id={`cell-${this.x}-${this.y}`}
-        item
-        xs={0}
         key={this.y}
-        data-row={this.x}
-        data-col={this.y}
         // className={`  `}
         style={{
           width: "20px",
@@ -20,13 +16,18 @@ export class VisitedPath extends CellDecorator {
           border: "1px solid black",
         }}
       >
+        {new Line(this).animate()}
         <div
-          id={`cell-${this.x}-${this.y}-animation`}
-          // animate={this.animateControls.x}
-          // initial={{ scaleX: 0, x: "100%" }} // initial state
+          id={`cell-${this.x}-${this.y}-current`}
+          style={{ height: "1rem", background: "yellow" }}
+          className="hidden"
         />
-        {/* {new Line(this, this.animateControls).animate()} */}
-      </Grid>
+        <div
+          id={`cell-${this.x}-${this.y}-visited`}
+          style={{ background: "grey", height: "1rem", borderRadius: "100%" }}
+          className="hidden"
+        />
+      </div>
     );
   }
 }

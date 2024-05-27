@@ -15,138 +15,63 @@ export class BoardManager implements BoardController {
   grid: Array<Array<Cell>>;
   cellState: CellState;
   cellStateManager: CellState;
-  walls = [
-    //first top collumn
-    { x: 0, y: 5 },
-    { x: 1, y: 5 },
-    { x: 2, y: 5 },
-    { x: 3, y: 5 },
-    { x: 4, y: 5 },
-    { x: 5, y: 5 },
-    { x: 6, y: 5 },
-    { x: 7, y: 5 },
-    { x: 8, y: 5 },
-    { x: 9, y: 5 },
-    { x: 10, y: 5 },
-    { x: 11, y: 5 },
-    { x: 12, y: 5 },
-    { x: 13, y: 5 },
-    { x: 14, y: 5 },
-    { x: 15, y: 5 },
-    { x: 16, y: 5 },
-    { x: 17, y: 5 },
-    { x: 18, y: 5 },
-    { x: 19, y: 5 },
-    { x: 20, y: 5 },
-
-    //second top collumn
-    { x: 0, y: 25 },
-    { x: 1, y: 25 },
-    { x: 2, y: 25 },
-    { x: 3, y: 25 },
-    { x: 4, y: 25 },
-    { x: 5, y: 25 },
-    { x: 6, y: 25 },
-    { x: 7, y: 25 },
-    { x: 8, y: 25 },
-    { x: 9, y: 25 },
-    { x: 10, y: 25 },
-    { x: 11, y: 25 },
-    { x: 12, y: 25 },
-    { x: 13, y: 25 },
-    { x: 14, y: 25 },
-    { x: 15, y: 25 },
-    { x: 16, y: 25 },
-    { x: 17, y: 25 },
-    { x: 18, y: 25 },
-    { x: 19, y: 25 },
-    { x: 20, y: 25 },
-
-    //third top collumn
-    { x: 0, y: 45 },
-    { x: 1, y: 45 },
-    { x: 2, y: 45 },
-    { x: 3, y: 45 },
-    { x: 4, y: 45 },
-    { x: 5, y: 45 },
-    { x: 6, y: 45 },
-    { x: 7, y: 45 },
-    { x: 8, y: 45 },
-    { x: 9, y: 45 },
-    { x: 10, y: 45 },
-    { x: 11, y: 45 },
-    { x: 12, y: 45 },
-    { x: 13, y: 45 },
-    { x: 14, y: 45 },
-    { x: 15, y: 45 },
-    { x: 16, y: 45 },
-    { x: 17, y: 45 },
-    { x: 18, y: 45 },
-    { x: 19, y: 45 },
-    { x: 20, y: 45 },
-
-    //first bottom collumn
-    { x: 24, y: 15 },
-    { x: 23, y: 15 },
-    { x: 22, y: 15 },
-    { x: 21, y: 15 },
-    { x: 20, y: 15 },
-    { x: 19, y: 15 },
-    { x: 18, y: 15 },
-    { x: 17, y: 15 },
-    { x: 16, y: 15 },
-    { x: 15, y: 15 },
-    { x: 14, y: 15 },
-    { x: 13, y: 15 },
-    { x: 12, y: 15 },
-    { x: 11, y: 15 },
-    { x: 10, y: 15 },
-    { x: 9, y: 15 },
-    { x: 8, y: 15 },
-    { x: 7, y: 15 },
-    { x: 6, y: 15 },
-    { x: 5, y: 15 },
-    { x: 4, y: 15 },
-
-    //second bottom collumn
-    { x: 24, y: 35 },
-    { x: 23, y: 35 },
-    { x: 22, y: 35 },
-    { x: 21, y: 35 },
-    { x: 20, y: 35 },
-    { x: 19, y: 35 },
-    { x: 18, y: 35 },
-    { x: 17, y: 35 },
-    { x: 16, y: 35 },
-    { x: 15, y: 35 },
-    { x: 14, y: 35 },
-    { x: 13, y: 35 },
-    { x: 12, y: 35 },
-    { x: 11, y: 35 },
-    { x: 10, y: 35 },
-    { x: 9, y: 35 },
-    { x: 8, y: 35 },
-    { x: 7, y: 35 },
-    { x: 6, y: 35 },
-    { x: 5, y: 35 },
-    { x: 4, y: 35 },
-  ];
-  constructor(size: number, _cellState: CellState = new ManualCellState()) {
-    let height = Math.floor((document.documentElement.clientHeight - 18) / 25);
-    let width = Math.floor(document.documentElement.clientWidth / 25);
-    this.board = new Board({ x: height, y: width });
+  constructor(_cellState: CellState = new ManualCellState()) {
+    let height = Math.floor((document.documentElement.clientHeight - 60) / 25);
+    let width = Math.floor((document.documentElement.clientWidth - 30) / 20);
+    this.board = new Board({ y: height, x: width });
     this.grid = this.board.board;
     this.cellState = _cellState;
 
+    let walls = [
+      {
+        x: parseInt((height - 1) / 2 + 4 + ""),
+        y: parseInt((width - 1) / 2 + ""),
+      },
+      {
+        x: parseInt((height - 1) / 2 + 3 + ""),
+        y: parseInt((width - 1) / 2 + ""),
+      },
+      {
+        x: parseInt((height - 1) / 2 + 2 + ""),
+        y: parseInt((width - 1) / 2 + ""),
+      },
+      {
+        x: parseInt((height - 1) / 2 + 1 + ""),
+        y: parseInt((width - 1) / 2 + ""),
+      },
+      { x: parseInt((height - 1) / 2 + ""), y: parseInt((width - 1) / 2 + "") },
+      {
+        x: parseInt((height - 1) / 2 - 1 + ""),
+        y: parseInt((width - 1) / 2 + ""),
+      },
+      {
+        x: parseInt((height - 1) / 2 - 2 + ""),
+        y: parseInt((width - 1) / 2 + ""),
+      },
+      {
+        x: parseInt((height - 1) / 2 - 3 + ""),
+        y: parseInt((width - 1) / 2 + ""),
+      },
+      {
+        x: parseInt((height - 1) / 2 - 4 + ""),
+        y: parseInt((width - 1) / 2 + ""),
+      },
+    ];
     this.cellStateManager = new CellStateManager(
       this.board,
-      { x: 0, y: 0 },
+      {
+        x: parseInt((height - 1) / 2 + ""),
+        y: parseInt((width - 1) / 2 - 5 + ""),
+      },
 
-      { x: height - 1, y: 49 },
+      {
+        x: parseInt((height - 1) / 2 + ""),
+        y: parseInt((width - 1) / 2 + 5 + ""),
+      },
 
       new GetNeigbour(),
       this.cellState,
-      this.walls
+      walls
     );
   }
   addEventListeners(): void {

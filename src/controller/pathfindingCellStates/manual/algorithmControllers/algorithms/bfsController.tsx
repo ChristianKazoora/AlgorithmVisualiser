@@ -1,21 +1,11 @@
 import { Cell } from "../../../../../model/subject/Cell";
-import { BfsModel } from "../../../../../model/subject/algorithms/pathFinding/bfsModel";
 import { Board } from "../../../../../model/subject/board/board";
 import { Point } from "../../../../../shared/point";
 import { AlgorithmController } from "../../../../interfaces/algorithmController";
 import { Set } from "../../../../../shared/set";
-import { Pathfinding } from "../../../../../model/subject/algorithms/pathFinding/Pathfinding";
 import { Stack } from "../../../../../shared/stack";
-import { PathfindingModel } from "../../../../../model/Interfaces/pathfindingModel";
-import { MainPath } from "../../../../cellDecorations/paths/mainPath";
-import { VisitedPath } from "../../../../cellDecorations/paths/visitedPath";
+
 import { MovementModel } from "../../../../../model/Interfaces/movementModel";
-import { useEffect, useState } from "react";
-import { useAnimation } from "framer-motion";
-import { EmptyCellAnimation } from "../../../../cellDecorations/decorators/emptyCellAnimation";
-import { EndCellAnimation } from "../../../../cellDecorations/decorators/endCellAnimation";
-import { StartCellAnimation } from "../../../../cellDecorations/decorators/startCellAnimation";
-import { WallCellAnimation } from "../../../../cellDecorations/decorators/wallCellAnimation";
 import { GetDataController } from "../../../../interfaces/getDataController";
 import { BfsData } from "../../../getData/bfsData";
 import { GridRenderManager } from "../../../renderer/gridRenderManager";
@@ -40,17 +30,6 @@ export class BfsController implements AlgorithmController {
   draw(): any {
     const renderer = this.renderer;
     renderer.setBoard(this.ifNull(this.board));
-    let i: number = 0;
-
-    // while (!this.currentPoints?.isEmpty()) {
-    //   this.ifNull(this.currentPoints).pop();
-
-    //   let curr = this.ifNull(this.currentPoints).pop() as Cell;
-    renderer.setCurrentPoints(this.ifNull(this.currentPoints));
-    renderer.setPath(this.ifNull(this.path));
-    //   console.log(this.ifNull(this.currentPoints).size());
-    //   // yield renderer.render();
-    // }
 
     return renderer.render();
   }
@@ -67,6 +46,9 @@ export class BfsController implements AlgorithmController {
     this.visited?.forEach((cell) => this.currentPoints?.push(cell)); // Copy elements from the Set to the Stack
     this.currentPoints?.reverse(); // Reverse the order of the elements in the Stack
     this.path = this.data?.getPath() as Array<Cell> | undefined;
+    this.board = this.data?.getBoard() as Board;
+    this.renderer.setCurrentPoints(this.currentPoints);
+    this.renderer.setPath(this.ifNull(this.path));
   }
   setBoard(board: any): void {
     this.board = board;
@@ -99,13 +81,22 @@ export class BfsController implements AlgorithmController {
       throw new Error("object is undefined");
     }
   }
+  removeStart(pos: Point): void {
+    this.ifNull(this.grid)[pos.x][pos.y].isStart = false;
+  }
+  removeEnd(pos: Point): void {
+    this.ifNull(this.grid)[pos.x][pos.y].isEnd = false;
+  }
   setStart(pos: Point): void {
     this.start = pos;
+    console.log("setStart", pos);
     this.ifNull(this.grid)[pos.x][pos.y].isStart = true;
+    this.ifNull(this.grid)[pos.x][pos.y].isWall = false;
   }
   setEnd(pos: Point): void {
     this.end = pos;
     this.ifNull(this.grid)[pos.x][pos.y].isEnd = true;
+    this.ifNull(this.grid)[pos.x][pos.y].isWall = false;
   }
   reRenderCss(): void {
     this.renderer.reRenderCss();

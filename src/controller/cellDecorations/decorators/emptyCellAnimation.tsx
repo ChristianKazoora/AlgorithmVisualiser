@@ -1,6 +1,7 @@
 import { ICellAnimation } from "../../interfaces/cellAnimation";
 import { CellDecorator } from "../cellDecorator";
 import { Grid } from "@mui/material";
+import { WallCellAnimation } from "./wallCellAnimation";
 export class EmptyCellAnimation
   extends CellDecorator
   implements ICellAnimation
@@ -21,7 +22,8 @@ export class EmptyCellAnimation
           border: "1px solid black",
         }}
       >
-        <div id={`cell-${this.x}-${this.y}-animation`} />
+        {/* <div id={`cell-${this.x}-${this.y}-animation`} /> */}
+        {new WallCellAnimation(this).animate()}
       </Grid>
     );
   }

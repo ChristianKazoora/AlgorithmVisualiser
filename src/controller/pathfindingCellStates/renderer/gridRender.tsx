@@ -1,26 +1,18 @@
-import { useEffect } from "react";
 import { Cell } from "../../../model/subject/Cell";
 import { Board } from "../../../model/subject/board/board";
-import { EmptyCellAnimation } from "../../cellDecorations/decorators/emptyCellAnimation";
 import { GridRenderer } from "../../interfaces/gridRenderer";
-import { useAnimation } from "framer-motion";
-import { EndCellAnimation } from "../../cellDecorations/decorators/endCellAnimation";
-import { StartCellAnimation } from "../../cellDecorations/decorators/startCellAnimation";
-import { WallCellAnimation } from "../../cellDecorations/decorators/wallCellAnimation";
-import { MainPath } from "../../cellDecorations/paths/mainPath";
+
 import { Stack } from "../../../shared/stack";
 import { VisitedPath } from "../../cellDecorations/paths/visitedPath";
-import { Set } from "../../../shared/set";
-import { CellDecorator } from "../../cellDecorations/cellDecorator";
-import ReactDOM from "react-dom";
+
 import { createRoot } from "react-dom/client";
+import { Line } from "../../cellDecorations/paths/line";
 export class mainGridRenderer implements GridRenderer {
   private grid: Array<Array<Cell>> | undefined;
   private board: Board | undefined;
   private path: Array<Cell> | undefined;
   private currentPoints: Stack<Cell> | undefined;
-  private renderCellPoints: Set<CellDecorator> = new Set();
-  private currentCell: Cell | undefined;
+
   private ANIMATIONSPEED = 20;
   setBoard(board: Board): void {
     this.board = board;
@@ -44,18 +36,10 @@ export class mainGridRenderer implements GridRenderer {
       let row: JSX.Element[] = [];
       for (let j = 0; j < gridWidth; j++) {
         let cell = this.ifNull(this.grid)[i][j];
-        const isCurrent = this.currentPoints?.includes(cell);
-        const isPath = this.path?.includes(cell);
+
         let pos: JSX.Element | undefined;
+        pos = new VisitedPath(cell).animate();
 
-        pos = new EmptyCellAnimation(cell).animate();
-
-        isCurrent ? (pos = new VisitedPath(cell).animate()) : "";
-        // isPath ? (pos = new MainPath(cell).animate()) : "";
-
-        cell.isEnd ? (pos = new EndCellAnimation(cell).animate()) : "";
-        cell.isStart ? (pos = new StartCellAnimation(cell).animate()) : "";
-        // cell.isWall ? (pos = new WallCellAnimation(cell).animate()) : "";
         if (pos) {
           row.push(pos);
         }
@@ -74,46 +58,60 @@ export class mainGridRenderer implements GridRenderer {
   reRenderCss(): void {
     const gridLength = this.ifNull(this.grid).length;
     const gridWidth = this.ifNull(this.grid)[0].length;
-    // console.log("rerendering", this.ifNull(this.grid));
     for (let i = 0; i < gridLength; i++) {
       for (let j = 0; j < gridWidth; j++) {
         let cell = this.ifNull(this.grid)[i][j];
-        let currentElement = document.getElementById(
-          `cell-${cell.x}-${cell.y}-animation`
-        );
         let visetedElement = document.getElementById(
           `cell-${cell.x}-${cell.y}-visited`
         );
-        if (currentElement) {
-          let toAdd: any;
-          // currentElement.className = "hidden";
+        let wallElement = document.getElementById(
+          `cell-${cell.x}-${cell.y}-wall`
+        );
+        let startElement = document.getElementById(
+          `cell-${cell.x}-${cell.y}-start`
+        );
+        let endElement = document.getElementById(
+          `cell-${cell.x}-${cell.y}-end`
+        );
+        let pathElement = document.getElementById(
+          `cell-${cell.x}-${cell.y}-path`
+        );
 
+        if (wallElement) {
           if (cell.isWall) {
-            toAdd = new WallCellAnimation(cell).animate();
-            // currentElement.className = " block";
-
-            // currentElement.className = "bg-black ";
+            wallElement.className = "block";
+          } else {
+            wallElement.className = "hidden";
           }
+        }
+
+        if (startElement) {
           if (cell.isStart) {
-            // toAdd = new StartCellAnimation(cell).animate();
-            currentElement.className = " block";
+            startElement.className = "block";
+          } else {
+            startElement.className = "hidden";
           }
+        }
+        if (endElement) {
           if (cell.isEnd) {
-            // toAdd = new EndCellAnimation(cell).animate();
-            currentElement.className = " block";
+            endElement.className = "block";
+          } else {
+            endElement.className = "hidden";
           }
+        }
+        if (visetedElement) {
           if (cell.isVisited) {
-            if (visetedElement) {
-              visetedElement.className = "block ";
-            }
+            visetedElement.className = "block ";
+          } else {
+            visetedElement.className = "hidden";
           }
-
-          if (toAdd) {
-            const root = createRoot(currentElement);
-
-            root.render(toAdd);
+        }
+        if (pathElement) {
+          if (cell.isPath) {
+            pathElement.className = "block";
+          } else {
+            pathElement.className = "hidden";
           }
-          // ReactDOM.render(toAdd, currentElement);
         }
       }
     }
@@ -135,6 +133,7 @@ export class mainGridRenderer implements GridRenderer {
       setTimeout(
         () => {
           const cell = points.get(i);
+
           if (!cell.isStart && !cell.isEnd) {
             const visitedElement = this.ifNull(document).getElementById(
               `cell-${cell.x}-${cell.y}-visited`
@@ -144,19 +143,10 @@ export class mainGridRenderer implements GridRenderer {
             );
 
             if (currentElement) {
-              // let toAdd = new VisitedPath(cell).animate();
-              // const root = createRoot(cellElement);
-              // root.render(toAdd);
               currentElement.className = " block ";
             }
-            // .className = "mt-[1px] bg-yellow-500 h-[1rem]"; // Temporarily make the cell yellow
             setTimeout(() => {
-              // .className =
-              // "mt-[1px] bg-slate-500 h-[1rem] rounded-full";
               if (visitedElement) {
-                // let toAdd = new VisitedPath(cell).animate();
-                // const root = createRoot(cellElement);
-                // root.render(toAdd);
                 currentElement.className = "hidden";
                 visitedElement.className = "block";
               }
@@ -180,11 +170,10 @@ export class mainGridRenderer implements GridRenderer {
           const visitedElement = this.ifNull(document).getElementById(
             `cell-${cell.x}-${cell.y}-visited`
           );
-          // console.log(element);
           if (pathElelement) {
-            // let toAdd = new MainPath(cell).animate();
-            // const root = createRoot(element);
-            // root.render(toAdd);
+            let toAdd = new Line(cell).animate();
+            const root = createRoot(pathElelement);
+            root.render(toAdd);
             pathElelement.className = "block";
           }
           if (visitedElement) {

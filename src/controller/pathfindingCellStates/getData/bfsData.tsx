@@ -2,11 +2,11 @@ import { Point } from "../../../shared/point";
 import { MovementModel } from "../../../model/Interfaces/movementModel";
 import { Board } from "../../../model/subject/board/board";
 import { GetDataController } from "../../interfaces/getDataController";
-import { PathfindingModel } from "../../../model/Interfaces/pathfindingModel";
 import { Cell } from "../../../model/subject/Cell";
 import { BfsModel } from "../../../model/subject/algorithms/pathFinding/bfsModel";
 import { Pathfinding } from "../../../model/subject/algorithms/pathFinding/Pathfinding";
 import { Stack } from "../../../shared/stack";
+import { PathfindingModel } from "../../../model/Interfaces/pathfindingModel";
 
 export class BfsData implements GetDataController {
   board: Board | undefined;
@@ -33,6 +33,9 @@ export class BfsData implements GetDataController {
   }
   setWalls(walls: Point[]): void {
     this.walls = walls;
+  }
+  getBoard(): Board {
+    return this.bfsModel?.getBoard() as Board;
   }
   ifNull(object: any) {
     if (object) {

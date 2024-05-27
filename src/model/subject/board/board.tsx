@@ -5,8 +5,8 @@ export class Board {
   board: Array<Array<Cell>>;
 
   constructor(size: Point) {
-    const row = size.x;
-    const col = size.y;
+    const row = size.y;
+    const col = size.x;
     this.board = new Array(row);
     for (let i = 0; i < row; i++) {
       this.board[i] = new Array(col);

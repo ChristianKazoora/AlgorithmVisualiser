@@ -10,6 +10,7 @@ export interface GetDataController {
   setEnd(pos: Point): void;
   setMovementStrategy(strategy: MovementModel): void;
   setWalls(walls: Array<Point>): void;
+  getBoard(): Board;
   getCurrentPoints(): Stack<Cell>;
   getVisited(): Set<Cell>;
   getPath(): Array<Cell>;

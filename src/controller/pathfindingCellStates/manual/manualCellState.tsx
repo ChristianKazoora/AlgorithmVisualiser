@@ -10,11 +10,15 @@ export class ManualCellState implements CellState {
   algorithmController: AlgorithmController | undefined;
   walls: Array<Point> = new Array<Point>();
   currentPressedCell: any;
+  start: Point = { x: 0, y: 0 };
+  end: Point = { x: 0, y: 1 };
+  draggingStart_End = "";
 
   draw(): JSX.Element[][] {
     return this.algorithmController?.draw();
   }
   animatePath(): void {
+    this.getData();
     this.algorithmController?.animatePath();
   }
   setWalls(walls: Point[]): void {
@@ -30,9 +34,11 @@ export class ManualCellState implements CellState {
     this.algorithmController = algorithm;
   }
   setStart(pos: Point): void {
+    this.start = pos;
     this.algorithmController?.setStart(pos);
   }
   setEnd(pos: Point): void {
+    this.end = pos;
     this.algorithmController?.setEnd(pos);
   }
   setMovementStrategy(strategy: MovementModel): void {
@@ -44,75 +50,23 @@ export class ManualCellState implements CellState {
   addWalls(pos: Point): void {
     this.walls.push(pos);
     this.setWalls(this.walls);
-    console.log("addWalls", this.walls);
+  }
+  removeStart(pos: Point): void {
+    this.algorithmController?.removeStart(pos);
+  }
+  removeEnd(pos: Point): void {
+    this.algorithmController?.removeEnd(pos);
   }
   removeWalls(pos: Point): void {
-    this.walls = this.walls.filter(
-      (wall) => wall.x !== pos.x && wall.y !== pos.y
-    );
+    for (let i = 0; i < this.walls.length; i++) {
+      for (let j = 0; j < this.walls.length; j++) {
+        if (this.walls[i].x === pos.x && this.walls[i].y === pos.y) {
+          this.walls.splice(i, 1);
+        }
+      }
+    }
     this.setWalls(this.walls);
-    console.log("removeWalls", this.walls);
   }
-  // addEventListeners(): void {
-  //   const gridLength = this.ifNull(this.grid).length;
-  //   const gridWidth = this.ifNull(this.grid)[0].length;
-  //   for (let i = 0; i < gridLength; i++) {
-  //     for (let j = 0; j < gridWidth; j++) {
-  //       let cell = this.ifNull(this.grid)[i][j];
-  //       let currentElement = document.getElementById(
-  //         `cell-${cell.x}-${cell.y}`
-  //       );
-  //       this.ifNull(currentElement).onmousedown = (e: any) => {
-  //         e.preventDefault();
-  //         if (cell.isStart || cell.isEnd) {
-  //           this.currentPressedCell = cell;
-  //           console.log(
-  //             "mouseDownOn",
-  //             this.currentPressedCell,
-  //             cell.isStart,
-  //             cell.isEnd
-  //           );
-  //         }
-  //         if (cell.isWall) {
-  //           this.currentPressedCell = cell;
-  //           console.log("mouseDownOnWall", this.currentPressedCell);
-  //         }
-
-  //         if (!cell.isStart && !cell.isEnd && !cell.isWall) {
-  //           this.currentPressedCell = undefined;
-  //           console.log("mouseDownOnEmpty", this.currentPressedCell);
-  //         }
-  //       };
-  //       // this.ifNull(currentElement).onmouseup = (e: any) => {
-  //       //   e.preventDefault();
-  //       //   if (this.currentPressedCell.isStart) {
-  //       //     this.setStart({ x: i, y: j });
-  //       //   } else if (this.currentPressedCell.isEnd) {
-  //       //     this.setEnd({ x: i, y: j });
-  //       //   } else if (this.currentPressedCell.isWall) {
-  //       //     this.removeWalls({ x: i, y: j });
-  //       //   } else {
-  //       //     this.addWalls({ x: i, y: j });
-  //       //   }
-  //       // };
-
-  //       // this.ifNull(currentElement).onmouseenter = (e: any) => {
-  //       //   e.preventDefault();
-  //       //   if (this.currentPressedCell) {
-  //       //     if (this.currentPressedCell.isStart) {
-  //       //       this.setStart({ x: i, y: j });
-  //       //     } else if (this.currentPressedCell.isEnd) {
-  //       //       this.setEnd({ x: i, y: j });
-  //       //     } else if (this.currentPressedCell.isWall) {
-  //       //       this.removeWalls({ x: i, y: j });
-  //       //     } else {
-  //       //       this.addWalls({ x: i, y: j });
-  //       //     }
-  //       //   }
-  //       // };
-  //     }
-  //   }
-  // }
 
   addEventListeners(): void {
     this.algorithmController?.reRenderCss();
@@ -126,90 +80,87 @@ export class ManualCellState implements CellState {
         let currentElement = document.getElementById(
           `cell-${cell.x}-${cell.y}`
         );
-        this.ifNull(currentElement).onmousedown = (e: any) => {
-          e.preventDefault();
-          isDragging = true;
-          // console.log("            this.walls.length", this.walls.length);
-          if (cell.isStart || cell.isEnd) {
-            this.currentPressedCell = cell;
-            // this.algorithmController?.reRenderCss();
-          }
-          if (cell.isWall) {
-            this.currentPressedCell = cell;
+        if (currentElement) {
+          this.ifNull(currentElement).onmousedown = (e: any) => {
+            e.preventDefault();
+            isDragging = true;
+            if (cell.isStart || cell.isEnd) {
+              this.currentPressedCell = cell;
+            }
+            if (cell.isWall) {
+              this.currentPressedCell = cell;
+              isAddingWalls = false;
+            } else if (!cell.isStart && !cell.isEnd && !cell.isWall) {
+              this.currentPressedCell = cell;
+              isAddingWalls = true;
+            }
+            if (isAddingWalls) {
+              this.addWalls({ x: i, y: j });
+            } else if (!isAddingWalls) {
+              this.removeWalls({ x: i, y: j });
+            }
+            this.algorithmController?.reRenderCss();
+          };
+
+          this.ifNull(currentElement).onmouseup = (e: any) => {
+            e.preventDefault();
             isAddingWalls = false;
-          } else if (!cell.isStart && !cell.isEnd && !cell.isWall) {
-            this.currentPressedCell = undefined;
-            isAddingWalls = true;
-          }
-          if (isAddingWalls) {
-            this.addWalls({ x: i, y: j });
-          } else if (!isAddingWalls) {
-            this.removeWalls({ x: i, y: j });
-          }
-          this.algorithmController?.reRenderCss();
-
-          // else {
-          //   this.currentPressedCell = undefined;
-          //   isAddingWalls = true;
-          //   this.algorithmController?.reRenderCss();
-          // }
-          console.log(
-            "onmousedown",
-            this.currentPressedCell,
-            "isDragging",
-            isDragging,
-            "isAddingWalls",
-            isAddingWalls
-          );
-        };
-
-        this.ifNull(currentElement).onmouseup = (e: any) => {
-          e.preventDefault();
-          isAddingWalls = false;
-          isDragging = false;
-          if (this.currentPressedCell) {
-            if (this.currentPressedCell.isStart) {
-              this.setStart({ x: i, y: j });
-            } else if (this.currentPressedCell.isEnd) {
-              this.setEnd({ x: i, y: j });
-            } else if (isAddingWalls) {
-              this.addWalls({ x: i, y: j });
-            } else {
-              this.removeWalls({ x: i, y: j });
+            isDragging = false;
+            this.draggingStart_End = "";
+            if (this.currentPressedCell) {
+              if (this.currentPressedCell.isStart) {
+                this.setStart({ x: i, y: j });
+              } else if (this.currentPressedCell.isEnd) {
+                this.setEnd({ x: i, y: j });
+              }
             }
-          }
-          console.log(
-            "onmouseup",
-            this.currentPressedCell,
-            "isDragging",
-            isDragging,
-            "isAddingWalls",
-            isAddingWalls
-          );
-        };
+            this.algorithmController?.reRenderCss();
+          };
+          let isMouseEnterCompleted = false;
 
-        this.ifNull(currentElement).onmouseenter = (e: any) => {
-          e.preventDefault();
-          if (isDragging && this.currentPressedCell) {
-            if (this.currentPressedCell.isStart) {
-              this.setStart({ x: i, y: j });
-            } else if (this.currentPressedCell.isEnd) {
-              this.setEnd({ x: i, y: j });
-            } else if (isAddingWalls) {
-              this.addWalls({ x: i, y: j });
-            } else {
-              this.removeWalls({ x: i, y: j });
+          this.ifNull(currentElement).onmouseenter = (e: any) => {
+            e.preventDefault();
+
+            if (isDragging && this.currentPressedCell) {
+              isMouseEnterCompleted = true;
+
+              if (this.draggingStart_End === "start") {
+                this.setStart({ x: i, y: j });
+              } else if (this.draggingStart_End === "end") {
+                this.setEnd({ x: i, y: j });
+              } else if (isAddingWalls) {
+                if (!this.walls.some((wall) => wall.x === i && wall.y === j)) {
+                  this.addWalls({ x: i, y: j });
+                } else {
+                  this.removeWalls({ x: i, y: j });
+                }
+              } else {
+                this.removeWalls({ x: i, y: j });
+              }
+              this.algorithmController?.reRenderCss();
             }
-            console.log(
-              "onmouseenter",
-              this.currentPressedCell,
-              "isDragging",
-              isDragging,
-              "isAddingWalls",
-              isAddingWalls
-            );
-          }
-        };
+          };
+
+          this.ifNull(currentElement).onmouseleave = (e: any) => {
+            e.preventDefault();
+            if (isDragging && this.currentPressedCell) {
+              if (
+                this.draggingStart_End === "start" ||
+                this.currentPressedCell.isStart
+              ) {
+                this.draggingStart_End = "start";
+                this.removeStart({ x: i, y: j });
+              } else if (
+                this.currentPressedCell.isEnd ||
+                this.draggingStart_End === "end"
+              ) {
+                this.draggingStart_End = "end";
+                this.removeEnd({ x: i, y: j });
+              }
+              this.algorithmController?.reRenderCss();
+            }
+          };
+        }
       }
     }
   }

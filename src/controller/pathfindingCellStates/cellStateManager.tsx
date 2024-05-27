@@ -25,7 +25,13 @@ export class CellStateManager implements CellState {
     this.setEnd(_end);
     this.setWalls(_walls);
     this.setMovementStrategy(_movementStrategy);
-    this.getData();
+    // this.getData();
+  }
+  removeStart(pos: Point): void {
+    this.cellState.removeStart(pos);
+  }
+  removeEnd(pos: Point): void {
+    this.cellState.removeEnd(pos);
   }
   addEventListeners(): void {
     this.cellState.addEventListeners();

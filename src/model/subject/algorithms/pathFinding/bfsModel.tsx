@@ -112,6 +112,6 @@ export class BfsModel implements PathfindingModel {
     return this.ifNull(this.currentP);
   }
   getBoard(): Board {
-    return this.ifNull(this.grid);
+    return this.ifNull(this.board);
   }
 }

@@ -14,15 +14,8 @@ import {
 } from "react-router-dom";
 
 function App() {
-  const location = window.location;
   let boardController: BoardController = new BoardManager();
 
-  if (location.pathname === "/manualPathfinding") {
-    boardController = new BoardManager(new ManualCellState());
-  }
-  if (location.pathname === "/autoPathfinding") {
-    boardController = new BoardManager(new AutoCellState());
-  }
   return (
     <BrowserRouter>
       <Navbar boardController={boardController} />

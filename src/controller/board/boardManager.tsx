@@ -16,58 +16,63 @@ export class BoardManager implements BoardController {
   grid: Array<Array<Cell>>;
   cellState: CellState;
   cellStateManager: CellState;
+  height: number;
+  width: number;
   constructor(_cellState: CellState = new AutoCellState()) {
-    let height = Math.floor((document.documentElement.clientHeight - 60) / 25);
-    let width = Math.floor((document.documentElement.clientWidth - 30) / 20);
-    this.board = new Board({ y: height, x: width });
+    this.height = Math.floor((document.documentElement.clientHeight - 60) / 25);
+    this.width = Math.floor((document.documentElement.clientWidth - 30) / 20);
+    this.board = new Board({ y: this.height, x: this.width });
     this.grid = this.board.board;
     this.cellState = _cellState;
 
     let walls = [
       {
-        x: parseInt((height - 1) / 2 + 4 + ""),
-        y: parseInt((width - 1) / 2 + ""),
+        x: parseInt((this.height - 1) / 2 + 4 + ""),
+        y: parseInt((this.width - 1) / 2 + ""),
       },
       {
-        x: parseInt((height - 1) / 2 + 3 + ""),
-        y: parseInt((width - 1) / 2 + ""),
+        x: parseInt((this.height - 1) / 2 + 3 + ""),
+        y: parseInt((this.width - 1) / 2 + ""),
       },
       {
-        x: parseInt((height - 1) / 2 + 2 + ""),
-        y: parseInt((width - 1) / 2 + ""),
+        x: parseInt((this.height - 1) / 2 + 2 + ""),
+        y: parseInt((this.width - 1) / 2 + ""),
       },
       {
-        x: parseInt((height - 1) / 2 + 1 + ""),
-        y: parseInt((width - 1) / 2 + ""),
-      },
-      { x: parseInt((height - 1) / 2 + ""), y: parseInt((width - 1) / 2 + "") },
-      {
-        x: parseInt((height - 1) / 2 - 1 + ""),
-        y: parseInt((width - 1) / 2 + ""),
+        x: parseInt((this.height - 1) / 2 + 1 + ""),
+        y: parseInt((this.width - 1) / 2 + ""),
       },
       {
-        x: parseInt((height - 1) / 2 - 2 + ""),
-        y: parseInt((width - 1) / 2 + ""),
+        x: parseInt((this.height - 1) / 2 + ""),
+        y: parseInt((this.width - 1) / 2 + ""),
       },
       {
-        x: parseInt((height - 1) / 2 - 3 + ""),
-        y: parseInt((width - 1) / 2 + ""),
+        x: parseInt((this.height - 1) / 2 - 1 + ""),
+        y: parseInt((this.width - 1) / 2 + ""),
       },
       {
-        x: parseInt((height - 1) / 2 - 4 + ""),
-        y: parseInt((width - 1) / 2 + ""),
+        x: parseInt((this.height - 1) / 2 - 2 + ""),
+        y: parseInt((this.width - 1) / 2 + ""),
+      },
+      {
+        x: parseInt((this.height - 1) / 2 - 3 + ""),
+        y: parseInt((this.width - 1) / 2 + ""),
+      },
+      {
+        x: parseInt((this.height - 1) / 2 - 4 + ""),
+        y: parseInt((this.width - 1) / 2 + ""),
       },
     ];
     this.cellStateManager = new CellStateManager(
       this.board,
       {
-        x: parseInt((height - 1) / 2 + ""),
-        y: parseInt((width - 1) / 2 - 5 + ""),
+        x: parseInt((this.height - 1) / 2 + ""),
+        y: parseInt((this.width - 1) / 2 - 5 + ""),
       },
 
       {
-        x: parseInt((height - 1) / 2 + ""),
-        y: parseInt((width - 1) / 2 + 5 + ""),
+        x: parseInt((this.height - 1) / 2 + ""),
+        y: parseInt((this.width - 1) / 2 + 5 + ""),
       },
 
       new GetNeigbour(),
@@ -100,14 +105,24 @@ export class BoardManager implements BoardController {
     this.board = board;
     this.grid = this.board.board;
   }
-  setCellState(cellState: any): void {
+  setCellState(cellState: any, renderer: any): void {
     this.cellState = cellState;
     this.cellStateManager = new CellStateManager(
       this.board,
+      {
+        x: parseInt((this.height - 1) / 2 + ""),
+        y: parseInt((this.width - 1) / 2 - 5 + ""),
+      },
+
+      {
+        x: parseInt((this.height - 1) / 2 + ""),
+        y: parseInt((this.width - 1) / 2 + 5 + ""),
+      },
+      undefined,
+      this.cellState,
       undefined,
       undefined,
-      undefined,
-      this.cellState
+      renderer
     );
   }
 

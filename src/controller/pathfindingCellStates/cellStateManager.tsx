@@ -18,7 +18,8 @@ export class CellStateManager implements CellState {
     _movementStrategy: MovementModel = new GetNeigbour(),
     _cellState: CellState = new ManualCellState(),
     _walls: Point[] = [],
-    _algorithmController: AlgorithmController = new BfsController()
+    _algorithmController: AlgorithmController = new BfsController(),
+    _renderer: GridRenderer = new AutoGridRenderer()
   ) {
     this.cellState = _cellState;
     this.setAlgorithmController(_algorithmController);
@@ -27,9 +28,7 @@ export class CellStateManager implements CellState {
     this.setEnd(_end);
     this.setWalls(_walls);
     this.setMovementStrategy(_movementStrategy);
-    this.setRenderer(new AutoGridRenderer());
-    // console.log("CellStateManager constructor", this.cellState);
-    // this.getData();
+    this.setRenderer(_renderer);
   }
   setRenderer(renderer: GridRenderer): void {
     this.cellState.setRenderer(renderer);

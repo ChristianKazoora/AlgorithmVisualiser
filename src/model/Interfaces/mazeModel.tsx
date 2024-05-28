@@ -1,6 +1,6 @@
 import { Board } from "../subject/board/board";
 
-interface Maze {
+export interface MazeModel {
   generateMaze(): void;
   getBoard(): Board;
   setBoard(board: Board): void;

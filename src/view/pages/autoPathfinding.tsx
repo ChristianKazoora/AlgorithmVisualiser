@@ -1,19 +1,19 @@
 import { useEffect } from "react";
 import { BoardController } from "../../controller/interfaces/boardController";
-function ManualPathFindingPage({
+function AutoPathFindingPage({
   boardController,
 }: {
   boardController: BoardController;
 }) {
-  useEffect(() => {
-    boardController.addEventListeners();
-  }, [boardController]);
+  //   useEffect(() => {
+  //     boardController.addEventListeners();
+  //   }, [boardController]);
   return (
     <div>
-      Manual path finding
+      Auto path finding
       {boardController.draw()}
     </div>
   );
 }
 
-export default ManualPathFindingPage;
+export default AutoPathFindingPage;

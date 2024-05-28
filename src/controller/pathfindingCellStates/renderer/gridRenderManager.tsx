@@ -4,9 +4,12 @@ import { GridRenderer } from "../../interfaces/gridRenderer";
 
 import { Stack } from "../../../shared/stack";
 
-import { mainGridRenderer } from "./gridRender";
+import { ManualGridRenderer } from "./manualGridRender";
 export class GridRenderManager implements GridRenderer {
-  private renderer: GridRenderer = new mainGridRenderer();
+  private renderer: GridRenderer;
+  constructor(_renderer: GridRenderer = new ManualGridRenderer()) {
+    this.renderer = _renderer;
+  }
   animatePath(): any {
     this.renderer?.animatePath();
   }

@@ -1,12 +1,28 @@
 import { BoardManager } from "./controller/board/boardManager";
 import { BoardController } from "./controller/interfaces/boardController";
+import { AutoCellState } from "./controller/pathfindingCellStates/auto/autoCellState";
+import { ManualCellState } from "./controller/pathfindingCellStates/manual/manualCellState";
 import Navbar from "./view/components/navbar";
+import AutoPathFindingPage from "./view/pages/autoPathfinding";
 import ManualPathFindingPage from "./view/pages/manualPathfinding";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  // useLocation,
+} from "react-router-dom";
 
 function App() {
-  const boardController: BoardController = new BoardManager();
+  const location = window.location;
+  let boardController: BoardController = new BoardManager();
 
+  if (location.pathname === "/manualPathfinding") {
+    boardController = new BoardManager(new ManualCellState());
+  }
+  if (location.pathname === "/autoPathfinding") {
+    boardController = new BoardManager(new AutoCellState());
+  }
   return (
     <BrowserRouter>
       <Navbar boardController={boardController} />
@@ -36,7 +52,7 @@ function App() {
         />
         <Route
           path="/autoPathfinding"
-          element={<div className="alert alert-success">Auto Pathfinding</div>}
+          element={<AutoPathFindingPage boardController={boardController} />}
         />
       </Routes>
     </BrowserRouter>
@@ -44,6 +60,3 @@ function App() {
 }
 
 export default App;
-
-//  <Route path="blogs" element={<Blogs />} />
-//           <Route path="contact" element={<Contact />} />

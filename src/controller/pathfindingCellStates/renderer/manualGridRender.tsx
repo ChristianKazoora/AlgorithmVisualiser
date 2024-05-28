@@ -7,13 +7,13 @@ import { VisitedPath } from "../../cellDecorations/paths/visitedPath";
 
 import { createRoot } from "react-dom/client";
 import { Line } from "../../cellDecorations/paths/line";
-export class mainGridRenderer implements GridRenderer {
+export class ManualGridRenderer implements GridRenderer {
   private grid: Array<Array<Cell>> | undefined;
   private board: Board | undefined;
   private path: Array<Cell> | undefined;
   private currentPoints: Stack<Cell> | undefined;
 
-  private ANIMATIONSPEED = 20;
+  private ANIMATIONSPEED = 2;
   setBoard(board: Board): void {
     this.board = board;
     this.grid = board.board;
@@ -161,26 +161,29 @@ export class mainGridRenderer implements GridRenderer {
     const path = this.ifNull(this.path);
     path.reverse();
     for (let i = 0; i < path.length; i++) {
-      setTimeout(() => {
-        const cell = path[i];
-        if (!cell.isStart && !cell.isEnd) {
-          const pathElelement = this.ifNull(document).getElementById(
-            `cell-${cell.x}-${cell.y}-path`
-          );
-          const visitedElement = this.ifNull(document).getElementById(
-            `cell-${cell.x}-${cell.y}-visited`
-          );
-          if (pathElelement) {
-            let toAdd = new Line(cell).animate();
-            const root = createRoot(pathElelement);
-            root.render(toAdd);
-            pathElelement.className = "block";
+      setTimeout(
+        () => {
+          const cell = path[i];
+          if (!cell.isStart && !cell.isEnd) {
+            const pathElelement = this.ifNull(document).getElementById(
+              `cell-${cell.x}-${cell.y}-path`
+            );
+            const visitedElement = this.ifNull(document).getElementById(
+              `cell-${cell.x}-${cell.y}-visited`
+            );
+            if (pathElelement) {
+              let toAdd = new Line(cell).animate();
+              const root = createRoot(pathElelement);
+              root.render(toAdd);
+              pathElelement.className = "block";
+            }
+            if (visitedElement) {
+              visitedElement.className = "hidden";
+            }
           }
-          if (visitedElement) {
-            visitedElement.className = "hidden";
-          }
-        }
-      }, this.ANIMATIONSPEED * i);
+        },
+        Math.pow(this.ANIMATIONSPEED, 6) * i
+      );
     }
   }
 }

@@ -2,6 +2,7 @@ import { Point } from "framer-motion";
 import { Board } from "../../model/subject/board/board";
 import { mainController } from "./mainController";
 import { MovementModel } from "../../model/Interfaces/movementModel";
+import { GridRenderer } from "./gridRenderer";
 
 export interface AlgorithmController extends mainController {
   animatePath(): void;
@@ -14,4 +15,6 @@ export interface AlgorithmController extends mainController {
   setWalls(walls: Array<Point>): void;
   getData(): void;
   reRenderCss(): void;
+  setGridWallsToFalse(): void;
+  setRenderer(renderer: GridRenderer): void;
 }

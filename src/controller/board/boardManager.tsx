@@ -9,13 +9,14 @@ import { BoardController } from "../interfaces/boardController";
 import { Grid } from "@mui/material";
 import { MovementModel } from "../../model/Interfaces/movementModel";
 import { Point } from "../../shared/point";
+import { AutoCellState } from "../pathfindingCellStates/auto/autoCellState";
 import { useEffect, useState } from "react";
 export class BoardManager implements BoardController {
   board: Board;
   grid: Array<Array<Cell>>;
   cellState: CellState;
   cellStateManager: CellState;
-  constructor(_cellState: CellState = new ManualCellState()) {
+  constructor(_cellState: CellState = new AutoCellState()) {
     let height = Math.floor((document.documentElement.clientHeight - 60) / 25);
     let width = Math.floor((document.documentElement.clientWidth - 30) / 20);
     this.board = new Board({ y: height, x: width });

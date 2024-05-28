@@ -28,10 +28,9 @@ export class BfsController implements AlgorithmController {
   }
 
   draw(): any {
-    const renderer = this.renderer;
-    renderer.setBoard(this.ifNull(this.board));
+    this.renderer.setBoard(this.ifNull(this.board));
 
-    return renderer.render();
+    return this.renderer.render();
   }
   getData(): void {
     this.data?.setBoard(this.ifNull(this.board));
@@ -58,11 +57,26 @@ export class BfsController implements AlgorithmController {
     this.neighbourStrategy = strategy;
   }
   setWalls(walls: Array<Point>): void {
-    this.walls = walls;
     this.setGridWallsToFalse();
+    //remove start and end from walls
+    this.walls = walls.filter((wall: any) => {
+      return !(
+        (wall.x === this.ifNull(this.start).x &&
+          wall.y === this.ifNull(this.start).y) ||
+        (wall.x === this.ifNull(this.end).x &&
+          wall.y === this.ifNull(this.end).y)
+      );
+    });
+
     this.ifNull(this.walls).forEach((wall: any) => {
       this.ifNull(this.grid)[wall.x][wall.y].isWall = true;
     });
+    this.ifNull(this.grid)[this.ifNull(this.start).x][
+      this.ifNull(this.start).y
+    ].isWall = false;
+    this.ifNull(this.grid)[this.ifNull(this.end).x][
+      this.ifNull(this.end).y
+    ].isWall = false;
   }
   setGridWallsToFalse(): void {
     this.ifNull(this.grid).forEach((row: any) => {
@@ -89,7 +103,6 @@ export class BfsController implements AlgorithmController {
   }
   setStart(pos: Point): void {
     this.start = pos;
-    console.log("setStart", pos);
     this.ifNull(this.grid)[pos.x][pos.y].isStart = true;
     this.ifNull(this.grid)[pos.x][pos.y].isWall = false;
   }
@@ -100,5 +113,8 @@ export class BfsController implements AlgorithmController {
   }
   reRenderCss(): void {
     this.renderer.reRenderCss();
+  }
+  setRenderer(renderer: GridRenderer): void {
+    this.renderer = renderer;
   }
 }

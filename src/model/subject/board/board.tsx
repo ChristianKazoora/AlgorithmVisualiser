@@ -35,10 +35,10 @@ export class Board {
           undefined, // topLeft
           undefined, // bottomLeft
           undefined, // bottomRight
-          false, // northW
-          false, // southW
-          false, // westW
-          false // eastW
+          true, // northW
+          true, // southW
+          true, // westW
+          true // eastW
         );
       }
     }

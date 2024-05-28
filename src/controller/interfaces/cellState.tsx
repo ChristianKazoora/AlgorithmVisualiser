@@ -3,6 +3,7 @@ import { MovementModel } from "../../model/Interfaces/movementModel";
 import { Board } from "../../model/subject/board/board";
 import { mainController } from "../interfaces/mainController";
 import { AlgorithmController } from "./algorithmController";
+import { GridRenderer } from "./gridRenderer";
 
 export interface CellState extends mainController {
   animatePath(): void;
@@ -18,4 +19,5 @@ export interface CellState extends mainController {
   // addWalls(pos: Point): void;
   // removeWalls(pos: Point): void;
   addEventListeners(): void;
+  setRenderer(renderer: GridRenderer): void;
 }

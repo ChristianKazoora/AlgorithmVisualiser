@@ -4,6 +4,7 @@ import { Board } from "../../../model/subject/board/board";
 import { Point } from "../../../shared/point";
 import { CellState } from "../../interfaces/cellState";
 import { AlgorithmController } from "../../interfaces/algorithmController";
+import { GridRenderer } from "../../interfaces/gridRenderer";
 export class ManualCellState implements CellState {
   board: Board | undefined;
   grid: Array<Array<Cell>> | undefined;
@@ -13,7 +14,9 @@ export class ManualCellState implements CellState {
   start: Point = { x: 0, y: 0 };
   end: Point = { x: 0, y: 1 };
   draggingStart_End = "";
-
+  setRenderer(renderer: GridRenderer): void {
+    this.algorithmController?.setRenderer(renderer);
+  }
   draw(): JSX.Element[][] {
     return this.algorithmController?.draw();
   }
@@ -22,7 +25,6 @@ export class ManualCellState implements CellState {
     this.algorithmController?.animatePath();
   }
   setWalls(walls: Point[]): void {
-    // console.log("setWalls", walls);
     this.algorithmController?.setWalls(walls);
   }
   setBoard(board: any): void {

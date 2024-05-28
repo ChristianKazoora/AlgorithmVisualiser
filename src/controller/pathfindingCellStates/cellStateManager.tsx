@@ -6,6 +6,8 @@ import { AlgorithmController } from "../interfaces/algorithmController";
 import { BfsController } from "./manual/algorithmControllers/algorithms/bfsController";
 import { MovementModel } from "../../model/Interfaces/movementModel";
 import { GetNeigbour } from "../../model/subject/board/strategies/getNeighbours";
+import { GridRenderer } from "../interfaces/gridRenderer";
+import { AutoGridRenderer } from "./renderer/autoGridRender";
 
 export class CellStateManager implements CellState {
   private cellState: CellState;
@@ -25,8 +27,14 @@ export class CellStateManager implements CellState {
     this.setEnd(_end);
     this.setWalls(_walls);
     this.setMovementStrategy(_movementStrategy);
+    this.setRenderer(new AutoGridRenderer());
+    // console.log("CellStateManager constructor", this.cellState);
     // this.getData();
   }
+  setRenderer(renderer: GridRenderer): void {
+    this.cellState.setRenderer(renderer);
+  }
+
   removeStart(pos: Point): void {
     this.cellState.removeStart(pos);
   }

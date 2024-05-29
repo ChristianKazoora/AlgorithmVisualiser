@@ -5,6 +5,8 @@ import { Point } from "../../../shared/point";
 import { CellState } from "../../interfaces/cellState";
 import { AlgorithmController } from "../../interfaces/algorithmController";
 import { GridRenderer } from "../../interfaces/gridRenderer";
+import { MazeManager } from "../../../model/subject/maze/mazeManager";
+import { manualMazeGenarotor } from "../../../model/subject/maze/manual/manualMazeGenarotor";
 export class ManualCellState implements CellState {
   board: Board | undefined;
   grid: Array<Array<Cell>> | undefined;
@@ -23,6 +25,12 @@ export class ManualCellState implements CellState {
   animatePath(): void {
     this.getData();
     this.algorithmController?.animatePath();
+  }
+  ganarateMaze(): void {
+    const ganarator = new MazeManager(new manualMazeGenarotor());
+    ganarator.setBoard(this.ifNull(this.board));
+    ganarator.generateMaze();
+    this.setBoard(ganarator.getBoard());
   }
   setWalls(walls: Point[]): void {
     this.algorithmController?.setWalls(walls);
@@ -118,14 +126,11 @@ export class ManualCellState implements CellState {
             }
             this.algorithmController?.reRenderCss();
           };
-          let isMouseEnterCompleted = false;
 
           this.ifNull(currentElement).onmouseenter = (e: any) => {
             e.preventDefault();
 
             if (isDragging && this.currentPressedCell) {
-              isMouseEnterCompleted = true;
-
               if (this.draggingStart_End === "start") {
                 this.setStart({ x: i, y: j });
               } else if (this.draggingStart_End === "end") {

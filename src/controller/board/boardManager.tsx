@@ -1,7 +1,7 @@
 import { Cell } from "../../model/subject/Cell";
 import { Board } from "../../model/subject/board/board";
-import { GetNeigbourWD } from "../../model/subject/board/strategies/getNeigbourWD";
-import { GetNeigbour } from "../../model/subject/board/strategies/getNeighbours";
+import { GetManulNeigbourWD } from "../../model/subject/board/strategies/manual/getManulNeigbourWD";
+import { GetManulNeighbours } from "../../model/subject/board/strategies/manual/getManulNeighbours";
 import { CellState } from "../interfaces/cellState";
 import { CellStateManager } from "../pathfindingCellStates/cellStateManager";
 import { ManualCellState } from "../pathfindingCellStates/manual/manualCellState";
@@ -75,15 +75,19 @@ export class BoardManager implements BoardController {
         y: parseInt((this.width - 1) / 2 + 5 + ""),
       },
 
-      new GetNeigbour(),
-      this.cellState,
-      walls
+      new GetManulNeighbours(),
+      this.cellState
+      // walls
     );
+  }
+  ganarateMaze(): void {
+    this.cellState.ganarateMaze();
   }
   addEventListeners(): void {
     this.cellState.addEventListeners();
   }
   animatePath(): void {
+    console.log("animatePath");
     this.cellState.animatePath();
   }
   setStart(pos: Point): void {
@@ -105,7 +109,7 @@ export class BoardManager implements BoardController {
     this.board = board;
     this.grid = this.board.board;
   }
-  setCellState(cellState: any, renderer: any): void {
+  setCellState(cellState: any, renderer: any, movementModel: any): void {
     this.cellState = cellState;
     this.cellStateManager = new CellStateManager(
       this.board,
@@ -118,7 +122,7 @@ export class BoardManager implements BoardController {
         x: parseInt((this.height - 1) / 2 + ""),
         y: parseInt((this.width - 1) / 2 + 5 + ""),
       },
-      undefined,
+      movementModel,
       this.cellState,
       undefined,
       undefined,

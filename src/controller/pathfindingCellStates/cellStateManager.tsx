@@ -5,7 +5,7 @@ import { ManualCellState } from "./manual/manualCellState";
 import { AlgorithmController } from "../interfaces/algorithmController";
 import { BfsController } from "./manual/algorithmControllers/algorithms/bfsController";
 import { MovementModel } from "../../model/Interfaces/movementModel";
-import { GetNeigbour } from "../../model/subject/board/strategies/getNeighbours";
+import { GetManulNeighbours } from "../../model/subject/board/strategies/manual/getManulNeighbours";
 import { GridRenderer } from "../interfaces/gridRenderer";
 import { AutoGridRenderer } from "./renderer/autoGridRender";
 
@@ -15,7 +15,7 @@ export class CellStateManager implements CellState {
     board: Board,
     _start: Point = { x: 0, y: 0 },
     _end: Point = { x: board.board.length - 1, y: board.board[0].length - 1 },
-    _movementStrategy: MovementModel = new GetNeigbour(),
+    _movementStrategy: MovementModel = new GetManulNeighbours(),
     _cellState: CellState = new ManualCellState(),
     _walls: Point[] = [],
     _algorithmController: AlgorithmController = new BfsController(),
@@ -29,6 +29,9 @@ export class CellStateManager implements CellState {
     this.setWalls(_walls);
     this.setMovementStrategy(_movementStrategy);
     this.setRenderer(_renderer);
+  }
+  ganarateMaze(): void {
+    this.cellState.ganarateMaze();
   }
   setRenderer(renderer: GridRenderer): void {
     this.cellState.setRenderer(renderer);

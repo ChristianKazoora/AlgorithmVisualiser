@@ -20,4 +20,5 @@ export interface CellState extends mainController {
   // removeWalls(pos: Point): void;
   addEventListeners(): void;
   setRenderer(renderer: GridRenderer): void;
+  ganarateMaze(): void;
 }

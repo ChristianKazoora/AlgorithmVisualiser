@@ -51,10 +51,16 @@ function Navbar({ boardController }: { boardController: BoardController }) {
           <option>Jojo's Bizarre Adventure</option>
         </select>
         <button
-          className="btn  text-lg p-[8px] "
+          className="btn ml-[10px]  text-[1.2rem] p-[8px] "
           onClick={() => boardController.animatePath()}
         >
-          play
+          RUN
+        </button>
+        <button
+          className="ml-[10px] btn  text-lg p-[8px] "
+          onClick={() => boardController.ganarateMaze()}
+        >
+          MAZE
         </button>
 
         <div className={` form-control w-52  navbar-end ${hidetoggle}`}>

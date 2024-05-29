@@ -5,10 +5,10 @@ import { Board } from "../../board/board";
 import { BfsModel } from "./bfsModel";
 import { Stack } from "../../../../shared/stack";
 import { MovementModel } from "../../../Interfaces/movementModel";
-import { GetNeigbour } from "../../board/strategies/getNeighbours";
+import { GetNeigbour } from "../../board/strategies/manual/getManulNeighbours";
 import { MovementManager } from "../../board/movementManager";
 import { PathfindingModel } from "../../../Interfaces/pathfindingModel";
-import { GetNeigbourWD } from "../../board/strategies/getNeigbourWD";
+import { GetManulNeigbourWD } from "../../board/strategies/manual/getManulNeigbourWD";
 
 export class Pathfinding implements PathfindingModel {
   algorithm: PathfindingModel;
@@ -18,7 +18,7 @@ export class Pathfinding implements PathfindingModel {
     endP: Point,
     board: Board,
     wallP: Array<Point> = new Array<Point>(),
-    _movementStrategy: MovementModel = new GetNeigbourWD()
+    _movementStrategy: MovementModel = new GetManulNeigbourWD()
   ) {
     this.algorithm = _algo;
     this.setBoard(board);

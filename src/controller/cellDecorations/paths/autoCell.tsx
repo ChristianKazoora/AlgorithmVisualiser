@@ -13,10 +13,10 @@ export class AutoCell extends CellDecorator {
         style={{
           width: "20px",
           height: "20px",
-          borderTop: this.northW ? "1px solid black" : "none",
-          borderBottom: this.southW ? "1px solid black" : "none",
-          borderLeft: this.westW ? "1px solid black" : "none",
-          borderRight: this.eastW ? "1px solid black" : "none",
+          // borderTop: this.northW ? "1px solid black" : "none",
+          // borderBottom: this.southW ? "1px solid black" : "none",
+          // borderLeft: this.westW ? "1px solid black" : "none",
+          // borderRight: this.eastW ? "1px solid black" : "none",
         }}
       >
         {new StartCellAnimation(this).animate()}

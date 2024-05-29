@@ -1,7 +1,9 @@
+import { createRoot } from "react-dom/client";
 import { Cell } from "../../../model/subject/Cell";
 import { Board } from "../../../model/subject/board/board";
 import { Stack } from "../../../shared/stack";
 import AutoCell from "../../cellDecorations/paths/autoCell";
+import { Line } from "../../cellDecorations/paths/line";
 import { GridRenderer } from "../../interfaces/gridRenderer";
 
 export class AutoGridRenderer implements GridRenderer {
@@ -11,9 +13,7 @@ export class AutoGridRenderer implements GridRenderer {
   private currentPoints: Stack<Cell> | undefined;
 
   private ANIMATIONSPEED = 2;
-  animatePath(): unknown {
-    throw new Error("Method not implemented.");
-  }
+
   render() {
     const gridLength = this.ifNull(this.grid).length;
     const gridWidth = this.ifNull(this.grid)[0].length;
@@ -44,7 +44,7 @@ export class AutoGridRenderer implements GridRenderer {
     this.grid = board.board;
   }
   setCurrentPoints(points: Stack<Cell>): void {
-    throw new Error("Method not implemented.");
+    this.currentPoints = points;
   }
   reRenderCss(): void {
     const gridLength = this.ifNull(this.grid).length;
@@ -55,9 +55,7 @@ export class AutoGridRenderer implements GridRenderer {
         let visetedElement = document.getElementById(
           `cell-${cell.x}-${cell.y}-visited`
         );
-        let wallElement = document.getElementById(
-          `cell-${cell.x}-${cell.y}-wall`
-        );
+
         let startElement = document.getElementById(
           `cell-${cell.x}-${cell.y}-start`
         );
@@ -67,14 +65,9 @@ export class AutoGridRenderer implements GridRenderer {
         let pathElement = document.getElementById(
           `cell-${cell.x}-${cell.y}-path`
         );
-
-        if (wallElement) {
-          if (cell.isWall) {
-            wallElement.className = "block";
-          } else {
-            wallElement.className = "hidden";
-          }
-        }
+        let currentElement = document.getElementById(
+          `cell-${cell.x}-${cell.y}`
+        );
 
         if (startElement) {
           if (cell.isStart) {
@@ -104,6 +97,25 @@ export class AutoGridRenderer implements GridRenderer {
             pathElement.className = "hidden";
           }
         }
+        if (currentElement) {
+          //rerender walls
+          currentElement.style.borderTop = "1px solid black";
+          currentElement.style.borderBottom = "1px solid black";
+          currentElement.style.borderLeft = "1px solid black";
+          currentElement.style.borderRight = "1px solid black";
+          if (!cell.northW) {
+            currentElement.style.borderTop = "none";
+          }
+          if (!cell.southW) {
+            currentElement.style.borderBottom = "none";
+          }
+          if (!cell.eastW) {
+            currentElement.style.borderRight = "none";
+          }
+          if (!cell.westW) {
+            currentElement.style.borderLeft = "none";
+          }
+        }
       }
     }
   }
@@ -112,6 +124,76 @@ export class AutoGridRenderer implements GridRenderer {
       return object;
     } else {
       throw new Error("object is undefined");
+    }
+  }
+
+  animatePath(): void {
+    const points = this.ifNull(this.currentPoints);
+
+    for (let i = 0; i < points.size(); i++) {
+      if (i === points.size() - 1) {
+        setTimeout(
+          () => {
+            this.animateLinePath();
+          },
+          this.ANIMATIONSPEED * 1.55 * i
+        );
+        return;
+      }
+      setTimeout(
+        () => {
+          const cell = points.get(i);
+
+          if (!cell.isStart && !cell.isEnd) {
+            const visitedElement = this.ifNull(document).getElementById(
+              `cell-${cell.x}-${cell.y}-visited`
+            );
+            const currentElement = this.ifNull(document).getElementById(
+              `cell-${cell.x}-${cell.y}-current`
+            );
+
+            if (currentElement) {
+              currentElement.className = " block ";
+            }
+            setTimeout(() => {
+              if (visitedElement) {
+                currentElement.className = "hidden";
+                visitedElement.className = "block";
+              }
+            }, this.ANIMATIONSPEED);
+          }
+        },
+        this.ANIMATIONSPEED * 1.55 * i
+      );
+    }
+  }
+  animateLinePath(): void {
+    const path = this.ifNull(this.path);
+    path.reverse();
+    for (let i = 0; i < path.length; i++) {
+      setTimeout(
+        () => {
+          const cell = path[i];
+          if (!cell.isStart && !cell.isEnd) {
+            const pathElelement = this.ifNull(document).getElementById(
+              `cell-${cell.x}-${cell.y}-path`
+            );
+            const visitedElement = this.ifNull(document).getElementById(
+              `cell-${cell.x}-${cell.y}-visited`
+            );
+            if (pathElelement) {
+              let toAdd = new Line(cell).animate();
+              const root = createRoot(pathElelement);
+              root.render(toAdd);
+              pathElelement.className = "block";
+            }
+            if (visitedElement) {
+              visitedElement.className = "hidden";
+            }
+          }
+        },
+        Math.pow(this.ANIMATIONSPEED, 6) * i
+      );
     }
   }
 }

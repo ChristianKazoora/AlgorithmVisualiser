@@ -1,7 +1,7 @@
-import { MovementModel } from "../../../Interfaces/movementModel";
-import { Cell } from "../../Cell";
+import { MovementModel } from "../../../../Interfaces/movementModel";
+import { Cell } from "../../../Cell";
 
-export class GetNeigbour implements MovementModel {
+export class GetManulNeighbours implements MovementModel {
   getNeighbours(cell: Cell): Array<Cell> {
     let neighbours: Array<Cell> = [];
     if (cell.top !== undefined && !cell.top.isWall) {

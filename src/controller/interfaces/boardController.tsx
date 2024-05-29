@@ -5,5 +5,6 @@ export interface BoardController extends mainController {
   animatePath(): void;
   addEventListeners(): void;
   setBoard(board: Board): void;
-  setCellState(cellState: any, renderer: any): void;
+  setCellState(cellState: any, renderer: any, movementModel: any): void;
+  ganarateMaze(): void;
 }

@@ -14,7 +14,7 @@ export class CellStateManager implements CellState {
   constructor(
     board: Board,
     _start: Point = { x: 0, y: 0 },
-    _end: Point = { x: board.board.length - 1, y: board.board[0].length - 1 },
+    _end: Point = { x: board.grid.length - 1, y: board.grid[0].length - 1 },
     _movementStrategy: MovementModel = new GetManulNeighbours(),
     _cellState: CellState = new ManualCellState(),
     _walls: Point[] = [],

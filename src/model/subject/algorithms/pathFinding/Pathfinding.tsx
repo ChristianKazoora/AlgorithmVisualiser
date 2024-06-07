@@ -5,7 +5,6 @@ import { Board } from "../../board/board";
 import { BfsModel } from "./bfsModel";
 import { Stack } from "../../../../shared/stack";
 import { MovementModel } from "../../../Interfaces/movementModel";
-import { GetNeigbour } from "../../board/strategies/manual/getManulNeighbours";
 import { MovementManager } from "../../board/movementManager";
 import { PathfindingModel } from "../../../Interfaces/pathfindingModel";
 import { GetManulNeigbourWD } from "../../board/strategies/manual/getManulNeigbourWD";

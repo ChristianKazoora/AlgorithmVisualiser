@@ -16,7 +16,7 @@ export class ManualGridRenderer implements GridRenderer {
   private ANIMATIONSPEED = 2;
   setBoard(board: Board): void {
     this.board = board;
-    this.grid = board.board;
+    this.grid = board.grid;
   }
   setCurrentPoints(points: Stack<Cell>): void {
     this.currentPoints = points;
@@ -159,7 +159,7 @@ export class ManualGridRenderer implements GridRenderer {
   }
   animateLinePath(): void {
     const path = this.ifNull(this.path);
-    path.reverse();
+    // path.reverse();
     for (let i = 0; i < path.length; i++) {
       setTimeout(
         () => {

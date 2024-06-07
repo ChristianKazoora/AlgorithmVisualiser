@@ -12,7 +12,7 @@ export class BfsModel implements PathfindingModel {
   private movementStrategy: MovementModel | undefined;
   private queue: Queue<Cell> = new Queue<Cell>();
   private visited: Set<Cell> = new Set<Cell>();
-  private path: Array<Cell> | undefined;
+  private path: Array<Cell> = [];
   private startP: Cell | undefined;
   private currentP: Stack<Cell> = new Stack<Cell>();
 
@@ -60,9 +60,6 @@ export class BfsModel implements PathfindingModel {
     }
     path.reverse();
     path.unshift(this.ifNull(this.startP));
-    // for (let i = 0; i < path.length; i++) {
-    //   path[i].posFromStart = i;
-    // }
 
     return path;
   }
@@ -79,7 +76,7 @@ export class BfsModel implements PathfindingModel {
   }
   setBoard(board: Board): void {
     this.board = board;
-    this.grid = board.board;
+    this.grid = board.grid;
   }
   setCurrentPoint(x: number, y: number): void {
     this.currentP = this.ifNull(this.grid).board[x][y];

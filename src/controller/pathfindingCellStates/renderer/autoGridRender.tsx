@@ -41,7 +41,7 @@ export class AutoGridRenderer implements GridRenderer {
   }
   setBoard(board: Board): void {
     this.board = board;
-    this.grid = board.board;
+    this.grid = board.grid;
   }
   setCurrentPoints(points: Stack<Cell>): void {
     this.currentPoints = points;
@@ -169,7 +169,7 @@ export class AutoGridRenderer implements GridRenderer {
   }
   animateLinePath(): void {
     const path = this.ifNull(this.path);
-    path.reverse();
+    // path.reverse();
     for (let i = 0; i < path.length; i++) {
       setTimeout(
         () => {

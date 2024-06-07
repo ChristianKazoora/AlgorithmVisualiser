@@ -7,6 +7,7 @@ export class Cell implements CellModel {
   posFromStart: number;
   x: number;
   y: number;
+  pos: number;
   previousCell?: Cell | undefined;
   nextCell?: Cell | undefined;
   top?: Cell | undefined;
@@ -30,6 +31,7 @@ export class Cell implements CellModel {
     posFromStart = 0,
     x = 0,
     y = 0,
+    pos = 0,
     previousCell = undefined,
     nextCell = undefined,
     top = undefined,
@@ -52,6 +54,7 @@ export class Cell implements CellModel {
     this.posFromStart = posFromStart;
     this.x = x;
     this.y = y;
+    this.pos = pos;
     this.previousCell = previousCell;
     this.nextCell = nextCell;
     this.top = top;

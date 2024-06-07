@@ -33,7 +33,7 @@ export class autoMazeGenarator implements MazeModel {
   }
   setBoard(board: Board): void {
     this.board = board;
-    this.grid = this.board.board;
+    this.grid = this.board.grid;
   }
   removeWall(cell: Cell, next: Cell): void {
     if (cell.top == next) {

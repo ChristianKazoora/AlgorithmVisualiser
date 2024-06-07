@@ -28,7 +28,9 @@ export class AutoCellState implements CellState {
   setBoard(board: Board): void {
     this.algorithmController?.setBoard(board);
     this.board = board;
-    this.grid = board.board;
+    this.grid = board.grid;
+    this.start = { x: 0, y: 0 };
+    this.end = { x: board.grid.length - 1, y: board.grid[0].length - 1 };
   }
   setStart(pos: Point): void {
     this.start = pos;

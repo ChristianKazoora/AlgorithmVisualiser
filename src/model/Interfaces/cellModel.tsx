@@ -7,6 +7,7 @@ export interface CellModel {
   posFromStart: number;
   x: number;
   y: number;
+  pos: number;
   previousCell?: Cell;
   nextCell?: Cell;
   top?: Cell;

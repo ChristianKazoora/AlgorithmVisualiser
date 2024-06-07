@@ -38,13 +38,14 @@ export class ManualCellState implements CellState {
   setBoard(board: any): void {
     this.algorithmController?.setBoard(board);
     this.board = board;
-    this.grid = board.board;
+    this.grid = board.grid;
   }
   setAlgorithmController(algorithm: AlgorithmController): void {
     this.algorithmController = algorithm;
   }
   setStart(pos: Point): void {
     this.start = pos;
+
     this.algorithmController?.setStart(pos);
   }
   setEnd(pos: Point): void {

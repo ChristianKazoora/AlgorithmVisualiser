@@ -7,6 +7,7 @@ export abstract class CellDecorator implements CellModel {
   posFromStart: number;
   x: number;
   y: number;
+  pos: number;
   previousCell?: Cell | undefined;
   nextCell?: Cell | undefined;
   top?: Cell | undefined;
@@ -31,6 +32,7 @@ export abstract class CellDecorator implements CellModel {
     this.posFromStart = cell.posFromStart;
     this.x = cell.x;
     this.y = cell.y;
+    this.pos = cell.pos;
     this.previousCell = cell.previousCell;
     this.nextCell = cell.nextCell;
     this.top = cell.top;

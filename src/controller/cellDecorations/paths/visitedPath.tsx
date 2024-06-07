@@ -9,10 +9,22 @@ import { EndCellAnimation } from "../decorators/endCellAnimation";
 export class VisitedPath extends CellDecorator {
   animate(): any {
     return (
-      <div
+      // <div
+      //   id={`cell-${this.x}-${this.y}`}
+      //   key={this.y}
+      //   style={{
+      //     width: "20px",
+      //     height: "20px",
+      //     border: "1px solid black",
+      //   }}
+      <Grid
         id={`cell-${this.x}-${this.y}`}
+        item
+        xs={0}
         key={this.y}
-        // className={`  `}
+        data-row={this.x}
+        data-col={this.y}
+        // className={" flex justify-center items-center"}
         style={{
           width: "20px",
           height: "20px",
@@ -23,7 +35,7 @@ export class VisitedPath extends CellDecorator {
         {new EndCellAnimation(this).animate()}
         {new WallCellAnimation(this).animate()}
         <div id={`cell-${this.x}-${this.y}-path`}>
-          {new Line(this).animate()}
+          {/* {new Line(this).animate()} */}
         </div>
         <div
           id={`cell-${this.x}-${this.y}-current`}
@@ -39,7 +51,7 @@ export class VisitedPath extends CellDecorator {
           }}
           className="hidden"
         />
-      </div>
+      </Grid>
     );
   }
 }

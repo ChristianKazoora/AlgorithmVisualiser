@@ -51,7 +51,7 @@ export class BfsController implements AlgorithmController {
   }
   setBoard(board: any): void {
     this.board = board;
-    this.grid = this.ifNull(this.board).board;
+    this.grid = this.ifNull(this.board).grid;
   }
   setMovementStrategy(strategy: MovementModel): void {
     this.neighbourStrategy = strategy;

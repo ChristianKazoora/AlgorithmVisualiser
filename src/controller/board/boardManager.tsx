@@ -18,14 +18,26 @@ export class BoardManager implements BoardController {
   cellStateManager: CellState;
   height: number;
   width: number;
-  constructor(_cellState: CellState = new AutoCellState()) {
+  start: Point;
+  end: Point;
+  walls: Point[];
+  constructor(_cellState: CellState = new ManualCellState()) {
     this.height = Math.floor((document.documentElement.clientHeight - 60) / 25);
     this.width = Math.floor((document.documentElement.clientWidth - 30) / 20);
     this.board = new Board({ y: this.height, x: this.width });
-    this.grid = this.board.board;
-    this.cellState = _cellState;
 
-    let walls = [
+    this.grid = this.board.grid;
+    this.cellState = _cellState;
+    this.end = {
+      x: parseInt((this.height - 1) / 2 + ""),
+      y: parseInt((this.width - 1) / 2 - 5 + ""),
+    };
+    this.start = {
+      x: parseInt((this.height - 1) / 2 + ""),
+      y: parseInt((this.width - 1) / 2 + 5 + ""),
+    };
+
+    this.walls = [
       {
         x: parseInt((this.height - 1) / 2 + 4 + ""),
         y: parseInt((this.width - 1) / 2 + ""),
@@ -65,19 +77,11 @@ export class BoardManager implements BoardController {
     ];
     this.cellStateManager = new CellStateManager(
       this.board,
-      {
-        x: parseInt((this.height - 1) / 2 + ""),
-        y: parseInt((this.width - 1) / 2 - 5 + ""),
-      },
-
-      {
-        x: parseInt((this.height - 1) / 2 + ""),
-        y: parseInt((this.width - 1) / 2 + 5 + ""),
-      },
-
+      this.start,
+      this.end,
       new GetManulNeighbours(),
       this.cellState
-      // walls
+      // this.walls
     );
   }
   ganarateMaze(): void {
@@ -107,26 +111,20 @@ export class BoardManager implements BoardController {
   }
   setBoard(board: any): void {
     this.board = board;
-    this.grid = this.board.board;
+    this.grid = this.board.grid;
   }
   setCellState(cellState: any, renderer: any, movementModel: any): void {
     this.cellState = cellState;
     this.cellStateManager = new CellStateManager(
-      this.board,
-      {
-        x: parseInt((this.height - 1) / 2 + ""),
-        y: parseInt((this.width - 1) / 2 - 5 + ""),
-      },
-
-      {
-        x: parseInt((this.height - 1) / 2 + ""),
-        y: parseInt((this.width - 1) / 2 + 5 + ""),
-      },
-      movementModel,
-      this.cellState,
-      undefined,
-      undefined,
-      renderer
+      this.board, //board
+      this.start, //start
+      this.end, //end
+      movementModel, //movementModel
+      this.cellState, //cellState
+      // this.walls,
+      undefined, //walls
+      undefined, //AlgorithmController
+      renderer //renderer
     );
   }
 

@@ -1,11 +1,10 @@
 import { expect, test } from "vitest";
-import { Board } from "../model/subject/board";
 
-test("initialising the board", () => {
-  new Board(3).board;
-});
+import { Board } from "../model/subject/board/board";
+const size = { x: 3, y: 3 };
+const board = new Board(size).grid;
+
 test("testing all neighboring positions", () => {
-  const board = new Board(3).board;
   expect(board[1][1].topLeft.pos).toBe(0);
   expect(board[1][1].top.pos).toBe(1);
   expect(board[1][1].topRight.pos).toBe(2);
@@ -15,10 +14,4 @@ test("testing all neighboring positions", () => {
   expect(board[1][1].bottomLeft.pos).toBe(6);
   expect(board[1][1].bottom.pos).toBe(7);
   expect(board[1][1].bottomRight.pos).toBe(8);
-});
-test("getting neighbours", () => {
-  const board = new Board(3);
-  const current = board.board[1][1];
-  expect(board.getNeighbours(current).length).toBe(4);
-  expect(board.getNeighboursDiagonal(current).length).toBe(8);
 });

@@ -13,7 +13,7 @@ export class manualMazeGenarotor implements MazeModel {
   }
   setBoard(board: Board): void {
     this.board = board;
-    this.grid = this.board.board;
+    this.grid = this.board.grid;
   }
   ifNull(data: any): any {
     if (data) {

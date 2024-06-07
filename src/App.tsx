@@ -2,6 +2,7 @@ import { BoardManager } from "./controller/board/boardManager";
 import { BoardController } from "./controller/interfaces/boardController";
 import { AutoCellState } from "./controller/pathfindingCellStates/auto/autoCellState";
 import { ManualCellState } from "./controller/pathfindingCellStates/manual/manualCellState";
+import Line from "./test/line";
 import Navbar from "./view/components/navbar";
 import AutoPathFindingPage from "./view/pages/autoPathfinding";
 import ManualPathFindingPage from "./view/pages/manualPathfinding";
@@ -36,6 +37,7 @@ function App() {
               >
                 Auto Pathfinding
               </Link>
+              <Line />
             </div>
           }
         />

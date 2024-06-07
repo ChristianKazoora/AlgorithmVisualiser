@@ -41,10 +41,11 @@ export class BfsController implements AlgorithmController {
   }
   setBoard(board: Board): void {
     this.board = board;
-    this.grid = this.ifNull(this.board).board;
+    this.grid = this.ifNull(this.board).grid;
   }
   setStart(pos: Point): void {
     this.start = pos;
+    console.log(this.grid);
     this.ifNull(this.grid)[pos.x][pos.y].isStart = true;
     this.ifNull(this.grid)[pos.x][pos.y].isWall = false;
   }

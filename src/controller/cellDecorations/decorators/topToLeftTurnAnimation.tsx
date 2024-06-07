@@ -4,12 +4,12 @@ import { Grid } from "@mui/material";
 export class TopToLeftTurn extends CellDecorator {
   animate(): any {
     return (
-      <div>
+      <div className="flex justify-center items-center">
         <div
-          className={` ml-[5px] mt-[-5px]  w-[0.5rem] h-[1rem]  rounded-[3.5px] ${this.classNames} `}
+          className={`  w-[0.5rem] h-[1rem]  rounded-[3.5px] ${this.classNames} `}
         >
           <div
-            className={`mt-[10px]  ml-[-8px]  w-[1rem]  h-[0.5rem]  rounded-[3.5px] ${this.classNames} `}
+            className={` w-[1rem]  h-[0.5rem]  rounded-[3.5px] ${this.classNames} `}
           />
         </div>
       </div>

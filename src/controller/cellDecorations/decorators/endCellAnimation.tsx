@@ -5,13 +5,9 @@ import { Grid } from "@mui/material";
 export class EndCellAnimation extends CellDecorator {
   animate(): any {
     return (
-      <div
-        style={{ background: "red" }}
-        id={`cell-${this.x}-${this.y}-end`}
-        className="hidden"
-      >
-        <div className="bg-white w-[1.1rem] h-[1.1rem] mt-[-3px] rounded-full">
-          <FaFlagCheckered className=" justify-center ml-[0.08rem] mt-[0.2rem] h-[0.8rem]" />
+      <div id={`cell-${this.x}-${this.y}-end`} className="hidden">
+        <div className="flex justify-center ">
+          <FaFlagCheckered className=" bg-green-300 mt-[0.1rem] h-[1rem]" />
         </div>
       </div>
     );

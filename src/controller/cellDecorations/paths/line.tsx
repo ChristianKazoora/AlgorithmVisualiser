@@ -42,7 +42,7 @@ export class Line extends CellDecorator {
         } else if (TurnHelper.rightToTopTurn(this)) {
           pos = new RightToTopTurn(this).animate();
         }
-        return <div className="">{pos}</div>;
+        return <div>{pos}</div>;
       })();
     }
   }

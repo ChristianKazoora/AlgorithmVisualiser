@@ -169,7 +169,7 @@ export class AutoGridRenderer implements GridRenderer {
   }
   animateLinePath(): void {
     const path = this.ifNull(this.path);
-    // path.reverse();
+    path.reverse();
     for (let i = 0; i < path.length; i++) {
       setTimeout(
         () => {

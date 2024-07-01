@@ -12,8 +12,12 @@ export class ManualGridRenderer implements GridRenderer {
   private board: Board | undefined;
   private path: Array<Cell> | undefined;
   private currentPoints: Stack<Cell> | undefined;
-
+  private rootsMap: Map<string, any>; // Map to store roots
   private ANIMATIONSPEED = 2;
+
+  constructor() {
+    this.rootsMap = new Map(); // Initialize the map in the constructor
+  }
   setBoard(board: Board): void {
     this.board = board;
     this.grid = board.grid;
@@ -159,24 +163,32 @@ export class ManualGridRenderer implements GridRenderer {
   }
   animateLinePath(): void {
     const path = this.ifNull(this.path);
-    // path.reverse();
     for (let i = 0; i < path.length; i++) {
       setTimeout(
         () => {
           const cell = path[i];
           if (!cell.isStart && !cell.isEnd) {
-            const pathElelement = this.ifNull(document).getElementById(
-              `cell-${cell.x}-${cell.y}-path`
-            );
+            const cellId = `cell-${cell.x}-${cell.y}-path`;
+            const pathElement = this.ifNull(document).getElementById(cellId);
             const visitedElement = this.ifNull(document).getElementById(
               `cell-${cell.x}-${cell.y}-visited`
             );
-            if (pathElelement) {
+
+            if (pathElement) {
               let toAdd = new Line(cell).animate();
-              const root = createRoot(pathElelement);
-              root.render(toAdd);
-              pathElelement.className = "block";
+              // Check if a root already exists for this element
+              if (this.rootsMap.has(cellId)) {
+                const existingRoot = this.rootsMap.get(cellId);
+                existingRoot.render(toAdd); // Use the existing root to render
+              } else {
+                // Create a new root and store it in the map
+                const newRoot = createRoot(pathElement);
+                newRoot.render(toAdd);
+                this.rootsMap.set(cellId, newRoot);
+              }
+              pathElement.className = "block";
             }
+
             if (visitedElement) {
               visitedElement.className = "hidden";
             }

@@ -24,7 +24,7 @@ export class VisitedPath extends CellDecorator {
         key={this.y}
         data-row={this.x}
         data-col={this.y}
-        // className={" flex justify-center items-center"}
+        className={" flex justify-center items-center"}
         style={{
           width: "20px",
           height: "20px",

@@ -1,17 +1,11 @@
-import { motion } from "framer-motion";
 import { CellDecorator } from "../cellDecorator";
-import { Grid, touchRippleClasses } from "@mui/material";
 export class TopToRightTurn extends CellDecorator {
   animate(): any {
     return (
-      <div className="flex justify-center items-center">
+      <div className={`mb-[.9rem]  w-[0.5rem] h-[1.2rem]   ${this.classNames}`}>
         <div
-          className={`  w-[0.5rem] h-[1rem]  rounded-[3.5px] ${this.classNames} `}
-        >
-          <div
-            className={` w-[2rem]  h-[0.5rem]  rounded-[3.5px] ${this.classNames} `}
-          ></div>
-        </div>
+          className={` mt-[.8rem]  w-[1.5rem]  h-[0.5rem] ${this.classNames}`}
+        />
       </div>
     );
   }

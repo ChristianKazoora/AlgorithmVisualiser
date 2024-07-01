@@ -15,7 +15,7 @@ export class Line extends CellDecorator {
     {
       return (() => {
         let pos: JSX.Element | undefined;
-        this.classNames = "absolute bg-green-500";
+        this.classNames = " rounded-box bg-green-500";
         if (TurnHelper.left_Right(this)) {
           pos = new Left_Right(this).animate();
         } else if (TurnHelper.up_Down(this)) {
@@ -25,24 +25,28 @@ export class Line extends CellDecorator {
         else if (TurnHelper.topToRightTurn(this)) {
           pos = new TopToRightTurn(this).animate();
         } else if (TurnHelper.leftToTopTurn(this)) {
-          pos = new LeftToTopTurn(this).animate();
+          // pos = new LeftToTopTurn(this).animate();
         } else if (TurnHelper.bottomToRightTurn(this)) {
-          pos = new BottomToRightTurn(this).animate();
+          // pos = new BottomToRightTurn(this).animate();
         } else if (TurnHelper.leftToBottomTurn(this)) {
-          pos = new LeftToBottomTurn(this).animate();
+          // pos = new LeftToBottomTurn(this).animate();
         }
 
         //inverse turns
         else if (TurnHelper.rightToBottomTurn(this)) {
-          pos = new RightToBottomTurn(this).animate();
+          // pos = new RightToBottomTurn(this).animate();
         } else if (TurnHelper.bottomToLeftTurn(this)) {
-          pos = new BottomToLeftTurn(this).animate();
+          // pos = new BottomToLeftTurn(this).animate();
         } else if (TurnHelper.topToLeftTurn(this)) {
-          pos = new TopToLeftTurn(this).animate();
+          // pos = new TopToLeftTurn(this).animate();
         } else if (TurnHelper.rightToTopTurn(this)) {
-          pos = new RightToTopTurn(this).animate();
+          // pos = new RightToTopTurn(this).animate();
         }
-        return <div>{pos}</div>;
+        return (
+          <div className="flex  justify-center items-center bg-red-500">
+            {pos}
+          </div>
+        );
       })();
     }
   }

@@ -1,4 +1,3 @@
-import { Point } from "framer-motion";
 import { MovementModel } from "../../../model/Interfaces/movementModel";
 import { Board } from "../../../model/subject/board/board";
 import { AlgorithmController } from "../../interfaces/algorithmController";
@@ -7,7 +6,7 @@ import { Cell } from "../../../model/subject/Cell";
 import { GridRenderer } from "../../interfaces/gridRenderer";
 import { MazeManager } from "../../../model/subject/maze/mazeManager";
 import { autoMazeGenarator } from "../../../model/subject/maze/auto/autoMazeGenarator";
-
+import { Point } from "../../../shared/point";
 export class AutoCellState implements CellState {
   board: Board | undefined;
   grid: Array<Array<Cell>> | undefined;

@@ -37,6 +37,7 @@ function App() {
               >
                 Auto Pathfinding
               </Link>
+              {/* Line */}
               <Line />
             </div>
           }

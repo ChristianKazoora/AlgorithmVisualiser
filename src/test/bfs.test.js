@@ -4,7 +4,7 @@ import { BfsModel } from "../model/subject/algorithms/pathFinding/BfsModel";
 import { Pathfinding } from "../model/subject/algorithms/pathFinding/Pathfinding";
 import { GetManulNeighbours } from "../model/subject/board/strategies/manual/getManulNeighbours";
 import { GetManulNeigbourWD } from "../model/subject/board/strategies/manual/getManulNeigbourWD";
-
+import { TurnHelper } from "../controller/pathfindingCellStates/turnHelper";
 const size = { x: 3, y: 3 };
 
 const board = new Board(size);
@@ -53,6 +53,33 @@ test("BFS finds a path with walls diagonal", () => {
   algo.setMovementModel(new GetManulNeigbourWD());
   algo.start();
   expect(algo.getPath().length).toBe(3);
+});
+
+// text all path neighbours
+test("Test turns", () => {
+  const strategy = new BfsModel();
+  const walls = [
+    { x: 1, y: 0 },
+    { x: 1, y: 2 },
+  ];
+  const algo = new Pathfinding(strategy, start, end, board, walls);
+  algo.setMovementModel(new GetManulNeighbours());
+  algo.start();
+  expect(TurnHelper.leftToBottomTurn(algo.getPath()[3])).toBe(true);
+  expect(TurnHelper.topToRightTurn(algo.getPath()[1])).toBe(true);
+
+  const inverseStrategy = new BfsModel();
+  const inverseAlgo = new Pathfinding(
+    inverseStrategy,
+    end,
+    start,
+    board,
+    walls
+  );
+  inverseAlgo.setMovementModel(new GetManulNeighbours());
+  inverseAlgo.start();
+  expect(TurnHelper.rightToTopTurn(inverseAlgo.getPath()[3])).toBe(true);
+  expect(TurnHelper.bottomToLeftTurn(inverseAlgo.getPath()[1])).toBe(true);
 });
 
 test("BFS returns null if no path exists", () => {

@@ -125,6 +125,8 @@ export class ManualCellState implements CellState {
                 this.setEnd({ x: i, y: j });
               }
             }
+            this.algorithmController?.getData();
+            this.algorithmController?.animatePath();
             this.algorithmController?.reRenderCss();
           };
 

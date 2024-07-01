@@ -30,11 +30,11 @@ export class BoardManager implements BoardController {
     this.cellState = _cellState;
     this.end = {
       x: parseInt((this.height - 1) / 2 + ""),
-      y: parseInt((this.width - 1) / 2 - 5 + ""),
+      y: parseInt((this.width - 1) / 2 - 2 + ""),
     };
     this.start = {
       x: parseInt((this.height - 1) / 2 + ""),
-      y: parseInt((this.width - 1) / 2 + 5 + ""),
+      y: parseInt((this.width - 1) / 2 + 2 + ""),
     };
 
     this.walls = [

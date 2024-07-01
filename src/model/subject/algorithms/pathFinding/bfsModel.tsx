@@ -15,7 +15,6 @@ export class BfsModel implements PathfindingModel {
   private path: Array<Cell> = [];
   private startP: Cell | undefined;
   private currentP: Stack<Cell> = new Stack<Cell>();
-
   bfs(): void {
     let start: Cell = this.ifNull(this.startP);
     this.queue.enqueue(start);
@@ -51,16 +50,14 @@ export class BfsModel implements PathfindingModel {
     let path: Array<Cell> = new Array<Cell>();
     let current: Cell = end;
 
-    while (current !== this.startP) {
+    while (current != this.startP) {
       path.push(current);
       if (current.previousCell != undefined) {
         current.previousCell.nextCell = current;
       }
       current = current.previousCell as Cell;
     }
-    path.reverse();
-    path.unshift(this.ifNull(this.startP));
-
+    path.push(this.startP as Cell);
     return path;
   }
   count: number = 0;
@@ -87,11 +84,31 @@ export class BfsModel implements PathfindingModel {
     }
   }
   setStartPoint(pos: Point): void {
+    this.setAllOtherCellsToFalse("start");
     this.ifNull(this.grid)[pos.x][pos.y].isStart = true;
     this.startP = this.ifNull(this.grid)[pos.x][pos.y];
-    //this.setCurrentPoint(pos.x, pos.y);
+  }
+  setAllOtherCellsToFalse(startOrEnd: String): void {
+    if (startOrEnd == "start") {
+      for (let i = 0; i < this.ifNull(this.grid).length; i++) {
+        for (let j = 0; j < this.ifNull(this.grid)[i].length; j++) {
+          if (this.ifNull(this.grid)[i][j].isStart) {
+            this.ifNull(this.grid)[i][j].isStart = false;
+          }
+        }
+      }
+    } else {
+      for (let i = 0; i < this.ifNull(this.grid).length; i++) {
+        for (let j = 0; j < this.ifNull(this.grid)[i].length; j++) {
+          if (this.ifNull(this.grid)[i][j].isEnd) {
+            this.ifNull(this.grid)[i][j].isEnd = false;
+          }
+        }
+      }
+    }
   }
   setEndPoint(pos: Point): void {
+    this.setAllOtherCellsToFalse("end");
     this.ifNull(this.grid)[pos.x][pos.y].isEnd = true;
   }
   toggleWall(pos: Point): void {

@@ -5,11 +5,11 @@ import { AlgorithmController } from "../../../../interfaces/algorithmController"
 import { Cell } from "../../../../../model/subject/Cell";
 import { Stack } from "../../../../../shared/stack";
 import { GetDataController } from "../../../../interfaces/getDataController";
-import { GridRenderManager } from "../../../renderer/gridRenderManager";
+// import { GridRenderManager } from "../../../renderer/gridRenderManager";
 import { GridRenderer } from "../../../../interfaces/gridRenderer";
 import { BfsData } from "../../../getData/bfsData";
 import { AutoGridRenderer } from "../../../renderer/autoGridRender";
-import { mainController } from "../../../../interfaces/mainController";
+// import { mainController } from "../../../../interfaces/mainController";
 export class BfsController implements AlgorithmController {
   board: Board | undefined;
   grid: Array<Array<Cell>> | undefined;

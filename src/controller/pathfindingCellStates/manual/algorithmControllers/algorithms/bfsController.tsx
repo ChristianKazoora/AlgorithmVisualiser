@@ -20,7 +20,7 @@ export class BfsController implements AlgorithmController {
   path: Array<Cell> | undefined;
   currentPoints: Stack<Cell> | undefined;
   neighbourStrategy: MovementModel | undefined;
-  walls: Array<Point> | undefined;
+  walls: Array<Point> = new Array<Point>();
   data: GetDataController | undefined;
   renderer: GridRenderer = new GridRenderManager();
   constructor() {
@@ -60,7 +60,8 @@ export class BfsController implements AlgorithmController {
     return this.ifNull(this.neighbourStrategy);
   }
   setWalls(walls: Array<Point>): void {
-    if (walls.length === 0) {
+    if (walls.length === 0 || !walls) {
+      walls = [];
       return;
     }
     this.setGridWallsToFalse();
@@ -119,6 +120,9 @@ export class BfsController implements AlgorithmController {
   }
   reRenderCss(): void {
     this.renderer.reRenderCss();
+  }
+  getRenderer(): GridRenderer {
+    return this.renderer;
   }
   setRenderer(renderer: GridRenderer): void {
     this.renderer = renderer;

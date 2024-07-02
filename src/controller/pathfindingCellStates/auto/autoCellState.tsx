@@ -16,7 +16,21 @@ export class AutoCellState implements CellState {
   end: Point = { x: 0, y: 1 };
   draggingStart_End = "";
   currentPressedCell: any;
-
+  getMovementStrategy(): MovementModel {
+    return this.algorithmController?.getMovementStrategy() as MovementModel;
+  }
+  getAlgorithmController(): AlgorithmController {
+    return this.algorithmController as AlgorithmController;
+  }
+  getRenderer(): GridRenderer {
+    return this.algorithmController?.getRenderer() as GridRenderer;
+  }
+  getStart(): Point {
+    return this.start;
+  }
+  getEnd(): Point {
+    return this.end;
+  }
   animatePath(): void {
     this.getData();
     this.algorithmController?.animatePath();

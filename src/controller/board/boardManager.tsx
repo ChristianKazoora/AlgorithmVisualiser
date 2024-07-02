@@ -21,9 +21,10 @@ export class BoardManager implements BoardController {
   start: Point;
   end: Point;
   walls: Point[] = [];
+  renderer: any;
   constructor(_cellState: CellState = new ManualCellState()) {
-    this.height = 5; // Math.floor((document.documentElement.clientHeight - 60) / 25);
-    this.width = 5; // Math.floor((document.documentElement.clientWidth - 30) / 20);
+    this.height = Math.floor((document.documentElement.clientHeight - 60) / 25);
+    this.width = Math.floor((document.documentElement.clientWidth - 30) / 20);
     this.board = new Board({ y: this.height, x: this.width });
 
     this.grid = this.board.grid;
@@ -104,16 +105,17 @@ export class BoardManager implements BoardController {
     bfsController.setEnd(this.getEnd());
     bfsController.setWalls(this.getWalls());
     bfsController.setMovementStrategy(this.getMovementModel());
+    bfsController.setRenderer(this.renderer);
     this.cellState.setAlgorithmController(bfsController);
   }
   getAlgorithmController(): any {
     return this.cellState.getAlgorithmController();
   }
   getStart(): Point {
-    return this.start;
+    return this.cellState.getStart();
   }
   getEnd(): Point {
-    return this.end;
+    return this.cellState.getEnd();
   }
   getWalls(): Point[] {
     return this.walls;
@@ -127,6 +129,7 @@ export class BoardManager implements BoardController {
   }
   setCellState(cellState: any, renderer: any, movementModel: any): void {
     this.cellState = cellState;
+    this.renderer = renderer;
     this.cellStateManager = new CellStateManager(
       this.board, //board
       this.start, //start

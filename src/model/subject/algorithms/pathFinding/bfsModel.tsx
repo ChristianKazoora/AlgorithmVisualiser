@@ -16,6 +16,7 @@ export class BfsModel implements PathfindingModel {
   private path: Array<Cell> = [];
   private startP: Cell | undefined;
   private currentP: Stack<Cell> = new Stack<Cell>();
+
   bfs(): void {
     let start: Cell = this.ifNull(this.startP);
     this.queue.enqueue(start);
@@ -61,7 +62,6 @@ export class BfsModel implements PathfindingModel {
     path.push(this.startP as Cell);
     return path;
   }
-  count: number = 0;
   ifNull(object: any): any {
     if (object) {
       return object;

@@ -16,6 +16,9 @@ export class ManualCellState implements CellState {
   start: Point = { x: 0, y: 0 };
   end: Point = { x: 0, y: 1 };
   draggingStart_End = "";
+  getRenderer(): GridRenderer {
+    return this.algorithmController?.getRenderer() as GridRenderer;
+  }
   setRenderer(renderer: GridRenderer): void {
     this.algorithmController?.setRenderer(renderer);
   }
@@ -51,8 +54,13 @@ export class ManualCellState implements CellState {
   }
   setStart(pos: Point): void {
     this.start = pos;
-
     this.algorithmController?.setStart(pos);
+  }
+  getStart(): Point {
+    return this.start;
+  }
+  getEnd(): Point {
+    return this.end;
   }
   setEnd(pos: Point): void {
     this.end = pos;

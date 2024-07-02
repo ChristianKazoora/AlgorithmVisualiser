@@ -3,12 +3,12 @@ import { MovementModel } from "../../../model/Interfaces/movementModel";
 import { Board } from "../../../model/subject/board/board";
 import { GetDataController } from "../../interfaces/getDataController";
 import { Cell } from "../../../model/subject/Cell";
-import { BfsModel } from "../../../model/subject/algorithms/pathFinding/bfsModel";
+import { DfsModel } from "../../../model/subject/algorithms/pathFinding/dfsModel";
 import { Pathfinding } from "../../../model/subject/algorithms/pathFinding/Pathfinding";
 import { Stack } from "../../../shared/stack";
 import { PathfindingModel } from "../../../model/Interfaces/PathfindingModel";
 
-export class BfsData implements GetDataController {
+export class DfsData implements GetDataController {
   board: Board | undefined;
   grid: Array<Array<Cell>> | undefined;
   start: Point | undefined;
@@ -49,7 +49,7 @@ export class BfsData implements GetDataController {
   }
   getData(): any {
     this.bfsModel = new Pathfinding(
-      new BfsModel(),
+      new DfsModel(),
       this.ifNull(this.start),
       this.ifNull(this.end),
       this.ifNull(this.board),

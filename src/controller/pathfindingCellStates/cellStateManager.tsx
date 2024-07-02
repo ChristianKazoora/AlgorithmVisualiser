@@ -30,6 +30,15 @@ export class CellStateManager implements CellState {
     this.setMovementStrategy(_movementStrategy);
     this.setRenderer(_renderer);
   }
+  getStart(): Point {
+    return this.cellState.getStart();
+  }
+  getEnd(): Point {
+    return this.cellState.getEnd();
+  }
+  getRenderer(): GridRenderer {
+    return this.cellState.getRenderer();
+  }
   getAlgorithmController(): AlgorithmController {
     return this.cellState.getAlgorithmController();
   }

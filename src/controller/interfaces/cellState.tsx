@@ -1,6 +1,6 @@
-import { Point } from "framer-motion";
 import { MovementModel } from "../../model/Interfaces/movementModel";
 import { Board } from "../../model/subject/board/board";
+import { Point } from "../../shared/point";
 import { mainController } from "../interfaces/mainController";
 import { AlgorithmController } from "./algorithmController";
 import { GridRenderer } from "./gridRenderer";
@@ -23,4 +23,7 @@ export interface CellState extends mainController {
   ganarateMaze(): void;
   getMovementStrategy(): MovementModel;
   getAlgorithmController(): AlgorithmController;
+  getRenderer(): GridRenderer;
+  getStart(): Point;
+  getEnd(): Point;
 }

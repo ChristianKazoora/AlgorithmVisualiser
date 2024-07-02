@@ -12,6 +12,7 @@ export interface AlgorithmController extends mainController {
   removeEnd(pos: Point): void;
   setEnd(pos: Point): void;
   setMovementStrategy(strategy: MovementModel): void;
+  getMovementStrategy(): MovementModel;
   setWalls(walls: Array<Point>): void;
   getData(): void;
   reRenderCss(): void;

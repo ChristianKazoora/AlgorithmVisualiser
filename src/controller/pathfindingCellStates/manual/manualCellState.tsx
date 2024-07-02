@@ -19,6 +19,12 @@ export class ManualCellState implements CellState {
   setRenderer(renderer: GridRenderer): void {
     this.algorithmController?.setRenderer(renderer);
   }
+  getAlgorithmController(): AlgorithmController {
+    return this.algorithmController as AlgorithmController;
+  }
+  getMovementStrategy(): MovementModel {
+    return this.algorithmController?.getMovementStrategy() as MovementModel;
+  }
   draw(): JSX.Element[][] {
     return this.algorithmController?.draw();
   }

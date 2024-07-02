@@ -56,7 +56,13 @@ export class BfsController implements AlgorithmController {
   setMovementStrategy(strategy: MovementModel): void {
     this.neighbourStrategy = strategy;
   }
+  getMovementStrategy(): MovementModel {
+    return this.ifNull(this.neighbourStrategy);
+  }
   setWalls(walls: Array<Point>): void {
+    if (walls.length === 0) {
+      return;
+    }
     this.setGridWallsToFalse();
     //remove start and end from walls
     this.walls = walls.filter((wall: any) => {

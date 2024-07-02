@@ -6,7 +6,7 @@ import { BfsModel } from "./bfsModel";
 import { Stack } from "../../../../shared/stack";
 import { MovementModel } from "../../../Interfaces/movementModel";
 import { MovementManager } from "../../board/movementManager";
-import { PathfindingModel } from "../../../Interfaces/pathfindingModel";
+import { PathfindingModel } from "../../../Interfaces/PathfindingModel";
 import { GetManulNeigbourWD } from "../../board/strategies/manual/getManulNeigbourWD";
 
 export class Pathfinding implements PathfindingModel {

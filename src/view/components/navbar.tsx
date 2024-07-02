@@ -1,8 +1,7 @@
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { BoardController } from "../../controller/interfaces/boardController";
-import React from "react";
-import { DfsModel } from "../../model/subject/algorithms/pathFinding/dfsModel";
-import { BfsModel } from "../../model/subject/algorithms/pathFinding/bfsModel";
+import { BfsController } from "../../controller/pathfindingCellStates/manual/algorithmControllers/algorithms/bfsController";
+import { DfsController } from "../../controller/pathfindingCellStates/manual/algorithmControllers/algorithms/dfsController";
 function Navbar({ boardController }: { boardController: BoardController }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -45,11 +44,11 @@ function Navbar({ boardController }: { boardController: BoardController }) {
           onChange={(e) => {
             const selectedValue = e.target.value;
             if (selectedValue === "DFS") {
-              boardController.setAlgorithmController(new DfsModel());
+              boardController.setAlgorithmController(new DfsController());
               console.log("dfs");
             }
             if (selectedValue === "BFS") {
-              boardController.setAlgorithmController(new BfsModel());
+              boardController.setAlgorithmController(new BfsController());
               console.log("bfs");
             }
             // Add more conditions for other options if necessary

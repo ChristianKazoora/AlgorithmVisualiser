@@ -20,10 +20,10 @@ export class BoardManager implements BoardController {
   width: number;
   start: Point;
   end: Point;
-  walls: Point[];
+  walls: Point[] = [];
   constructor(_cellState: CellState = new ManualCellState()) {
-    this.height = Math.floor((document.documentElement.clientHeight - 60) / 25);
-    this.width = Math.floor((document.documentElement.clientWidth - 30) / 20);
+    this.height = 5; // Math.floor((document.documentElement.clientHeight - 60) / 25);
+    this.width = 5; // Math.floor((document.documentElement.clientWidth - 30) / 20);
     this.board = new Board({ y: this.height, x: this.width });
 
     this.grid = this.board.grid;
@@ -37,44 +37,44 @@ export class BoardManager implements BoardController {
       y: parseInt((this.width - 1) / 2 + 2 + ""),
     };
 
-    this.walls = [
-      {
-        x: parseInt((this.height - 1) / 2 + 4 + ""),
-        y: parseInt((this.width - 1) / 2 + ""),
-      },
-      {
-        x: parseInt((this.height - 1) / 2 + 3 + ""),
-        y: parseInt((this.width - 1) / 2 + ""),
-      },
-      {
-        x: parseInt((this.height - 1) / 2 + 2 + ""),
-        y: parseInt((this.width - 1) / 2 + ""),
-      },
-      {
-        x: parseInt((this.height - 1) / 2 + 1 + ""),
-        y: parseInt((this.width - 1) / 2 + ""),
-      },
-      {
-        x: parseInt((this.height - 1) / 2 + ""),
-        y: parseInt((this.width - 1) / 2 + ""),
-      },
-      {
-        x: parseInt((this.height - 1) / 2 - 1 + ""),
-        y: parseInt((this.width - 1) / 2 + ""),
-      },
-      {
-        x: parseInt((this.height - 1) / 2 - 2 + ""),
-        y: parseInt((this.width - 1) / 2 + ""),
-      },
-      {
-        x: parseInt((this.height - 1) / 2 - 3 + ""),
-        y: parseInt((this.width - 1) / 2 + ""),
-      },
-      {
-        x: parseInt((this.height - 1) / 2 - 4 + ""),
-        y: parseInt((this.width - 1) / 2 + ""),
-      },
-    ];
+    // this.walls = [
+    //   {
+    //     x: parseInt((this.height - 1) / 2 + 4 + ""),
+    //     y: parseInt((this.width - 1) / 2 + ""),
+    //   },
+    //   {
+    //     x: parseInt((this.height - 1) / 2 + 3 + ""),
+    //     y: parseInt((this.width - 1) / 2 + ""),
+    //   },
+    //   {
+    //     x: parseInt((this.height - 1) / 2 + 2 + ""),
+    //     y: parseInt((this.width - 1) / 2 + ""),
+    //   },
+    //   {
+    //     x: parseInt((this.height - 1) / 2 + 1 + ""),
+    //     y: parseInt((this.width - 1) / 2 + ""),
+    //   },
+    //   {
+    //     x: parseInt((this.height - 1) / 2 + ""),
+    //     y: parseInt((this.width - 1) / 2 + ""),
+    //   },
+    //   {
+    //     x: parseInt((this.height - 1) / 2 - 1 + ""),
+    //     y: parseInt((this.width - 1) / 2 + ""),
+    //   },
+    //   {
+    //     x: parseInt((this.height - 1) / 2 - 2 + ""),
+    //     y: parseInt((this.width - 1) / 2 + ""),
+    //   },
+    //   {
+    //     x: parseInt((this.height - 1) / 2 - 3 + ""),
+    //     y: parseInt((this.width - 1) / 2 + ""),
+    //   },
+    //   {
+    //     x: parseInt((this.height - 1) / 2 - 4 + ""),
+    //     y: parseInt((this.width - 1) / 2 + ""),
+    //   },
+    // ];
     this.cellStateManager = new CellStateManager(
       this.board,
       this.start,
@@ -83,6 +83,9 @@ export class BoardManager implements BoardController {
       this.cellState
       // this.walls
     );
+  }
+  getBoard(): Board {
+    return this.board;
   }
   ganarateMaze(): void {
     this.cellState.ganarateMaze();
@@ -95,22 +98,28 @@ export class BoardManager implements BoardController {
     this.cellState.animatePath();
   }
   setAlgorithmController(algorithm: any): void {
-    this.cellState.setAlgorithmController(algorithm);
+    const bfsController = algorithm;
+    bfsController.setBoard(this.getBoard());
+    bfsController.setStart(this.getStart());
+    bfsController.setEnd(this.getEnd());
+    bfsController.setWalls(this.getWalls());
+    bfsController.setMovementStrategy(this.getMovementModel());
+    this.cellState.setAlgorithmController(bfsController);
   }
-  setStart(pos: Point): void {
-    throw new Error("Method not implemented.");
+  getAlgorithmController(): any {
+    return this.cellState.getAlgorithmController();
   }
-  setEnd(pos: Point): void {
-    throw new Error("Method not implemented.");
+  getStart(): Point {
+    return this.start;
   }
-  setMovementStrategy(strategy: MovementModel): void {
-    throw new Error("Method not implemented.");
+  getEnd(): Point {
+    return this.end;
   }
-  setWalls(walls: Point[]): void {
-    throw new Error("Method not implemented.");
+  getWalls(): Point[] {
+    return this.walls;
   }
-  getData(): void {
-    throw new Error("Method not implemented.");
+  getMovementModel(): MovementModel {
+    return this.cellStateManager.getMovementStrategy();
   }
   setBoard(board: any): void {
     this.board = board;
@@ -145,5 +154,20 @@ export class BoardManager implements BoardController {
         </Grid>
       </div>
     );
+  }
+  setStart(pos: Point): void {
+    throw new Error("Method not implemented.");
+  }
+  setEnd(pos: Point): void {
+    throw new Error("Method not implemented.");
+  }
+  setMovementStrategy(strategy: MovementModel): void {
+    throw new Error("Method not implemented.");
+  }
+  setWalls(walls: Point[]): void {
+    throw new Error("Method not implemented.");
+  }
+  getData(): void {
+    throw new Error("Method not implemented.");
   }
 }

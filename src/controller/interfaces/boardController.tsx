@@ -8,4 +8,8 @@ export interface BoardController extends mainController {
   setCellState(cellState: any, renderer: any, movementModel: any): void;
   ganarateMaze(): void;
   setAlgorithmController(algorithm: any): void;
+  getBoard(): Board;
+  getStart(): any;
+  getEnd(): any;
+  getWalls(): any;
 }

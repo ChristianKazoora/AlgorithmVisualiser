@@ -21,4 +21,6 @@ export interface CellState extends mainController {
   addEventListeners(): void;
   setRenderer(renderer: GridRenderer): void;
   ganarateMaze(): void;
+  getMovementStrategy(): MovementModel;
+  getAlgorithmController(): AlgorithmController;
 }

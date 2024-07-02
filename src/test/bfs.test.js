@@ -1,10 +1,11 @@
 import { expect, test } from "vitest";
 import { Board } from "../model/subject/board/board";
-import { BfsModel } from "../model/subject/algorithms/pathFinding/BfsModel";
+import { BfsModel } from "../model/subject/algorithms/pathFinding/bfsModel";
 import { Pathfinding } from "../model/subject/algorithms/pathFinding/Pathfinding";
 import { GetManulNeighbours } from "../model/subject/board/strategies/manual/getManulNeighbours";
 import { GetManulNeigbourWD } from "../model/subject/board/strategies/manual/getManulNeigbourWD";
 import { TurnHelper } from "../controller/pathfindingCellStates/turnHelper";
+
 const size = { x: 3, y: 3 };
 
 const board = new Board(size);

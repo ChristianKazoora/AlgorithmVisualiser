@@ -30,6 +30,9 @@ export class CellStateManager implements CellState {
     this.setMovementStrategy(_movementStrategy);
     this.setRenderer(_renderer);
   }
+  getAlgorithmController(): AlgorithmController {
+    return this.cellState.getAlgorithmController();
+  }
   ganarateMaze(): void {
     this.cellState.ganarateMaze();
   }
@@ -54,6 +57,9 @@ export class CellStateManager implements CellState {
   }
   getData(): void {
     this.cellState.getData();
+  }
+  getMovementStrategy(): MovementModel {
+    return this.cellState.getMovementStrategy();
   }
   setWalls(walls: Point[]): void {
     this.cellState.setWalls(walls);

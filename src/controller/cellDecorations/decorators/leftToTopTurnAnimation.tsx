@@ -1,17 +1,11 @@
-import { motion } from "framer-motion";
 import { CellDecorator } from "../cellDecorator";
-import { Grid } from "@mui/material";
 export class LeftToTopTurn extends CellDecorator {
   animate(): any {
     return (
-      <div>
+      <div className={`mb-[.9rem]  w-[0.5rem] h-[1.2rem]   ${this.classNames}`}>
         <div
-          className={` w-[0.5rem] h-[1rem]  rounded-[3.5px] ${this.classNames}`}
-        >
-          <div
-            className={`  w-[1.1rem]  h-[0.5rem] rounded-[3.5px] ${this.classNames}`}
-          />
-        </div>
+          className={` mt-[.8rem] ml-[-1rem] w-[1.5rem]  h-[0.5rem] ${this.classNames}`}
+        />
       </div>
     );
   }

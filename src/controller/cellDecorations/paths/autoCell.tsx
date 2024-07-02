@@ -3,20 +3,22 @@ import { StartCellAnimation } from "../decorators/startCellAnimation";
 import { EndCellAnimation } from "../decorators/endCellAnimation";
 import { WallCellAnimation } from "../decorators/wallCellAnimation";
 import { Line } from "./line";
+import { Grid } from "@mui/material";
 
 export class AutoCell extends CellDecorator {
   animate(): JSX.Element {
     return (
-      <div
+      <Grid
         id={`cell-${this.x}-${this.y}`}
+        item
+        xs={0}
         key={this.y}
+        data-row={this.x}
+        data-col={this.y}
+        className={" flex justify-center items-center"}
         style={{
           width: "20px",
           height: "20px",
-          // borderTop: this.northW ? "1px solid black" : "none",
-          // borderBottom: this.southW ? "1px solid black" : "none",
-          // borderLeft: this.westW ? "1px solid black" : "none",
-          // borderRight: this.eastW ? "1px solid black" : "none",
         }}
       >
         {new StartCellAnimation(this).animate()}
@@ -39,7 +41,7 @@ export class AutoCell extends CellDecorator {
           }}
           className="hidden"
         />
-      </div>
+      </Grid>
     );
   }
 }

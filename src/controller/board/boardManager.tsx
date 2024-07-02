@@ -94,6 +94,9 @@ export class BoardManager implements BoardController {
     console.log("animatePath");
     this.cellState.animatePath();
   }
+  setAlgorithmController(algorithm: any): void {
+    this.cellState.setAlgorithmController(algorithm);
+  }
   setStart(pos: Point): void {
     throw new Error("Method not implemented.");
   }

@@ -104,16 +104,16 @@ export class AutoGridRenderer implements GridRenderer {
           currentElement.style.borderLeft = "1px solid black";
           currentElement.style.borderRight = "1px solid black";
           if (!cell.northW) {
-            currentElement.style.borderTop = "none";
+            currentElement.style.borderTop = "1px solid transparent";
           }
           if (!cell.southW) {
-            currentElement.style.borderBottom = "none";
+            currentElement.style.borderBottom = "1px solid transparent";
           }
           if (!cell.eastW) {
-            currentElement.style.borderRight = "none";
+            currentElement.style.borderRight = "1px solid transparent";
           }
           if (!cell.westW) {
-            currentElement.style.borderLeft = "none";
+            currentElement.style.borderLeft = "1px solid transparent";
           }
         }
       }

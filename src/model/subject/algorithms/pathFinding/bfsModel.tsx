@@ -5,7 +5,8 @@ import { Set } from "../../../../shared/set";
 import { Point } from "../../../../shared/point";
 import { Stack } from "../../../../shared/stack";
 import { MovementModel } from "../../../Interfaces/movementModel";
-import { PathfindingModel } from "../../../Interfaces/pathfindingModel";
+import { PathfindingModel } from "../../../Interfaces/PathfindingModel";
+
 export class BfsModel implements PathfindingModel {
   private grid: Array<Array<Cell>> | undefined;
   private board: Board | undefined;

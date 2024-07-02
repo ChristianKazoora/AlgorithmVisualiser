@@ -1,6 +1,8 @@
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { BoardController } from "../../controller/interfaces/boardController";
 import React from "react";
+import { DfsModel } from "../../model/subject/algorithms/pathFinding/dfsModel";
+import { BfsModel } from "../../model/subject/algorithms/pathFinding/bfsModel";
 function Navbar({ boardController }: { boardController: BoardController }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -38,12 +40,26 @@ function Navbar({ boardController }: { boardController: BoardController }) {
             Algo Visualizer
           </span>
         </div>
-        <select className="select select-success navbar-center max-w-xs">
-          <option disabled>
-            {/* /* <option className=" text-red-500"> Pick your favorite anime</option> */}
-          </option>
-          <option>One Piece</option>
-          <option>Naruto</option>
+        <select
+          className="select select-success navbar-center max-w-xs"
+          onChange={(e) => {
+            const selectedValue = e.target.value;
+            if (selectedValue === "DFS") {
+              boardController.setAlgorithmController(new DfsModel());
+              console.log("dfs");
+            }
+            if (selectedValue === "BFS") {
+              boardController.setAlgorithmController(new BfsModel());
+              console.log("bfs");
+            }
+            // Add more conditions for other options if necessary
+          }}
+        >
+          {/* <option disabled>
+            <option className=" text-red-500"> Pick your favorite anime</option>
+          </option> */}
+          <option>BFS</option>
+          <option>DFS</option>
           <option>Death Note</option>
           <option>Attack on Titan</option>
           <option>Bleach</option>

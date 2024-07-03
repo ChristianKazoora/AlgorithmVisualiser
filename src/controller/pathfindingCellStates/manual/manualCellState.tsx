@@ -13,8 +13,8 @@ export class ManualCellState implements CellState {
   algorithmController: AlgorithmController | undefined;
   walls: Array<Point> = new Array<Point>();
   currentPressedCell: any;
-  start: Point = { x: 0, y: 0 };
-  end: Point = { x: 0, y: 1 };
+  start: Point | undefined; //= { x: 0, y: 0 };
+  end: Point | undefined; //= { x: 0, y: 1 };
   draggingStart_End = "";
   getRenderer(): GridRenderer {
     return this.algorithmController?.getRenderer() as GridRenderer;
@@ -57,10 +57,10 @@ export class ManualCellState implements CellState {
     this.algorithmController?.setStart(pos);
   }
   getStart(): Point {
-    return this.start;
+    return this.ifNull(this.start);
   }
   getEnd(): Point {
-    return this.end;
+    return this.ifNull(this.end);
   }
   setEnd(pos: Point): void {
     this.end = pos;

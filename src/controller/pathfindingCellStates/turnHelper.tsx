@@ -1,6 +1,34 @@
 import { Cell } from "../../model/subject/Cell";
 
 export class TurnHelper {
+  static northEastToSouthWest(cell: Cell): boolean {
+    let result = false;
+    if (cell.nextCell !== undefined && cell.previousCell !== undefined) {
+      if (
+        (cell.nextCell == cell.bottomLeft &&
+          cell.previousCell == cell.topRight) ||
+        (cell.nextCell == cell.topRight && cell.previousCell == cell.bottomLeft)
+      ) {
+        result = true;
+      }
+    }
+    return result;
+  }
+  static northWestToSounthEast(cell: Cell): boolean {
+    let result = false;
+    if (
+      (cell.nextCell !== undefined && cell.previousCell !== undefined) ||
+      (cell.nextCell !== undefined && cell.previousCell !== undefined)
+    ) {
+      if (
+        cell.nextCell == cell.bottomRight &&
+        cell.previousCell == cell.topLeft
+      ) {
+        result = true;
+      }
+    }
+    return result;
+  }
   static leftToRight(cell: Cell): boolean {
     let result = false;
     if (cell.nextCell !== undefined && cell.previousCell !== undefined) {

@@ -80,7 +80,7 @@ export class BoardManager implements BoardController {
       this.board,
       this.start,
       this.end,
-      new GetManulNeighbours(),
+      new GetManulNeigbourWD(),
       this.cellState
       // this.walls
     );
@@ -95,7 +95,6 @@ export class BoardManager implements BoardController {
     this.cellState.addEventListeners();
   }
   animatePath(): void {
-    console.log("animatePath");
     this.cellState.animatePath();
   }
   setAlgorithmController(algorithm: any): void {
@@ -128,12 +127,21 @@ export class BoardManager implements BoardController {
     this.grid = this.board.grid;
   }
   setCellState(cellState: any, renderer: any, movementModel: any): void {
+    let theStart = this.getStart();
+    let theEnd = this.getEnd();
+    if (theStart === undefined) {
+      theStart = this.start;
+    }
+    if (theEnd === undefined) {
+      theEnd = this.end;
+    }
+
     this.cellState = cellState;
     this.renderer = renderer;
     this.cellStateManager = new CellStateManager(
       this.board, //board
-      this.start, //start
-      this.end, //end
+      theStart, //start
+      theEnd, //end
       movementModel, //movementModel
       this.cellState, //cellState
       // this.walls,
@@ -144,6 +152,7 @@ export class BoardManager implements BoardController {
   }
 
   draw() {
+    // useEffect to rerender the css after the dom is loaded
     const state = this.cellStateManager;
     const iterator = state.draw();
     return (

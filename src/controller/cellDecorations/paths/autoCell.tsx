@@ -29,15 +29,21 @@ export class AutoCell extends CellDecorator {
         </div>
         <div
           id={`cell-${this.x}-${this.y}-current`}
-          style={{ height: "1rem", background: "yellow" }}
+          style={{
+            height: ".6rem",
+            width: ".6rem",
+            background: "yellow",
+            borderRadius: "100%",
+          }}
           className="hidden"
         />
         <div
           id={`cell-${this.x}-${this.y}-visited`}
           style={{
             background: "grey",
-            height: "1.13rem",
-            borderRadius: "20%",
+            height: ".8rem",
+            width: ".8rem",
+            borderRadius: "100%",
           }}
           className="hidden"
         />

@@ -1,6 +1,4 @@
-import { motion } from "framer-motion";
-import { CellDecorator } from "../cellDecorator";
-import { Grid } from "@mui/material";
+import { CellDecorator } from "../../cellDecorator";
 
 export class BottomToRightTurn extends CellDecorator {
   animate(): any {

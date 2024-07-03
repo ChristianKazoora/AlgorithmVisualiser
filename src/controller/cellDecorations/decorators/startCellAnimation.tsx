@@ -1,5 +1,4 @@
 import { CellDecorator } from "../cellDecorator";
-import { Grid } from "@mui/material";
 import { SlRocket } from "react-icons/sl";
 
 export class StartCellAnimation extends CellDecorator {

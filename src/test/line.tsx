@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid } from "@mui/material";
-import { Left_Right } from "../controller/cellDecorations/decorators/left_RightAnimation";
+import { Left_Right } from "../controller/cellDecorations/decorators/Line/left_RightAnimation";
 const Line = () => {
   const classNames: string = "bg-red-500";
 
@@ -50,7 +50,6 @@ const Line = () => {
           </div>
         </div>
       </Grid>
-      {"RightToBottomTurn ->"}
       <Grid
         id={`cell-${0}-${2}`}
         item
@@ -64,13 +63,15 @@ const Line = () => {
           border: "1px solid black",
         }}
       >
-        {/* RightToBottomTurn*/}
         <div className={" flex  justify-center items-center h-full "}>
-          <div className={`mt-[.9rem]  w-[0.5rem] h-[1.2rem]   ${classNames}`}>
-            <div
-              className={`  mb-[.8rem]  w-[1.5rem]  h-[0.5rem] ${classNames}`}
-            />
-          </div>
+          <div
+            style={{
+              background: "grey",
+              height: ".7rem",
+              width: ".7rem",
+              borderRadius: "100%",
+            }}
+          ></div>
         </div>
       </Grid>
     </div>

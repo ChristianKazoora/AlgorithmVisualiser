@@ -1,7 +1,5 @@
-import React from "react"; // Add missing import
 import { FaFlagCheckered } from "react-icons/fa";
 import { CellDecorator } from "../cellDecorator";
-import { Grid } from "@mui/material";
 export class EndCellAnimation extends CellDecorator {
   animate(): any {
     return (

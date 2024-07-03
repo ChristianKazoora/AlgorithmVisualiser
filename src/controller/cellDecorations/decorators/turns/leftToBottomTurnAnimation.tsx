@@ -1,4 +1,4 @@
-import { CellDecorator } from "../cellDecorator";
+import { CellDecorator } from "../../cellDecorator";
 export class LeftToBottomTurn extends CellDecorator {
   animate(): any {
     return (

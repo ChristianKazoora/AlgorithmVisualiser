@@ -1,6 +1,5 @@
-import { motion } from "framer-motion";
-import { CellDecorator } from "../cellDecorator";
-import { TurnHelper } from "../../pathfindingCellStates/turnHelper";
+import { CellDecorator } from "../../cellDecorator";
+import { TurnHelper } from "../../../pathfindingCellStates/turnHelper";
 export class Left_Right extends CellDecorator {
   animate(): any {
     return (

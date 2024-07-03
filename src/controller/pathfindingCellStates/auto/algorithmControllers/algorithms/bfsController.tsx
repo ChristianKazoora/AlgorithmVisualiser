@@ -25,6 +25,12 @@ export class BfsController implements AlgorithmController {
   constructor() {
     this.data = new BfsData();
   }
+  getMovementStrategy(): MovementModel {
+    return this.neighbourStrategy as MovementModel;
+  }
+  getRenderer(): GridRenderer {
+    throw new Error("Method not implemented.");
+  }
   setRenderer(renderer: GridRenderer): void {
     this.renderer = renderer;
   }

@@ -12,8 +12,8 @@ export class AutoCellState implements CellState {
   grid: Array<Array<Cell>> | undefined;
   algorithmController: AlgorithmController | undefined;
   walls: Array<Point> = new Array<Point>();
-  start: Point = { x: 0, y: 0 };
-  end: Point = { x: 0, y: 1 };
+  start: Point | undefined; //= { x: 0, y: 0 };
+  end: Point | undefined; //= { x: 0, y: 1 };
   draggingStart_End = "";
   currentPressedCell: any;
   getMovementStrategy(): MovementModel {
@@ -26,10 +26,10 @@ export class AutoCellState implements CellState {
     return this.algorithmController?.getRenderer() as GridRenderer;
   }
   getStart(): Point {
-    return this.start;
+    return this.ifNull(this.start);
   }
   getEnd(): Point {
-    return this.end;
+    return this.ifNull(this.end);
   }
   animatePath(): void {
     this.getData();

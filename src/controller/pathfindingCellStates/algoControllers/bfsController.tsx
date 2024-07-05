@@ -1,15 +1,15 @@
-import { Cell } from "../../../../../model/subject/Cell";
-import { Board } from "../../../../../model/subject/board/board";
-import { Point } from "../../../../../shared/point";
-import { AlgorithmController } from "../../../../interfaces/algorithmController";
-import { Set } from "../../../../../shared/set";
-import { Stack } from "../../../../../shared/stack";
+import { Cell } from "../../../model/subject/Cell";
+import { Board } from "../../../model/subject/board/board";
+import { Point } from "../../../shared/point";
+import { AlgorithmController } from "../../interfaces/algorithmController";
+import { Set } from "../../../shared/set";
+import { Stack } from "../../../shared/stack";
 
-import { MovementModel } from "../../../../../model/Interfaces/movementModel";
-import { GetDataController } from "../../../../interfaces/getDataController";
-import { BfsData } from "../../../getData/bfsData";
-import { GridRenderManager } from "../../../renderer/gridRenderManager";
-import { GridRenderer } from "../../../../interfaces/gridRenderer";
+import { MovementModel } from "../../../model/Interfaces/movementModel";
+import { GetDataController } from "../../interfaces/getDataController";
+import { BfsData } from "../getData/bfsData";
+import { GridRenderManager } from "../renderer/gridRenderManager";
+import { GridRenderer } from "../../interfaces/gridRenderer";
 
 export class BfsController implements AlgorithmController {
   board: Board | undefined;

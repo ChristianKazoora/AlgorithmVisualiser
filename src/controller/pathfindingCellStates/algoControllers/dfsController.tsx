@@ -1,13 +1,13 @@
 import { Point } from "framer-motion";
-import { MovementModel } from "../../../../../model/Interfaces/movementModel";
-import { Board } from "../../../../../model/subject/board/board";
-import { AlgorithmController } from "../../../../interfaces/algorithmController";
-import { GridRenderer } from "../../../../interfaces/gridRenderer";
-import { Cell } from "../../../../../model/subject/Cell";
-import { Stack } from "../../../../../shared/stack";
-import { GetDataController } from "../../../../interfaces/getDataController";
-import { GridRenderManager } from "../../../renderer/gridRenderManager";
-import { DfsData } from "../../../getData/dfsData";
+import { MovementModel } from "../../../model/Interfaces/movementModel";
+import { Board } from "../../../model/subject/board/board";
+import { AlgorithmController } from "../../interfaces/algorithmController";
+import { GridRenderer } from "../../interfaces/gridRenderer";
+import { Cell } from "../../../model/subject/Cell";
+import { Stack } from "../../../shared/stack";
+import { GetDataController } from "../../interfaces/getDataController";
+import { GridRenderManager } from "../renderer/gridRenderManager";
+import { DfsData } from "../getData/dfsData";
 
 export class DfsController implements AlgorithmController {
   board: Board | undefined;

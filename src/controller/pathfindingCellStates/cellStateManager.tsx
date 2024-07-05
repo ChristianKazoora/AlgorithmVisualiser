@@ -3,7 +3,7 @@ import { Point } from "../../shared/point";
 import { CellState } from "../interfaces/cellState";
 import { ManualCellState } from "./manual/manualCellState";
 import { AlgorithmController } from "../interfaces/algorithmController";
-import { BfsController } from "./manual/algorithmControllers/algorithms/bfsController";
+import { BfsController } from "./algoControllers/bfsController";
 import { MovementModel } from "../../model/Interfaces/movementModel";
 import { GetManulNeighbours } from "../../model/subject/board/strategies/manual/getManulNeighbours";
 import { GridRenderer } from "../interfaces/gridRenderer";

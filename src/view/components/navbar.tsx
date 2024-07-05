@@ -1,7 +1,7 @@
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { BoardController } from "../../controller/interfaces/boardController";
-import { BfsController } from "../../controller/pathfindingCellStates/manual/algorithmControllers/algorithms/bfsController";
-import { DfsController } from "../../controller/pathfindingCellStates/manual/algorithmControllers/algorithms/dfsController";
+import { BfsController } from "../../controller/pathfindingCellStates/algoControllers/bfsController";
+import { DfsController } from "../../controller/pathfindingCellStates/algoControllers/dfsController";
 function Navbar({ boardController }: { boardController: BoardController }) {
   const location = useLocation();
   const navigate = useNavigate();

@@ -4,7 +4,7 @@ import { Set } from "../../shared/set";
 import { Point } from "../../shared/point";
 import { Stack } from "../../shared/stack";
 import { MovementModel } from "./movementModel";
-export interface PathfindingModel {
+export interface PathFindingModel {
   setStartPoint(startP: Point): void;
   setEndPoint(endP: Point): void;
   toggleWall(point: Point): void;

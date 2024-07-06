@@ -23,7 +23,7 @@ export class Cell implements CellModel {
   westW: boolean;
   eastW: boolean;
   classNames: string = "";
-
+  fScore: number = 0;
   constructor(
     isWall = false,
     isStart = false,
@@ -46,7 +46,8 @@ export class Cell implements CellModel {
     southW = false,
     westW = false,
     eastW = false,
-    classNames = ""
+    classNames = "",
+    fScore = 0
   ) {
     this.isWall = isWall;
     this.isStart = isStart;
@@ -70,6 +71,7 @@ export class Cell implements CellModel {
     this.westW = westW;
     this.eastW = eastW;
     this.classNames = classNames;
+    this.fScore = fScore;
   }
   print(): void {
     console.log(

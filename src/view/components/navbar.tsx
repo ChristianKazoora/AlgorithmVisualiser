@@ -2,6 +2,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { BoardController } from "../../controller/interfaces/boardController";
 import { BfsController } from "../../controller/pathfindingCellStates/algoControllers/bfsController";
 import { DfsController } from "../../controller/pathfindingCellStates/algoControllers/dfsController";
+import { A_StarController } from "../../controller/pathfindingCellStates/algoControllers/aStarController";
 function Navbar({ boardController }: { boardController: BoardController }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -51,6 +52,10 @@ function Navbar({ boardController }: { boardController: BoardController }) {
               boardController.setAlgorithmController(new BfsController());
               console.log("bfs");
             }
+            if (selectedValue === "A*") {
+              boardController.setAlgorithmController(new A_StarController());
+              console.log("A*");
+            }
             // Add more conditions for other options if necessary
           }}
         >
@@ -59,7 +64,7 @@ function Navbar({ boardController }: { boardController: BoardController }) {
           </option> */}
           <option>BFS</option>
           <option>DFS</option>
-          <option>Death Note</option>
+          <option>A*</option>
           <option>Attack on Titan</option>
           <option>Bleach</option>
           <option>Fullmetal Alchemist</option>

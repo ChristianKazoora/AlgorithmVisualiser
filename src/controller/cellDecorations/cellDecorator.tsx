@@ -23,6 +23,7 @@ export abstract class CellDecorator implements CellModel {
   westW: boolean;
   eastW: boolean;
   classNames: string = "";
+  fScore: number = 0;
   abstract animate(): JSX.Element;
 
   constructor(cell: Cell) {
@@ -48,6 +49,7 @@ export abstract class CellDecorator implements CellModel {
     this.westW = cell.westW;
     this.eastW = cell.eastW;
     this.classNames = cell.classNames;
+    this.fScore = cell.fScore;
   }
   print(): void {
     console.log(

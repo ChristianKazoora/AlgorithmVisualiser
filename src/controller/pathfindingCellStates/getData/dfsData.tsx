@@ -1,54 +1,23 @@
-import { Point } from "../../../shared/point";
-import { MovementModel } from "../../../model/Interfaces/movementModel";
 import { Board } from "../../../model/subject/board/board";
-import { GetDataController } from "../../interfaces/getDataController";
 import { Cell } from "../../../model/subject/Cell";
 import { DfsModel } from "../../../model/subject/algorithms/pathFinding/dfsModel";
-import { Pathfinding } from "../../../model/subject/algorithms/pathFinding/Pathfinding";
+import { PathFindingController } from "../../../model/subject/algorithms/pathFinding/pathFindingController";
 import { Stack } from "../../../shared/stack";
-import { PathfindingModel } from "../../../model/Interfaces/PathfindingModel";
+import { PathFindingModel } from "../../../model/Interfaces/pathfindingModel";
+import { DataHelper } from "./dataHelper";
 
-export class DfsData implements GetDataController {
-  board: Board | undefined;
-  grid: Array<Array<Cell>> | undefined;
-  start: Point | undefined;
-  end: Point | undefined;
-  movementStrategy: MovementModel | undefined;
-  walls: Array<Point> | undefined;
-  visited: Set<Cell> | undefined;
-  path: Array<Cell> | undefined;
-  bfsModel: PathfindingModel | undefined;
+export class DfsData extends DataHelper {
+  bfsModel: PathFindingModel | undefined;
 
-  setBoard(board: Board): void {
-    this.board = board;
-  }
-  setStart(pos: Point): void {
-    this.start = pos;
-  }
-  setEnd(pos: Point): void {
-    this.end = pos;
-  }
-  setMovementStrategy(strategy: MovementModel): void {
-    this.movementStrategy = strategy;
-  }
-  setWalls(walls: Point[]): void {
-    this.walls = walls;
-  }
   getBoard(): Board {
     return this.bfsModel?.getBoard() as Board;
   }
-  ifNull(object: any) {
-    if (object) {
-      return object;
-    } else {
-      throw new Error("object is undefined");
-    }
-  }
+
   getCurrentPoints(): Stack<Cell> {
     return this.bfsModel?.getCurrentPoints() as unknown as Stack<Cell>;
   }
   getData(): any {
-    this.bfsModel = new Pathfinding(
+    this.bfsModel = new PathFindingController(
       new DfsModel(),
       this.ifNull(this.start),
       this.ifNull(this.end),

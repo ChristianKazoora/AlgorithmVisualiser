@@ -6,13 +6,13 @@ import { BfsModel } from "./bfsModel";
 import { Stack } from "../../../../shared/stack";
 import { MovementModel } from "../../../Interfaces/movementModel";
 import { MovementManager } from "../../board/movementManager";
-import { PathfindingModel } from "../../../Interfaces/PathfindingModel";
+import { PathFindingModel } from "../../../Interfaces/pathfindingModel";
 import { GetManulNeigbourWD } from "../../board/strategies/manual/getManulNeigbourWD";
 
-export class Pathfinding implements PathfindingModel {
-  algorithm: PathfindingModel;
+export class PathFindingController implements PathFindingModel {
+  algorithm: PathFindingModel;
   constructor(
-    _algo: PathfindingModel = new BfsModel(),
+    _algo: PathFindingModel = new BfsModel(),
     startP: Point,
     endP: Point,
     board: Board,

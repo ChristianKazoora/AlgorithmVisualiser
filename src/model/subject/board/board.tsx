@@ -38,7 +38,9 @@ export class Board {
           true, // northW
           true, // southW
           true, // westW
-          true // eastW
+          true, // eastW
+          "", // classNames
+          Infinity // fScore
         );
       }
     }

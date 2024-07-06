@@ -1,15 +1,14 @@
 import { Board } from "../../../model/subject/board/board";
 import { Cell } from "../../../model/subject/Cell";
 import { Stack } from "../../../shared/stack";
-import { DfsData } from "../getData/dfsData";
+import { A_StarData } from "../getData/aStarData";
 import { ControllerHelper } from "./controllerHelper";
 
-export class DfsController extends ControllerHelper {
+export class A_StarController extends ControllerHelper {
   constructor() {
     super();
-    this.data = new DfsData();
+    this.data = new A_StarData();
   }
-
   getData(): void {
     this.data?.setBoard(this.ifNull(this.board));
     this.data?.setEnd(this.ifNull(this.end));
@@ -20,7 +19,7 @@ export class DfsController extends ControllerHelper {
     this.setData();
   }
   setData(): void {
-    this.visited = this.data?.getVisited() as Set<Cell> | undefined;
+    this.visited = this.data?.getVisited();
     this.currentPoints = new Stack<Cell>(); // Create a new Stack object
     this.visited?.forEach((cell) => this.currentPoints?.push(cell)); // Copy elements from the Set to the Stack
     this.currentPoints?.reverse(); // Reverse the order of the elements in the Stack

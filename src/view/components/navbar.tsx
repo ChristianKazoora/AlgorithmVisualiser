@@ -1,12 +1,26 @@
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { BoardController } from "../../controller/interfaces/boardController";
 import { BfsController } from "../../controller/pathfindingCellStates/algoControllers/bfsController";
 import { DfsController } from "../../controller/pathfindingCellStates/algoControllers/dfsController";
 import { A_StarController } from "../../controller/pathfindingCellStates/algoControllers/aStarController";
+import { GetManulNeighbours } from "../../model/subject/board/strategies/manual/getManulNeighbours";
+import { GetManulNeigbourWD } from "../../model/subject/board/strategies/manual/getManulNeigbourWD";
+import { useState } from "react";
 function Navbar({ boardController }: { boardController: BoardController }) {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const [isManual, setIsManual] = useState(true);
+  const handleToggleChange = () => {
+    if (location.pathname === "/autoPathfinding") {
+      return;
+    }
+    if (isManual) {
+      boardController.setMovementModel(new GetManulNeighbours());
+    } else {
+      boardController.setMovementModel(new GetManulNeigbourWD());
+    }
+    setIsManual(!isManual);
+  };
   let toggoleColor =
     location.pathname === "/manualPathfinding"
       ? "bg-blue-500"
@@ -41,7 +55,7 @@ function Navbar({ boardController }: { boardController: BoardController }) {
           </span>
         </div>
         <select
-          className="select select-success navbar-center max-w-xs"
+          className="select select-success navbar-center w-[6rem]"
           onChange={(e) => {
             const selectedValue = e.target.value;
             if (selectedValue === "DFS") {
@@ -65,10 +79,6 @@ function Navbar({ boardController }: { boardController: BoardController }) {
           <option>BFS</option>
           <option>DFS</option>
           <option>A*</option>
-          <option>Attack on Titan</option>
-          <option>Bleach</option>
-          <option>Fullmetal Alchemist</option>
-          <option>Jojo's Bizarre Adventure</option>
         </select>
         <button
           className="btn ml-[10px]  text-[1.2rem] p-[8px] "
@@ -103,6 +113,24 @@ function Navbar({ boardController }: { boardController: BoardController }) {
             <span className="pl-[10px]">MANUAL</span>
           </label>
         </div>
+      </div>
+      <div
+        className={` flex  items-center form-control w-52  navbar-end ${hidetoggle}`}
+      >
+        <span className="pl-[10px]">Diagonal</span>
+
+        <label className="cursor-pointer label font-bold">
+          <span className="px-[10px]">off</span>
+
+          <input
+            id="toggle"
+            type="checkbox"
+            className={`toggle  border-blue-500 ${toggoleHoverColor} ${toggoleColor} `}
+            onChange={handleToggleChange}
+            checked={isManual}
+          />
+          <span className="px-[10px]">on</span>
+        </label>
       </div>
     </div>
   );

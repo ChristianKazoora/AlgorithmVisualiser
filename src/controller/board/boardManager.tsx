@@ -167,15 +167,16 @@ export class BoardManager implements BoardController {
       </div>
     );
   }
+  setMovementModel(strategy: MovementModel): void {
+    this.cellStateManager.setMovementStrategy(strategy);
+  }
   setStart(pos: Point): void {
     throw new Error("Method not implemented.");
   }
   setEnd(pos: Point): void {
     throw new Error("Method not implemented.");
   }
-  setMovementStrategy(strategy: MovementModel): void {
-    throw new Error("Method not implemented.");
-  }
+
   setWalls(walls: Point[]): void {
     throw new Error("Method not implemented.");
   }

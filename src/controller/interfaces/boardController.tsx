@@ -6,6 +6,7 @@ export interface BoardController extends mainController {
   addEventListeners(): void;
   setBoard(board: Board): void;
   setCellState(cellState: any, renderer: any, movementModel: any): void;
+  setMovementModel(movementModel: any): void;
   ganarateMaze(): void;
   setAlgorithmController(algorithm: any): void;
   getBoard(): Board;

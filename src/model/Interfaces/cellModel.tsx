@@ -24,4 +24,6 @@ export interface CellModel {
   eastW: boolean;
   classNames: string;
   fScore: number;
+  gScore: number;
+  hScore: number;
 }

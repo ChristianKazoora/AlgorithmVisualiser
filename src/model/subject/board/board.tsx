@@ -40,7 +40,7 @@ export class Board {
           true, // westW
           true, // eastW
           "", // classNames
-          Infinity // fScore
+          0 // fScore
         );
       }
     }

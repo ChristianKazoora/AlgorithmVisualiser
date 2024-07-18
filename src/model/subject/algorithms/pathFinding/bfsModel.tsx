@@ -36,6 +36,8 @@ export class BfsModel extends PathFindingHelper {
     }
   }
   start(): void {
+    this.resetPrevNext();
+
     this.bfs();
   }
 

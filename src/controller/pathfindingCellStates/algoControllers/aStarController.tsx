@@ -1,4 +1,6 @@
 import { Board } from "../../../model/subject/board/board";
+import { euclideanDistance } from "../../../model/subject/board/huristics/euclideanDistance";
+import { manhattanDistance } from "../../../model/subject/board/huristics/manhattanDistance";
 import { Cell } from "../../../model/subject/Cell";
 import { Stack } from "../../../shared/stack";
 import { A_StarData } from "../getData/aStarData";
@@ -8,6 +10,8 @@ export class A_StarController extends ControllerHelper {
   constructor() {
     super();
     this.data = new A_StarData();
+    this.huristicModel = new manhattanDistance();
+    // this.huristicModel = new euclideanDistance();
   }
   getData(): void {
     this.data?.setBoard(this.ifNull(this.board));
@@ -15,6 +19,7 @@ export class A_StarController extends ControllerHelper {
     this.data?.setStart(this.ifNull(this.start));
     this.data?.setWalls(this.ifNull(this.walls));
     this.data?.setMovementStrategy(this.ifNull(this.neighbourStrategy));
+    this.data?.setHuristicModel(this.ifNull(this.huristicModel));
     this.data?.getData();
     this.setData();
   }
@@ -27,5 +32,32 @@ export class A_StarController extends ControllerHelper {
     this.board = this.data?.getBoard() as Board;
     this.renderer.setCurrentPoints(this.currentPoints);
     this.renderer.setPath(this.ifNull(this.path));
+  }
+  boardCellTestPrint(): void {
+    console.log("A_StarTest");
+    this.grid?.forEach((line) => {
+      line.forEach((cell) => {
+        console.log(
+          "pos",
+          cell.pos,
+          "fScore",
+          cell.fScore,
+          "hScore",
+          cell.hScore,
+          "gScore",
+          cell.gScore,
+          "next",
+          cell.nextCell?.pos,
+          "prev",
+          cell.previousCell?.pos,
+          "isStart",
+          cell.isStart,
+          "isEnd",
+          cell.isEnd,
+          "isWall",
+          cell.isWall
+        );
+      });
+    });
   }
 }

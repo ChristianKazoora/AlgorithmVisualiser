@@ -1,5 +1,7 @@
+import { HuristicModel } from "../../../model/Interfaces/huristicModel";
 import { MovementModel } from "../../../model/Interfaces/movementModel";
 import { Board } from "../../../model/subject/board/board";
+import { manhattanDistance } from "../../../model/subject/board/huristics/manhattanDistance";
 import { Cell } from "../../../model/subject/Cell";
 import { Point } from "../../../shared/point";
 import { Stack } from "../../../shared/stack";
@@ -20,8 +22,11 @@ export abstract class ControllerHelper implements AlgorithmController {
   walls: Array<Point> = new Array<Point>();
   data: GetDataController | undefined;
   renderer: GridRenderer = new GridRenderManager();
+  huristicModel: HuristicModel | undefined;
   abstract getData(): void;
-
+  setHuristicModel(huristicModel: HuristicModel): void {
+    this.huristicModel = huristicModel;
+  }
   animatePath(): void {
     this.renderer.animatePath();
   }

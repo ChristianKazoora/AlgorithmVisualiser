@@ -23,7 +23,8 @@ export class A_StarData extends DataHelper {
       this.ifNull(this.end),
       this.ifNull(this.board),
       this.walls,
-      this.movementStrategy
+      this.movementStrategy,
+      this.huristicModel
     );
     this.A_StarModel?.start();
   }

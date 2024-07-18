@@ -311,7 +311,6 @@ export class TurnHelper {
   static leftToTopTurn(cell: Cell): boolean {
     let result = false;
     if (cell.nextCell !== undefined && cell.previousCell !== undefined) {
-      console.log();
       if (cell.nextCell == cell.top && cell.previousCell == cell.left) {
         result = true;
       }

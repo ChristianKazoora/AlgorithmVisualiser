@@ -1,3 +1,4 @@
+import { HuristicModel } from "../../model/Interfaces/huristicModel";
 import { MovementModel } from "../../model/Interfaces/movementModel";
 import { Board } from "../../model/subject/board/board";
 import { Cell } from "../../model/subject/Cell";
@@ -17,6 +18,9 @@ export abstract class CellStateHelper implements CellState {
   currentPressedCell: any;
   abstract addEventListeners(): void;
   abstract ganarateMaze(): void;
+  setHuristicModel(huristicModel: HuristicModel): void {
+    this.algorithmController?.setHuristicModel(huristicModel);
+  }
   animatePath(): void {
     this.getData();
     this.algorithmController?.animatePath();

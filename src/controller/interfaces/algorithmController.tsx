@@ -3,11 +3,13 @@ import { mainController } from "./mainController";
 import { MovementModel } from "../../model/Interfaces/movementModel";
 import { GridRenderer } from "./gridRenderer";
 import { Point } from "../../shared/point";
+import { HuristicModel } from "../../model/Interfaces/huristicModel";
 
 export interface AlgorithmController extends mainController {
   animatePath(): void;
   setBoard(board: Board): void;
   setStart(pos: Point): void;
+  setHuristicModel(huristicModel: HuristicModel): void;
   removeStart(pos: Point): void;
   removeEnd(pos: Point): void;
   setEnd(pos: Point): void;

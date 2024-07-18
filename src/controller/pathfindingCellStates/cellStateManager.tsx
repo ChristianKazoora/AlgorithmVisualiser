@@ -8,13 +8,14 @@ import { MovementModel } from "../../model/Interfaces/movementModel";
 import { GetManulNeighbours } from "../../model/subject/board/strategies/manual/getManulNeighbours";
 import { GridRenderer } from "../interfaces/gridRenderer";
 import { AutoGridRenderer } from "./renderer/autoGridRender";
+import { HuristicModel } from "../../model/Interfaces/huristicModel";
 
 export class CellStateManager implements CellState {
   private cellState: CellState;
   constructor(
     board: Board,
     _start: Point = { x: 0, y: 0 },
-    _end: Point = { x: board.grid.length - 1, y: board.grid[0].length - 1 },
+    _end: Point = { y: board.grid.length - 1, x: board.grid[0].length - 1 },
     _movementStrategy: MovementModel = new GetManulNeighbours(),
     _cellState: CellState = new ManualCellState(),
     _walls: Point[] = [],
@@ -29,6 +30,9 @@ export class CellStateManager implements CellState {
     this.setWalls(_walls);
     this.setMovementStrategy(_movementStrategy);
     this.setRenderer(_renderer);
+  }
+  setHuristicModel(huristicModel: HuristicModel): void {
+    this.cellState.setHuristicModel(huristicModel);
   }
   getStart(): Point {
     return this.cellState.getStart();

@@ -4,6 +4,7 @@ import { Board } from "../../../model/subject/board/board";
 import { GetDataController } from "../../interfaces/getDataController";
 import { Cell } from "../../../model/subject/Cell";
 import { Stack } from "../../../shared/stack";
+import { HuristicModel } from "../../../model/Interfaces/huristicModel";
 
 export abstract class DataHelper implements GetDataController {
   board: Board | undefined;
@@ -14,11 +15,16 @@ export abstract class DataHelper implements GetDataController {
   walls: Array<Point> | undefined;
   visited: Set<Cell> | undefined;
   path: Array<Cell> | undefined;
+  huristicModel: HuristicModel | undefined;
+
   abstract getBoard(): Board;
   abstract getCurrentPoints(): Stack<Cell>;
   abstract getData(): any;
   abstract getVisited(): Set<Cell>;
   abstract getPath(): Array<Cell>;
+  setHuristicModel(huristicModel: HuristicModel): void {
+    this.huristicModel = huristicModel;
+  }
   setBoard(board: Board): void {
     this.board = board;
   }

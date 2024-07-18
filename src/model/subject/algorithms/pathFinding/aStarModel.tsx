@@ -9,50 +9,68 @@ export class A_StarModel extends PathFindingHelper {
   aStar(): void {
     let start = this.ifNull(this.startP);
     let openSet = new Set<Cell>();
-    let closedSet = new Set<Cell>();
     openSet.add(start);
     while (openSet.size > 0) {
       let current = this.lowestFscore(openSet);
+      openSet.delete(current);
+      this.ifNull(this.visited).add(current);
       if (current.isEnd) {
         this.path = this.backtrackPath(current);
         return;
       }
-      openSet.delete(current);
-      closedSet.add(current);
-      let neighbours = this.ifNull(this.movementStrategy).getNeighbours(
-        current
-      );
-      for (let i = 0; i < neighbours.length; i++) {
-        let neighbour = neighbours[i];
-        if (closedSet.has(neighbour) || neighbour.isWall) {
+
+      let neighbors = this.ifNull(this.movementStrategy).getNeighbours(current);
+
+      for (let neighbor of neighbors as Cell[]) {
+        if (neighbor.isWall) {
           continue;
         }
-        let tempG = current.posFromStart + 1;
-        if (!openSet.has(neighbour)) {
-          openSet.add(neighbour);
-        } else if (tempG >= neighbour.posFromStart) {
+        let tempGScore = current.gScore + 1;
+
+        if (neighbor.gScore >= tempGScore) {
           continue;
         }
-        neighbour.previousCell = current;
-        neighbour.posFromStart = tempG;
-        neighbour.posFromEnd = this.huristic(
-          neighbour.pos,
-          this.ifNull(this.endP).pos
+        if (openSet.has(neighbor)) {
+          if (neighbor.fScore >= current.fScore) {
+            continue;
+          }
+        }
+        if (this.ifNull(this.visited).contains(neighbor)) {
+          if (neighbor.fScore >= current.fScore) {
+            continue;
+          }
+        } else {
+          neighbor.previousCell = current;
+        }
+        if (neighbor.previousCell != undefined) {
+          neighbor.previousCell.nextCell = undefined;
+        }
+        neighbor.gScore = tempGScore;
+        neighbor.hScore = this.ifNull(this.huristicModel).huristic(
+          { x: neighbor.x, y: neighbor.y },
+          { x: this.ifNull(this.endP).x, y: this.ifNull(this.endP).y }
         );
+        neighbor.fScore = neighbor.gScore + neighbor.hScore;
+
+        openSet.add(neighbor);
       }
+      this.ifNull(this.visited).add(current);
     }
   }
-  //all cell fScore are initialized to infinity
-  lowestFscore(openSet: Set<Cell>): Cell {
-    let lowest = Infinity;
-    let lowestCell = new Cell();
-    openSet.forEach((cell) => {
-      if (cell.fScore < lowest) {
-        lowest = cell.fScore;
-        lowestCell = cell;
-      }
+  resetAllCellFscroreGscoreHscore(): void {
+    this.grid?.forEach((row) => {
+      row.forEach((cell) => {
+        cell.fScore = 0;
+        cell.gScore = 0;
+        cell.hScore = 0;
+      });
     });
-    return lowestCell;
+  }
+
+  lowestFscore(openSet: Set<Cell>): Cell {
+    return Array.from(openSet).reduce((min, point) =>
+      point.fScore < min.fScore ? point : min
+    );
   }
   huristic(a: Point, b: Point): number {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
@@ -62,6 +80,9 @@ export class A_StarModel extends PathFindingHelper {
     this.movementStrategy = movementModel;
   }
   start(): void {
+    this.resetPrevNext();
+    this.resetA_startVars;
+    this.resetAllCellFscroreGscoreHscore();
     this.aStar();
   }
 }

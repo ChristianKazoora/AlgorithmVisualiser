@@ -163,6 +163,7 @@ export class ManualGridRenderer implements GridRenderer {
   }
   animateLinePath(): void {
     const path = this.ifNull(this.path);
+    path.reverse();
     for (let i = 0; i < path.length; i++) {
       setTimeout(
         () => {

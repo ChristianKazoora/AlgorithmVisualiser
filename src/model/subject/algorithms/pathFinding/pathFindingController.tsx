@@ -8,6 +8,8 @@ import { MovementModel } from "../../../Interfaces/movementModel";
 import { MovementManager } from "../../board/movementManager";
 import { PathFindingModel } from "../../../Interfaces/pathfindingModel";
 import { GetManulNeigbourWD } from "../../board/strategies/manual/getManulNeigbourWD";
+import { HuristicModel } from "../../../Interfaces/huristicModel";
+import { manhattanDistance } from "../../board/huristics/manhattanDistance";
 
 export class PathFindingController implements PathFindingModel {
   algorithm: PathFindingModel;
@@ -17,7 +19,8 @@ export class PathFindingController implements PathFindingModel {
     endP: Point,
     board: Board,
     wallP: Array<Point> = new Array<Point>(),
-    _movementStrategy: MovementModel = new GetManulNeigbourWD()
+    _movementStrategy: MovementModel = new GetManulNeigbourWD(),
+    _huristicModel: HuristicModel = new manhattanDistance()
   ) {
     this.algorithm = _algo;
     this.setBoard(board);
@@ -25,7 +28,17 @@ export class PathFindingController implements PathFindingModel {
     this.setEndPoint(endP);
     this.setWallPositions(wallP);
     this.setMovementModel(_movementStrategy);
+    this.setHuristicModel(_huristicModel);
     // this.setCurrentPoint(current.x, current.y);
+  }
+  setHuristicModel(huristicModel: HuristicModel): void {
+    this.algorithm.setHuristicModel(huristicModel);
+  }
+  resetA_startVars(): void {
+    this.algorithm.resetA_startVars();
+  }
+  resetPrevNext(): void {
+    this.algorithm.resetPrevNext();
   }
   getBoard(): Board {
     return this.algorithm.getBoard();

@@ -6,6 +6,8 @@ import { A_StarController } from "../../controller/pathfindingCellStates/algoCon
 import { GetManulNeighbours } from "../../model/subject/board/strategies/manual/getManulNeighbours";
 import { GetManulNeigbourWD } from "../../model/subject/board/strategies/manual/getManulNeigbourWD";
 import { useState } from "react";
+import { manhattanDistance } from "../../model/subject/board/huristics/manhattanDistance";
+import { euclideanDistance } from "../../model/subject/board/huristics/euclideanDistance";
 function Navbar({ boardController }: { boardController: BoardController }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -42,7 +44,7 @@ function Navbar({ boardController }: { boardController: BoardController }) {
     hidetoggle = "block";
   }
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center ">
       <div className="navbar rounded-3xl w-[70%] bg-neutral text-neutral-content">
         <div className="flex-1 px-2 mx-2  navbar-start ">
           <span
@@ -54,6 +56,29 @@ function Navbar({ boardController }: { boardController: BoardController }) {
             Algo Visualizer
           </span>
         </div>
+
+        <select
+          className="select select-success navbar-center w-[6rem]"
+          onChange={(e) => {
+            const selectedValue = e.target.value;
+            if (selectedValue === "Manhattan Distance") {
+              boardController.setHuristicModel(new manhattanDistance());
+              console.log("Manhattan Distance");
+            }
+            if (selectedValue === "Euclidean Distance") {
+              boardController.setHuristicModel(new euclideanDistance());
+              console.log("Euclidean Distance");
+            }
+            // Add more conditions for other options if necessary
+          }}
+        >
+          {/* <option disabled>
+            <option className=" text-red-500"> Pick your favorite anime</option>
+          </option> */}
+          <option>Manhattan Distance</option>
+          <option>Euclidean Distance</option>
+        </select>
+
         <select
           className="select select-success navbar-center w-[6rem]"
           onChange={(e) => {

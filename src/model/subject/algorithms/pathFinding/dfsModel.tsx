@@ -34,6 +34,8 @@ export class DfsModel extends PathFindingHelper {
     this.movementStrategy = movementModel;
   }
   start(): void {
+    this.resetPrevNext();
+
     this.dfs();
   }
 }

@@ -3,8 +3,8 @@ import { Cell } from "../../../model/subject/Cell";
 import { BfsModel } from "../../../model/subject/algorithms/pathFinding/bfsModel";
 import { Stack } from "../../../shared/stack";
 import { PathFindingModel } from "../../../model/Interfaces/pathfindingModel";
-import { PathFindingController } from "../../../model/subject/algorithms/pathFinding/pathFindingController";
 import { DataHelper } from "./dataHelper";
+import { PathFindingController } from "../../../model/subject/algorithms/pathFinding/pathFindingController";
 
 export class BfsData extends DataHelper {
   bfsModel: PathFindingModel | undefined;

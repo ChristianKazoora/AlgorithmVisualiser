@@ -11,6 +11,7 @@ import { MovementModel } from "../../model/Interfaces/movementModel";
 import { Point } from "../../shared/point";
 import { AutoCellState } from "../pathfindingCellStates/auto/autoCellState";
 import { useEffect, useState } from "react";
+import { HuristicModel } from "../../model/Interfaces/huristicModel";
 export class BoardManager implements BoardController {
   board: Board;
   grid: Array<Array<Cell>>;
@@ -22,6 +23,7 @@ export class BoardManager implements BoardController {
   end: Point;
   walls: Point[] = [];
   renderer: any;
+  huristicModel: HuristicModel | undefined;
   constructor(_cellState: CellState = new ManualCellState()) {
     this.height = Math.floor((document.documentElement.clientHeight - 60) / 25);
     this.width = Math.floor((document.documentElement.clientWidth - 30) / 20);
@@ -84,6 +86,10 @@ export class BoardManager implements BoardController {
       this.cellState
       // this.walls
     );
+  }
+  setHuristicModel(huristicModel: HuristicModel): void {
+    this.huristicModel = huristicModel;
+    this.cellState.setHuristicModel(huristicModel);
   }
   getBoard(): Board {
     return this.board;

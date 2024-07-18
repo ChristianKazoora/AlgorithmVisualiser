@@ -1,3 +1,4 @@
+import { HuristicModel } from "../../model/Interfaces/huristicModel";
 import { MovementModel } from "../../model/Interfaces/movementModel";
 import { Board } from "../../model/subject/board/board";
 import { Point } from "../../shared/point";
@@ -13,11 +14,13 @@ export interface CellState extends mainController {
   removeStart(pos: Point): void;
   removeEnd(pos: Point): void;
   setMovementStrategy(strategy: MovementModel): void;
+
   setWalls(walls: Array<Point>): void;
   getData(): void;
   setAlgorithmController(algorithmController: AlgorithmController): void;
   // addWalls(pos: Point): void;
   // removeWalls(pos: Point): void;
+  setHuristicModel(huristicModel: HuristicModel): void;
   addEventListeners(): void;
   setRenderer(renderer: GridRenderer): void;
   ganarateMaze(): void;

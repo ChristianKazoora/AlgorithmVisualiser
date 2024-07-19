@@ -11,6 +11,7 @@ export interface BoardController extends mainController {
   setMovementModel(movementModel: any): void;
   ganarateMaze(): void;
   setAlgorithmController(algorithm: any): void;
+  clearBoard(): void;
   getBoard(): Board;
   getStart(): any;
   getEnd(): any;

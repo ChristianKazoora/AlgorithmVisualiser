@@ -31,6 +31,9 @@ export class CellStateManager implements CellState {
     this.setMovementStrategy(_movementStrategy);
     this.setRenderer(_renderer);
   }
+  clearBoard(): void {
+    this.cellState.clearBoard();
+  }
   setHuristicModel(huristicModel: HuristicModel): void {
     this.cellState.setHuristicModel(huristicModel);
   }

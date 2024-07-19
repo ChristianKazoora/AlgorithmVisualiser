@@ -18,6 +18,9 @@ export abstract class CellStateHelper implements CellState {
   currentPressedCell: any;
   abstract addEventListeners(): void;
   abstract ganarateMaze(): void;
+  clearBoard(): void {
+    this.algorithmController?.reRenderBoard();
+  }
   setHuristicModel(huristicModel: HuristicModel): void {
     this.algorithmController?.setHuristicModel(huristicModel);
   }

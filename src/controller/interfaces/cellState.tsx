@@ -14,7 +14,7 @@ export interface CellState extends mainController {
   removeStart(pos: Point): void;
   removeEnd(pos: Point): void;
   setMovementStrategy(strategy: MovementModel): void;
-
+  clearBoard(): void;
   setWalls(walls: Array<Point>): void;
   getData(): void;
   setAlgorithmController(algorithmController: AlgorithmController): void;

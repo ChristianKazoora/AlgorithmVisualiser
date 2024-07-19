@@ -3,7 +3,6 @@ import { Board } from "../model/subject/board/board";
 import { A_StarModel } from "../model/subject/algorithms/pathFinding/aStarModel";
 import { PathFindingController } from "../model/subject/algorithms/pathFinding/pathFindingController";
 import { GetManulNeighbours } from "../model/subject/board/strategies/manual/getManulNeighbours";
-import { GetManulNeigbourWD } from "../model/subject/board/strategies/manual/getManulNeigbourWD";
 import { TurnHelper } from "../controller/pathfindingCellStates/turnHelper";
 
 const size = { x: 3, y: 3 };
@@ -34,8 +33,8 @@ test("A_Star finds a non-diagonal path", () => {
 test("Test turns", () => {
   const strategy = new A_StarModel();
   const walls = [
-    { x: 1, y: 0 },
-    { x: 1, y: 2 },
+    { y: 1, x: 0 },
+    { y: 1, x: 2 },
   ];
   const algo = new PathFindingController(strategy, start, end, board, walls);
   algo.setMovementModel(new GetManulNeighbours());
@@ -55,4 +54,17 @@ test("Test turns", () => {
   inverseAlgo.start();
   expect(TurnHelper.rightToTopTurn(inverseAlgo.getPath()[3])).toBe(true);
   expect(TurnHelper.bottomToLeftTurn(inverseAlgo.getPath()[1])).toBe(true);
+});
+
+test("no path", () => {
+  const walls = [
+    { x: 1, y: 1 },
+    { x: 1, y: 2 },
+    { x: 2, y: 1 },
+  ];
+  const strategy = new A_StarModel();
+  const algo = new PathFindingController(strategy, start, end, board, walls);
+  algo.setMovementModel(new GetManulNeighbours());
+  algo.start();
+  console.log(algo.getPath().length);
 });

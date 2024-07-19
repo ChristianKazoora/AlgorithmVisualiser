@@ -1,7 +1,6 @@
 import { Cell } from "../../model/subject/Cell";
 import { Board } from "../../model/subject/board/board";
 import { GetManulNeigbourWD } from "../../model/subject/board/strategies/manual/getManulNeigbourWD";
-import { GetManulNeighbours } from "../../model/subject/board/strategies/manual/getManulNeighbours";
 import { CellState } from "../interfaces/cellState";
 import { CellStateManager } from "../pathfindingCellStates/cellStateManager";
 import { ManualCellState } from "../pathfindingCellStates/manual/manualCellState";
@@ -9,8 +8,7 @@ import { BoardController } from "../interfaces/boardController";
 import { Grid } from "@mui/material";
 import { MovementModel } from "../../model/Interfaces/movementModel";
 import { Point } from "../../shared/point";
-import { AutoCellState } from "../pathfindingCellStates/auto/autoCellState";
-import { useEffect, useState } from "react";
+
 import { HuristicModel } from "../../model/Interfaces/huristicModel";
 export class BoardManager implements BoardController {
   board: Board;
@@ -91,6 +89,9 @@ export class BoardManager implements BoardController {
     this.huristicModel = huristicModel;
     this.cellState.setHuristicModel(huristicModel);
   }
+  clearBoard(): void {
+    this.cellState.clearBoard();
+  }
   getBoard(): Board {
     return this.board;
   }
@@ -158,7 +159,6 @@ export class BoardManager implements BoardController {
   }
 
   draw() {
-    // useEffect to rerender the css after the dom is loaded
     const state = this.cellStateManager;
     const iterator = state.draw();
     return (

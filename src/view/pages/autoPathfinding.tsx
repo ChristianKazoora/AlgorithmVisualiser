@@ -11,11 +11,13 @@ function AutoPathFindingPage({
   useEffect(() => {
     boardController.addEventListeners();
   }, [boardController]);
+
   boardController.setCellState(
     new AutoCellState(),
     new AutoGridRenderer(),
     new GetAutoNeigbour()
   );
+
   return (
     <div>
       Auto path finding

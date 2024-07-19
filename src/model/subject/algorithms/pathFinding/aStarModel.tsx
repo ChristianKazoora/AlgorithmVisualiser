@@ -11,6 +11,7 @@ export class A_StarModel extends PathFindingHelper {
     let openSet = new Set<Cell>();
     openSet.add(start);
     while (openSet.size > 0) {
+      console.log('a dot "."');
       let current = this.lowestFscore(openSet);
       openSet.delete(current);
       this.ifNull(this.visited).add(current);
@@ -36,9 +37,9 @@ export class A_StarModel extends PathFindingHelper {
           }
         }
         if (this.ifNull(this.visited).contains(neighbor)) {
-          if (neighbor.fScore >= current.fScore) {
-            continue;
-          }
+          // if (neighbor.fScore >= current.fScore) {
+          continue;
+          // }
         } else {
           neighbor.previousCell = current;
         }

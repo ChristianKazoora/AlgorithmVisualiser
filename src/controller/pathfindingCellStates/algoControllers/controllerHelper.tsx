@@ -1,7 +1,6 @@
 import { HuristicModel } from "../../../model/Interfaces/huristicModel";
 import { MovementModel } from "../../../model/Interfaces/movementModel";
 import { Board } from "../../../model/subject/board/board";
-import { manhattanDistance } from "../../../model/subject/board/huristics/manhattanDistance";
 import { Cell } from "../../../model/subject/Cell";
 import { Point } from "../../../shared/point";
 import { Stack } from "../../../shared/stack";
@@ -30,6 +29,10 @@ export abstract class ControllerHelper implements AlgorithmController {
   animatePath(): void {
     this.renderer.animatePath();
   }
+  reRunAnimatePath(): void {
+    this.renderer.reRunAnimatePath();
+  }
+
   setBoard(board: any): void {
     this.board = board;
     this.grid = this.ifNull(this.board).grid;
@@ -81,8 +84,8 @@ export abstract class ControllerHelper implements AlgorithmController {
       this.ifNull(this.end).y
     ].isWall = false;
   }
-  reRenderCss(): void {
-    this.renderer.reRenderCss();
+  reRenderBoard(): void {
+    this.renderer.reRenderBoard();
   }
   setGridWallsToFalse(): void {
     this.ifNull(this.grid).forEach((row: any) => {
@@ -99,7 +102,6 @@ export abstract class ControllerHelper implements AlgorithmController {
   }
   draw(): any {
     this.renderer.setBoard(this.ifNull(this.board));
-
     return this.renderer.render();
   }
   ifNull(object: any) {

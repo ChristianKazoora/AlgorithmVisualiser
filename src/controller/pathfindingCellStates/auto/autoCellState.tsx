@@ -7,11 +7,11 @@ export class AutoCellState extends CellStateHelper {
     ganarator.setBoard(this.ifNull(this.board));
     ganarator.generateMaze();
     this.setBoard(ganarator.getBoard());
-    this.algorithmController?.reRenderCss();
+    this.algorithmController?.reRenderBoard();
   }
 
   addEventListeners(): void {
-    this.algorithmController?.reRenderCss();
+    this.algorithmController?.reRenderBoard();
     const gridLength = this.ifNull(this.grid).length;
     const gridWidth = this.ifNull(this.grid)[0].length;
     let isDragging = false;
@@ -29,7 +29,7 @@ export class AutoCellState extends CellStateHelper {
               this.currentPressedCell = cell;
             }
 
-            this.algorithmController?.reRenderCss();
+            this.algorithmController?.reRenderBoard();
           };
           this.ifNull(currentElement).onmouseup = (e: any) => {
             e.preventDefault();
@@ -42,7 +42,9 @@ export class AutoCellState extends CellStateHelper {
                 this.setEnd({ x: i, y: j });
               }
             }
-            this.algorithmController?.reRenderCss();
+            this.algorithmController?.getData();
+            this.algorithmController?.reRenderBoard();
+            this.algorithmController?.reRunAnimatePath();
           };
           this.ifNull(currentElement).onmouseenter = (e: any) => {
             e.preventDefault();
@@ -53,7 +55,7 @@ export class AutoCellState extends CellStateHelper {
               } else if (this.draggingStart_End === "end") {
                 this.setEnd({ x: i, y: j });
               }
-              this.algorithmController?.reRenderCss();
+              this.algorithmController?.reRenderBoard();
             }
           };
           this.ifNull(currentElement).onmouseleave = (e: any) => {
@@ -72,7 +74,7 @@ export class AutoCellState extends CellStateHelper {
                 this.draggingStart_End = "end";
                 this.removeEnd({ x: i, y: j });
               }
-              this.algorithmController?.reRenderCss();
+              this.algorithmController?.reRenderBoard();
             }
           };
         }

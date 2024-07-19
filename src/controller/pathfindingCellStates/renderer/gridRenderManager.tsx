@@ -10,6 +10,10 @@ export class GridRenderManager implements GridRenderer {
   constructor(_renderer: GridRenderer = new ManualGridRenderer()) {
     this.renderer = _renderer;
   }
+  reRunAnimatePath(): void {
+    this.renderer?.reRunAnimatePath;
+  }
+
   animatePath(): any {
     this.renderer?.animatePath();
   }
@@ -28,7 +32,7 @@ export class GridRenderManager implements GridRenderer {
   setCurrentPoints(points: Stack<Cell>): void {
     this.renderer?.setCurrentPoints(points);
   }
-  reRenderCss(): void {
-    this.renderer?.reRenderCss();
+  reRenderBoard(): void {
+    this.renderer?.reRenderBoard();
   }
 }

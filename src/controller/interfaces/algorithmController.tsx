@@ -7,6 +7,7 @@ import { HuristicModel } from "../../model/Interfaces/huristicModel";
 
 export interface AlgorithmController extends mainController {
   animatePath(): void;
+  reRunAnimatePath(): void;
   setBoard(board: Board): void;
   setStart(pos: Point): void;
   setHuristicModel(huristicModel: HuristicModel): void;
@@ -17,7 +18,7 @@ export interface AlgorithmController extends mainController {
   getMovementStrategy(): MovementModel;
   setWalls(walls: Array<Point>): void;
   getData(): void;
-  reRenderCss(): void;
+  reRenderBoard(): void;
   setGridWallsToFalse(): void;
   setRenderer(renderer: GridRenderer): void;
   getRenderer(): GridRenderer;

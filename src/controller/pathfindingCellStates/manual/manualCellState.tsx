@@ -26,7 +26,7 @@ export class ManualCellState extends CellStateHelper {
   }
 
   addEventListeners(): void {
-    this.algorithmController?.reRenderCss();
+    this.algorithmController?.reRenderBoard();
     const gridLength = this.ifNull(this.grid).length;
     const gridWidth = this.ifNull(this.grid)[0].length;
     let isDragging = false;
@@ -56,7 +56,7 @@ export class ManualCellState extends CellStateHelper {
             } else if (!isAddingWalls) {
               this.removeWalls({ x: i, y: j });
             }
-            this.algorithmController?.reRenderCss();
+            this.algorithmController?.reRenderBoard();
           };
 
           this.ifNull(currentElement).onmouseup = (e: any) => {
@@ -72,8 +72,8 @@ export class ManualCellState extends CellStateHelper {
               }
             }
             this.algorithmController?.getData();
-            this.algorithmController?.animatePath();
-            this.algorithmController?.reRenderCss();
+            this.algorithmController?.reRenderBoard();
+            this.algorithmController?.reRunAnimatePath();
           };
 
           this.ifNull(currentElement).onmouseenter = (e: any) => {
@@ -93,7 +93,7 @@ export class ManualCellState extends CellStateHelper {
               } else {
                 this.removeWalls({ x: i, y: j });
               }
-              this.algorithmController?.reRenderCss();
+              this.algorithmController?.reRenderBoard();
             }
           };
 
@@ -113,7 +113,7 @@ export class ManualCellState extends CellStateHelper {
                 this.draggingStart_End = "end";
                 this.removeEnd({ x: i, y: j });
               }
-              this.algorithmController?.reRenderCss();
+              this.algorithmController?.reRenderBoard();
             }
           };
         }

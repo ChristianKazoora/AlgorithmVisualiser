@@ -38,6 +38,7 @@ export abstract class PathFindingHelper implements PathFindingModel {
       current = current.previousCell as Cell;
     }
     path.push(this.startP as Cell);
+    path.reverse();
     return path;
   }
 

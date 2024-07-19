@@ -1,5 +1,4 @@
 import { Board } from "../../../model/subject/board/board";
-import { euclideanDistance } from "../../../model/subject/board/huristics/euclideanDistance";
 import { manhattanDistance } from "../../../model/subject/board/huristics/manhattanDistance";
 import { Cell } from "../../../model/subject/Cell";
 import { Stack } from "../../../shared/stack";
@@ -11,7 +10,6 @@ export class A_StarController extends ControllerHelper {
     super();
     this.data = new A_StarData();
     this.huristicModel = new manhattanDistance();
-    // this.huristicModel = new euclideanDistance();
   }
   getData(): void {
     this.data?.setBoard(this.ifNull(this.board));

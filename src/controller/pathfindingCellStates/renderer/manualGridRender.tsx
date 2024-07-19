@@ -9,17 +9,15 @@ import { createRoot } from "react-dom/client";
 import { Line } from "../../cellDecorations/paths/line";
 export class ManualGridRenderer implements GridRenderer {
   private grid: Array<Array<Cell>> | undefined;
-  private board: Board | undefined;
   private path: Array<Cell> | undefined;
   private currentPoints: Stack<Cell> | undefined;
   private rootsMap: Map<string, any>; // Map to store roots
-  private ANIMATIONSPEED = 2;
+  private ANIMATIONSPEED = 2.2;
 
   constructor() {
     this.rootsMap = new Map(); // Initialize the map in the constructor
   }
   setBoard(board: Board): void {
-    this.board = board;
     this.grid = board.grid;
   }
   setCurrentPoints(points: Stack<Cell>): void {
@@ -59,7 +57,7 @@ export class ManualGridRenderer implements GridRenderer {
       throw new Error("object is undefined");
     }
   }
-  reRenderCss(): void {
+  reRenderBoard(): void {
     const gridLength = this.ifNull(this.grid).length;
     const gridWidth = this.ifNull(this.grid)[0].length;
     for (let i = 0; i < gridLength; i++) {
@@ -120,7 +118,61 @@ export class ManualGridRenderer implements GridRenderer {
       }
     }
   }
+  reRunAnimatePath(): void {
+    const points = this.ifNull(this.currentPoints);
 
+    for (let i = 0; i < points.size(); i++) {
+      if (i === points.size() - 1) {
+        this.reRunAnimateLinePath();
+
+        return;
+      }
+
+      const cell = points.get(i);
+
+      if (!cell.isStart && !cell.isEnd) {
+        const visitedElement = this.ifNull(document).getElementById(
+          `cell-${cell.x}-${cell.y}-visited`
+        );
+
+        if (visitedElement) {
+          visitedElement.className = "block";
+        }
+      }
+    }
+  }
+  reRunAnimateLinePath(): void {
+    const path = this.ifNull(this.path);
+    for (let i = 0; i < path.length; i++) {
+      const cell = path[i];
+      if (!cell.isStart && !cell.isEnd) {
+        const cellId = `cell-${cell.x}-${cell.y}-path`;
+        const pathElement = this.ifNull(document).getElementById(cellId);
+        const visitedElement = this.ifNull(document).getElementById(
+          `cell-${cell.x}-${cell.y}-visited`
+        );
+
+        if (pathElement) {
+          let toAdd = new Line(cell).animate();
+          // Check if a root already exists for this element
+          if (this.rootsMap.has(cellId)) {
+            const existingRoot = this.rootsMap.get(cellId);
+            existingRoot.render(toAdd); // Use the existing root to render
+          } else {
+            // Create a new root and store it in the map
+            const newRoot = createRoot(pathElement);
+            newRoot.render(toAdd);
+            this.rootsMap.set(cellId, newRoot);
+          }
+          pathElement.className = "block";
+        }
+
+        if (visitedElement) {
+          visitedElement.className = "hidden";
+        }
+      }
+    }
+  }
   animatePath(): void {
     const points = this.ifNull(this.currentPoints);
 
@@ -163,7 +215,6 @@ export class ManualGridRenderer implements GridRenderer {
   }
   animateLinePath(): void {
     const path = this.ifNull(this.path);
-    path.reverse();
     for (let i = 0; i < path.length; i++) {
       setTimeout(
         () => {

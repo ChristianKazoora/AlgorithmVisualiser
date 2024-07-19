@@ -8,6 +8,7 @@ import { GetManulNeigbourWD } from "../../model/subject/board/strategies/manual/
 import { useState } from "react";
 import { manhattanDistance } from "../../model/subject/board/huristics/manhattanDistance";
 import { euclideanDistance } from "../../model/subject/board/huristics/euclideanDistance";
+import { chebyshevDistance } from "../../model/subject/board/huristics/chebyshevDistance";
 function Navbar({ boardController }: { boardController: BoardController }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ function Navbar({ boardController }: { boardController: BoardController }) {
         </div>
 
         <select
-          className="select select-success navbar-center w-[6rem]"
+          className="select select-success navbar-center w-[7.85rem]"
           onChange={(e) => {
             const selectedValue = e.target.value;
             if (selectedValue === "Manhattan Distance") {
@@ -69,6 +70,11 @@ function Navbar({ boardController }: { boardController: BoardController }) {
               boardController.setHuristicModel(new euclideanDistance());
               console.log("Euclidean Distance");
             }
+            if (selectedValue === "Chebyshev Distance") {
+              boardController.setHuristicModel(new chebyshevDistance());
+              console.log("Chebyshev Distance");
+            }
+
             // Add more conditions for other options if necessary
           }}
         >
@@ -77,6 +83,7 @@ function Navbar({ boardController }: { boardController: BoardController }) {
           </option> */}
           <option>Manhattan Distance</option>
           <option>Euclidean Distance</option>
+          <option>Chebyshev Distance</option>
         </select>
 
         <select
@@ -107,9 +114,19 @@ function Navbar({ boardController }: { boardController: BoardController }) {
         </select>
         <button
           className="btn ml-[10px]  text-[1.2rem] p-[8px] "
-          onClick={() => boardController.animatePath()}
+          onClick={() => (
+            boardController.animatePath(), boardController.clearBoard()
+          )}
         >
           RUN
+        </button>
+        <button
+          className="btn ml-[10px]  text-[1.2rem] p-[8px] "
+          onClick={() => {
+            boardController.clearBoard();
+          }}
+        >
+          clear
         </button>
         <button
           className="ml-[10px] btn  text-lg p-[8px] "

@@ -3,6 +3,7 @@ import { MovementModel } from "../../model/Interfaces/movementModel";
 import { Board } from "../../model/subject/board/board";
 import { Cell } from "../../model/subject/Cell";
 import { Point } from "../../shared/point";
+import { Stack } from "../../shared/stack";
 import { AlgorithmController } from "../interfaces/algorithmController";
 import { CellState } from "../interfaces/cellState";
 import { GridRenderer } from "../interfaces/gridRenderer";
@@ -16,8 +17,12 @@ export abstract class CellStateHelper implements CellState {
   end: Point | undefined; //= { x: 0, y: 1 };
   draggingStart_End = "";
   currentPressedCell: any;
+  mazeVisitedOrder: Stack<Cell> | undefined;
+
   abstract addEventListeners(): void;
   abstract ganarateMaze(): void;
+  abstract animateMazeGenaration(): void;
+
   clearBoard(): void {
     this.algorithmController?.reRenderBoard();
   }

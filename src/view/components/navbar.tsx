@@ -114,9 +114,7 @@ function Navbar({ boardController }: { boardController: BoardController }) {
         </select>
         <button
           className="btn ml-[10px]  text-[1.2rem] p-[8px] "
-          onClick={() => (
-            boardController.animatePath(), boardController.clearBoard()
-          )}
+          onClick={() => boardController.animatePath()}
         >
           RUN
         </button>
@@ -134,7 +132,12 @@ function Navbar({ boardController }: { boardController: BoardController }) {
         >
           MAZE
         </button>
-
+        <button
+          className="ml-[10px] btn  text-lg p-[8px] "
+          onClick={() => boardController.animateMaze()}
+        >
+          AnimateMaze
+        </button>
         <div className={` form-control w-52  navbar-end ${hidetoggle}`}>
           <label className="cursor-pointer label font-bold">
             <span className=" pr-[10px]">AUTO</span>

@@ -3,12 +3,13 @@ import { Board } from "../../model/subject/board/board";
 import { Stack } from "../../shared/stack";
 
 export interface GridRenderer {
-  animatePath(): unknown;
+  animatePath(): void;
+  animateMaze(): void;
   render(): any;
   setPath(path: Array<Cell>): void;
-  clear(): void;
   setBoard(board: Board): void;
   setCurrentPoints(points: Stack<Cell>): void;
   reRenderBoard(): void;
   reRunAnimatePath(): void;
+  setMazeVisitedOrder(OrderVisited: Stack<Cell>): void;
 }

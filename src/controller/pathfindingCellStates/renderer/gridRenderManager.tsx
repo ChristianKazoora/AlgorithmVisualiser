@@ -10,6 +10,12 @@ export class GridRenderManager implements GridRenderer {
   constructor(_renderer: GridRenderer = new ManualGridRenderer()) {
     this.renderer = _renderer;
   }
+  animateMaze(): void {
+    this.renderer?.animateMaze();
+  }
+  setMazeVisitedOrder(OrderVisited: Stack<Cell>): void {
+    this.renderer?.setMazeVisitedOrder(OrderVisited);
+  }
   reRunAnimatePath(): void {
     this.renderer?.reRunAnimatePath;
   }
@@ -22,9 +28,6 @@ export class GridRenderManager implements GridRenderer {
   }
   setPath(path: Cell[]): void {
     this.renderer?.setPath(path);
-  }
-  clear(): void {
-    throw new Error("Method not implemented.");
   }
   setBoard(board: Board): void {
     this.renderer?.setBoard(board);

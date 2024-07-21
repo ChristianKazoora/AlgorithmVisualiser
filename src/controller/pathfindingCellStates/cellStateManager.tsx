@@ -31,6 +31,10 @@ export class CellStateManager implements CellState {
     this.setMovementStrategy(_movementStrategy);
     this.setRenderer(_renderer);
   }
+  animateMazeGenaration(): void {
+    this.cellState.animateMazeGenaration();
+  }
+
   clearBoard(): void {
     this.cellState.clearBoard();
   }

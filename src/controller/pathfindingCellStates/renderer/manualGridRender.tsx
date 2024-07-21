@@ -11,11 +11,18 @@ export class ManualGridRenderer implements GridRenderer {
   private grid: Array<Array<Cell>> | undefined;
   private path: Array<Cell> | undefined;
   private currentPoints: Stack<Cell> | undefined;
+  private mazeVisitedOrder: Stack<Cell> | undefined;
   private rootsMap: Map<string, any>; // Map to store roots
-  private ANIMATIONSPEED = 2.2;
-
+  private ANIMATIONSPEED = 6;
+  private timeouts: ReturnType<typeof setTimeout>[] = [];
   constructor() {
     this.rootsMap = new Map(); // Initialize the map in the constructor
+  }
+  animateMaze(): void {
+    throw new Error("Method not implemented.");
+  }
+  setMazeVisitedOrder(OrderVisited: Stack<Cell>): void {
+    this.mazeVisitedOrder = OrderVisited;
   }
   setBoard(board: Board): void {
     this.grid = board.grid;
@@ -27,7 +34,7 @@ export class ManualGridRenderer implements GridRenderer {
     this.path = path;
   }
   clear(): void {
-    throw new Error("Method not implemented.");
+    this.clearTimeouts();
   }
   render(): JSX.Element[][] {
     const gridLength = this.ifNull(this.grid).length;
@@ -58,6 +65,7 @@ export class ManualGridRenderer implements GridRenderer {
     }
   }
   reRenderBoard(): void {
+    this.clearTimeouts(); // Clear any previous timeouts before starting a new animation
     const gridLength = this.ifNull(this.grid).length;
     const gridWidth = this.ifNull(this.grid)[0].length;
     for (let i = 0; i < gridLength; i++) {
@@ -102,18 +110,10 @@ export class ManualGridRenderer implements GridRenderer {
           }
         }
         if (visetedElement) {
-          if (cell.isVisited) {
-            visetedElement.className = "block ";
-          } else {
-            visetedElement.className = "hidden";
-          }
+          visetedElement.className = "hidden";
         }
         if (pathElement) {
-          if (cell.isPath) {
-            pathElement.className = "block";
-          } else {
-            pathElement.className = "hidden";
-          }
+          pathElement.className = "hidden";
         }
       }
     }
@@ -178,15 +178,17 @@ export class ManualGridRenderer implements GridRenderer {
 
     for (let i = 0; i < points.size(); i++) {
       if (i === points.size() - 1) {
-        setTimeout(
+        const timeoutId = setTimeout(
           () => {
             this.animateLinePath();
           },
           this.ANIMATIONSPEED * 1.55 * i
         );
+        this.timeouts.push(timeoutId);
         return;
       }
-      setTimeout(
+
+      const timeoutId = setTimeout(
         () => {
           const cell = points.get(i);
 
@@ -206,17 +208,19 @@ export class ManualGridRenderer implements GridRenderer {
                 currentElement.className = "hidden";
                 visitedElement.className = "block";
               }
-            }, this.ANIMATIONSPEED);
+            }, this.ANIMATIONSPEED * 1.55);
           }
         },
         this.ANIMATIONSPEED * 1.55 * i
       );
+      this.timeouts.push(timeoutId);
     }
   }
+
   animateLinePath(): void {
     const path = this.ifNull(this.path);
     for (let i = 0; i < path.length; i++) {
-      setTimeout(
+      const timeoutId = setTimeout(
         () => {
           const cell = path[i];
           if (!cell.isStart && !cell.isEnd) {
@@ -246,8 +250,16 @@ export class ManualGridRenderer implements GridRenderer {
             }
           }
         },
-        Math.pow(this.ANIMATIONSPEED, 6) * i
+        Math.pow(this.ANIMATIONSPEED, Math.sqrt(this.ANIMATIONSPEED)) * i
       );
+      this.timeouts.push(timeoutId);
     }
+  }
+
+  clearTimeouts(): void {
+    for (const timeoutId of this.timeouts) {
+      clearTimeout(timeoutId);
+    }
+    this.timeouts = [];
   }
 }

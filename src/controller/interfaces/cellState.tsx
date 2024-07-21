@@ -20,6 +20,7 @@ export interface CellState extends mainController {
   setAlgorithmController(algorithmController: AlgorithmController): void;
   // addWalls(pos: Point): void;
   // removeWalls(pos: Point): void;
+  animateMazeGenaration(): void;
   setHuristicModel(huristicModel: HuristicModel): void;
   addEventListeners(): void;
   setRenderer(renderer: GridRenderer): void;

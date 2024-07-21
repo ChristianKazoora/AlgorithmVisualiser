@@ -5,7 +5,6 @@ import { HuristicModel } from "../../../Interfaces/huristicModel";
 import { MovementModel } from "../../../Interfaces/movementModel";
 import { PathFindingModel } from "../../../Interfaces/pathfindingModel";
 import { Board } from "../../board/board";
-import { manhattanDistance } from "../../board/huristics/manhattanDistance";
 import { Cell } from "../../Cell";
 
 export abstract class PathFindingHelper implements PathFindingModel {

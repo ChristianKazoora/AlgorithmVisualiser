@@ -29,8 +29,16 @@ export abstract class ControllerHelper implements AlgorithmController {
   animatePath(): void {
     this.renderer.animatePath();
   }
+
   reRunAnimatePath(): void {
     this.renderer.reRunAnimatePath();
+  }
+  setMazeVisitedOrder(OrderVisited: Stack<Cell>): void {
+    this.renderer.setMazeVisitedOrder(OrderVisited);
+    this.renderer.animateMaze();
+  }
+  animateMaze(): void {
+    this.renderer.animateMaze();
   }
 
   setBoard(board: any): void {

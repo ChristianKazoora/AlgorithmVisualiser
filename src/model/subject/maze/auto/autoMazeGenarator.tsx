@@ -8,6 +8,8 @@ export class autoMazeGenarator implements MazeModel {
   board: Board | undefined;
   grid: any | undefined;
   visited = new Stack<Cell>();
+  orderOfVisited = new Stack<Cell>();
+
   stack = new Stack<Cell>();
   movement = new MazeAutoMovement();
   generateMaze(): void {
@@ -22,11 +24,16 @@ export class autoMazeGenarator implements MazeModel {
         this.visited.push(next);
         this.stack.push(current);
         this.removeWall(current, next);
+        this.orderOfVisited.push(next);
         current = next;
       } else {
         current = this.stack.pop() as Cell;
+        this.orderOfVisited.push(current);
       }
     } while (this.stack.size() !== 0);
+  }
+  getOrderVisited(): Stack<Cell> {
+    return this.orderOfVisited;
   }
   getBoard(): Board {
     return this.ifNull(this.board);

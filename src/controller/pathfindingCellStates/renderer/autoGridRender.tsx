@@ -12,9 +12,15 @@ export class AutoGridRenderer implements GridRenderer {
   private path: Array<Cell> | undefined;
   private currentPoints: Stack<Cell> | undefined;
   private rootsMap: Map<string, any>; // Map to store roots
+  private mazeVisitedOrder: Stack<Cell> | undefined;
   private ANIMATIONSPEED = 2;
+  private timeouts: ReturnType<typeof setTimeout>[] = [];
+
   constructor() {
     this.rootsMap = new Map(); // Initialize the map in the constructor
+  }
+  setMazeVisitedOrder(OrderVisited: Stack<Cell>): void {
+    this.mazeVisitedOrder = OrderVisited;
   }
 
   render() {
@@ -48,7 +54,62 @@ export class AutoGridRenderer implements GridRenderer {
   setCurrentPoints(points: Stack<Cell>): void {
     this.currentPoints = points;
   }
+  ifNull(object: any) {
+    if (object) {
+      return object;
+    } else {
+      throw new Error("object is undefined");
+    }
+  }
+  animateMaze(): void {
+    const points = this.ifNull(this.mazeVisitedOrder) as Stack<Cell>;
+
+    for (let i = 0; i < points.size(); i++) {
+      let cell = points.get(i);
+      let currentElement = document.getElementById(
+        `cell-${cell?.x}-${cell?.y}`
+      );
+
+      setTimeout(
+        () => {
+          if (currentElement) {
+            // Rerender walls
+            currentElement.style.borderTop = "1px solid black";
+            currentElement.style.borderBottom = "1px solid black";
+            currentElement.style.borderLeft = "1px solid black";
+            currentElement.style.borderRight = "1px solid black";
+            if (!cell?.northW) {
+              currentElement.style.borderTop = "1px solid transparent";
+            }
+            if (!cell?.southW) {
+              currentElement.style.borderBottom = "1px solid transparent";
+            }
+            if (!cell?.eastW) {
+              currentElement.style.borderRight = "1px solid transparent";
+            }
+            if (!cell?.westW) {
+              currentElement.style.borderLeft = "1px solid transparent";
+            }
+
+            // Set background color for the current element
+            currentElement.style.background = "black";
+
+            // Reset background color after a short delay
+            setTimeout(
+              () => {
+                currentElement.style.backgroundColor = "";
+              },
+              Math.sqrt(this.ANIMATIONSPEED + 330) * 3
+            );
+          }
+        },
+        Math.sqrt(this.ANIMATIONSPEED + 330) * 3 * i
+      );
+    }
+  }
+
   reRenderBoard(): void {
+    this.clearTimeouts();
     const gridLength = this.ifNull(this.grid).length;
     const gridWidth = this.ifNull(this.grid)[0].length;
     for (let i = 0; i < gridLength; i++) {
@@ -121,13 +182,6 @@ export class AutoGridRenderer implements GridRenderer {
       }
     }
   }
-  ifNull(object: any) {
-    if (object) {
-      return object;
-    } else {
-      throw new Error("object is undefined");
-    }
-  }
   reRunAnimatePath(): void {
     const points = this.ifNull(this.currentPoints);
 
@@ -190,15 +244,17 @@ export class AutoGridRenderer implements GridRenderer {
 
     for (let i = 0; i < points.size(); i++) {
       if (i === points.size() - 1) {
-        setTimeout(
+        const timeoutId = setTimeout(
           () => {
             this.animateLinePath();
           },
           this.ANIMATIONSPEED * 1.55 * i
         );
+        this.timeouts.push(timeoutId);
+
         return;
       }
-      setTimeout(
+      const timeoutId = setTimeout(
         () => {
           const cell = points.get(i);
 
@@ -223,12 +279,13 @@ export class AutoGridRenderer implements GridRenderer {
         },
         this.ANIMATIONSPEED * 1.55 * i
       );
+      this.timeouts.push(timeoutId);
     }
   }
   animateLinePath(): void {
     const path = this.ifNull(this.path);
     for (let i = 0; i < path.length; i++) {
-      setTimeout(
+      const timeoutId = setTimeout(
         () => {
           const cell = path[i];
           if (!cell.isStart && !cell.isEnd) {
@@ -262,6 +319,13 @@ export class AutoGridRenderer implements GridRenderer {
         },
         Math.pow(this.ANIMATIONSPEED, 6) * i
       );
+      this.timeouts.push(timeoutId);
     }
+  }
+  clearTimeouts(): void {
+    for (const timeoutId of this.timeouts) {
+      clearTimeout(timeoutId);
+    }
+    this.timeouts = [];
   }
 }

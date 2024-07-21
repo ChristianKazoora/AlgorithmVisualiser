@@ -16,4 +16,5 @@ export interface BoardController extends mainController {
   getStart(): any;
   getEnd(): any;
   getWalls(): any;
+  animateMaze(): void;
 }

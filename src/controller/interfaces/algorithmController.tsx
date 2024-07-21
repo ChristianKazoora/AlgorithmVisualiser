@@ -4,8 +4,12 @@ import { MovementModel } from "../../model/Interfaces/movementModel";
 import { GridRenderer } from "./gridRenderer";
 import { Point } from "../../shared/point";
 import { HuristicModel } from "../../model/Interfaces/huristicModel";
+import { Stack } from "../../shared/stack";
+import { Cell } from "../../model/subject/Cell";
 
 export interface AlgorithmController extends mainController {
+  setMazeVisitedOrder(OrderVisited: Stack<Cell>): void;
+  animateMaze(): void;
   animatePath(): void;
   reRunAnimatePath(): void;
   setBoard(board: Board): void;

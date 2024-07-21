@@ -2,12 +2,18 @@ import { MazeManager } from "../../../model/subject/maze/mazeManager";
 import { autoMazeGenarator } from "../../../model/subject/maze/auto/autoMazeGenarator";
 import { CellStateHelper } from "../cellStateHelper";
 export class AutoCellState extends CellStateHelper {
+  animateMazeGenaration(): void {
+    this.algorithmController?.setMazeVisitedOrder(
+      this.ifNull(this.mazeVisitedOrder)
+    );
+  }
   ganarateMaze(): void {
     const ganarator = new MazeManager(new autoMazeGenarator());
     ganarator.setBoard(this.ifNull(this.board));
     ganarator.generateMaze();
     this.setBoard(ganarator.getBoard());
-    this.algorithmController?.reRenderBoard();
+    this.mazeVisitedOrder = ganarator.getOrderVisited();
+    // this.algorithmController?.reRenderBoard();
   }
 
   addEventListeners(): void {

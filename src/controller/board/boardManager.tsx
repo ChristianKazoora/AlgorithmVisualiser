@@ -90,6 +90,7 @@ export class BoardManager implements BoardController {
     this.cellState.setHuristicModel(huristicModel);
   }
   clearBoard(): void {
+    // this.cellState.clearAnimation();
     this.cellState.clearBoard();
   }
   getBoard(): Board {
@@ -102,7 +103,12 @@ export class BoardManager implements BoardController {
     this.cellState.addEventListeners();
   }
   animatePath(): void {
+    this.cellState.clearBoard();
     this.cellState.animatePath();
+  }
+  animateMaze(): void {
+    this.cellState.ganarateMaze();
+    this.cellState.animateMazeGenaration();
   }
   setAlgorithmController(algorithm: any): void {
     const bfsController = algorithm;

@@ -3,11 +3,15 @@ import { MazeManager } from "../../../model/subject/maze/mazeManager";
 import { manualMazeGenarotor } from "../../../model/subject/maze/manual/manualMazeGenarotor";
 import { CellStateHelper } from "../cellStateHelper";
 export class ManualCellState extends CellStateHelper {
+  animateMazeGenaration(): void {
+    throw new Error("Method not implemented.");
+  }
   ganarateMaze(): void {
     const ganarator = new MazeManager(new manualMazeGenarotor());
     ganarator.setBoard(this.ifNull(this.board));
     ganarator.generateMaze();
     this.setBoard(ganarator.getBoard());
+    this.mazeVisitedOrder = ganarator.getOrderVisited();
   }
   addWalls(pos: Point): void {
     this.walls.push(pos);

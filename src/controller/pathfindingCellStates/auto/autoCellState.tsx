@@ -13,7 +13,7 @@ export class AutoCellState extends CellStateHelper {
     ganarator.generateMaze();
     this.setBoard(ganarator.getBoard());
     this.mazeVisitedOrder = ganarator.getOrderVisited();
-    // this.algorithmController?.reRenderBoard();
+    this.algorithmController?.reRenderBoard();
   }
 
   addEventListeners(): void {
@@ -23,8 +23,8 @@ export class AutoCellState extends CellStateHelper {
     let isDragging = false;
     for (let i = 0; i < gridLength; i++) {
       for (let j = 0; j < gridWidth; j++) {
-        let cell = this.ifNull(this.grid)[i][j];
-        let currentElement = document.getElementById(
+        const cell = this.ifNull(this.grid)[i][j];
+        const currentElement = document.getElementById(
           `cell-${cell.x}-${cell.y}`
         );
         if (currentElement) {

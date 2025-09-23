@@ -39,12 +39,12 @@ export class ManualGridRenderer implements GridRenderer {
   render(): JSX.Element[][] {
     const gridLength = this.ifNull(this.grid).length;
     const gridWidth = this.ifNull(this.grid)[0].length;
-    let result: JSX.Element[][] = [];
+    const result: JSX.Element[][] = [];
 
     for (let i = 0; i < gridLength; i++) {
-      let row: JSX.Element[] = [];
+      const row: JSX.Element[] = [];
       for (let j = 0; j < gridWidth; j++) {
-        let cell = this.ifNull(this.grid)[i][j];
+        const cell = this.ifNull(this.grid)[i][j];
 
         let pos: JSX.Element | undefined;
         pos = new VisitedPath(cell).animate();
@@ -70,20 +70,20 @@ export class ManualGridRenderer implements GridRenderer {
     const gridWidth = this.ifNull(this.grid)[0].length;
     for (let i = 0; i < gridLength; i++) {
       for (let j = 0; j < gridWidth; j++) {
-        let cell = this.ifNull(this.grid)[i][j];
-        let visetedElement = document.getElementById(
+        const cell = this.ifNull(this.grid)[i][j];
+        const visitedElement = document.getElementById(
           `cell-${cell.x}-${cell.y}-visited`
         );
-        let wallElement = document.getElementById(
+        const wallElement = document.getElementById(
           `cell-${cell.x}-${cell.y}-wall`
         );
-        let startElement = document.getElementById(
+        const startElement = document.getElementById(
           `cell-${cell.x}-${cell.y}-start`
         );
-        let endElement = document.getElementById(
+        const endElement = document.getElementById(
           `cell-${cell.x}-${cell.y}-end`
         );
-        let pathElement = document.getElementById(
+        const pathElement = document.getElementById(
           `cell-${cell.x}-${cell.y}-path`
         );
 
@@ -109,8 +109,8 @@ export class ManualGridRenderer implements GridRenderer {
             endElement.className = "hidden";
           }
         }
-        if (visetedElement) {
-          visetedElement.className = "hidden";
+        if (visitedElement) {
+          visitedElement.className = "hidden";
         }
         if (pathElement) {
           pathElement.className = "hidden";
@@ -153,7 +153,7 @@ export class ManualGridRenderer implements GridRenderer {
         );
 
         if (pathElement) {
-          let toAdd = new Line(cell).animate();
+          const toAdd = new Line(cell).animate();
           // Check if a root already exists for this element
           if (this.rootsMap.has(cellId)) {
             const existingRoot = this.rootsMap.get(cellId);
@@ -231,7 +231,7 @@ export class ManualGridRenderer implements GridRenderer {
             );
 
             if (pathElement) {
-              let toAdd = new Line(cell).animate();
+              const toAdd = new Line(cell).animate();
               // Check if a root already exists for this element
               if (this.rootsMap.has(cellId)) {
                 const existingRoot = this.rootsMap.get(cellId);

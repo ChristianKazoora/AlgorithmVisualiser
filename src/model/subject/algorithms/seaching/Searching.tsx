@@ -10,8 +10,10 @@ export class Searching implements SearchingModel {
   setData(data: number[]): void {
     this.data = data;
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   searchElement(element: number): void {
-    /* Implementation */
+    /* ToDo implement element */
+
   }
   start(): void {
     /* Initialize search */

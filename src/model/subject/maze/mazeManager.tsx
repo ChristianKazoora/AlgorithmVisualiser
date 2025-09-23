@@ -1,4 +1,3 @@
-import React from "react";
 import { MazeModel } from "../../Interfaces/mazeModel";
 import { Board } from "../board/board";
 import { Cell } from "../Cell";

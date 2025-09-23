@@ -1,6 +1,5 @@
-import React from "react";
 import { Grid } from "@mui/material";
-import { Left_Right } from "../controller/cellDecorations/decorators/Line/left_RightAnimation";
+// import { Left_Right } from "../controller/cellDecorations/decorators/Line/left_RightAnimation";
 const Line = () => {
   const classNames: string = "bg-red-500 rounded-box";
 

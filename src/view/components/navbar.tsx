@@ -9,6 +9,7 @@ import { useState } from "react";
 import { manhattanDistance } from "../../model/subject/board/huristics/manhattanDistance";
 import { euclideanDistance } from "../../model/subject/board/huristics/euclideanDistance";
 import { chebyshevDistance } from "../../model/subject/board/huristics/chebyshevDistance";
+import {AutoCellState} from "../../controller/pathfindingCellStates/auto/autoCellState.tsx";
 function Navbar({ boardController }: { boardController: BoardController }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -24,13 +25,13 @@ function Navbar({ boardController }: { boardController: BoardController }) {
     }
     setIsManual(!isManual);
   };
-  let toggoleColor =
+  const toggleColor =
     location.pathname === "/manualPathfinding"
       ? "bg-blue-500"
       : location.pathname === "/autoPathfinding"
         ? "bg-green-500"
         : "";
-  let toggoleHoverColor =
+    const toggleHoverColor =
     location.pathname === "/manualPathfinding"
       ? "hover:bg-green-700"
       : location.pathname === "/autoPathfinding"
@@ -46,131 +47,137 @@ function Navbar({ boardController }: { boardController: BoardController }) {
   }
   return (
     <div className="flex justify-center ">
-      <div className="navbar rounded-3xl w-[70%] bg-neutral text-neutral-content">
-        <div className="flex-1 px-2 mx-2  navbar-start ">
+        <div className="navbar rounded-3xl w-[70%] bg-neutral text-neutral-content">
+            <div className="flex-1 px-2 mx-2  navbar-start ">
           <span
-            onClick={() => {
-              navigate("/");
-            }}
-            className="text-lg font-bold"
+              onClick={() => {
+                  navigate("/");
+              }}
+              className="text-lg font-bold"
           >
             Algo Visualizer
           </span>
-        </div>
+            </div>
 
-        <select
-          className="select select-success navbar-center w-[7.85rem]"
-          onChange={(e) => {
-            const selectedValue = e.target.value;
-            if (selectedValue === "Manhattan Distance") {
-              boardController.setHuristicModel(new manhattanDistance());
-              console.log("Manhattan Distance");
-            }
-            if (selectedValue === "Euclidean Distance") {
-              boardController.setHuristicModel(new euclideanDistance());
-              console.log("Euclidean Distance");
-            }
-            if (selectedValue === "Chebyshev Distance") {
-              boardController.setHuristicModel(new chebyshevDistance());
-              console.log("Chebyshev Distance");
-            }
+            <select
+                className="select select-success navbar-center w-[7.85rem]"
+                onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    if (selectedValue === "Manhattan Distance") {
+                        boardController.setHuristicModel(new manhattanDistance());
+                        console.log("Manhattan Distance");
+                    }
+                    if (selectedValue === "Euclidean Distance") {
+                        boardController.setHuristicModel(new euclideanDistance());
+                        console.log("Euclidean Distance");
+                    }
+                    if (selectedValue === "Chebyshev Distance") {
+                        boardController.setHuristicModel(new chebyshevDistance());
+                        console.log("Chebyshev Distance");
+                    }
 
-            // Add more conditions for other options if necessary
-          }}
-        >
-          {/* <option disabled>
+                    // Add more conditions for other options if necessary
+                }}
+            >
+                {/* <option disabled>
             <option className=" text-red-500"> Pick your favorite anime</option>
           </option> */}
-          <option>Manhattan Distance</option>
-          <option>Euclidean Distance</option>
-          <option>Chebyshev Distance</option>
-        </select>
+                <option>Manhattan Distance</option>
+                <option>Euclidean Distance</option>
+                <option>Chebyshev Distance</option>
+            </select>
 
-        <select
-          className="select select-success navbar-center w-[6rem]"
-          onChange={(e) => {
-            const selectedValue = e.target.value;
-            if (selectedValue === "DFS") {
-              boardController.setAlgorithmController(new DfsController());
-              console.log("dfs");
-            }
-            if (selectedValue === "BFS") {
-              boardController.setAlgorithmController(new BfsController());
-              console.log("bfs");
-            }
-            if (selectedValue === "A*") {
-              boardController.setAlgorithmController(new A_StarController());
-              console.log("A*");
-            }
-            // Add more conditions for other options if necessary
-          }}
-        >
-          {/* <option disabled>
+            <select
+                className="select select-success navbar-center w-[6rem]"
+                onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    if (selectedValue === "DFS") {
+                        boardController.setAlgorithmController(new DfsController());
+                        console.log("dfs");
+                    }
+                    if (selectedValue === "BFS") {
+                        boardController.setAlgorithmController(new BfsController());
+                        console.log("bfs");
+                    }
+                    if (selectedValue === "A*") {
+                        boardController.setAlgorithmController(new A_StarController());
+                        console.log("A*");
+                    }
+                    // Add more conditions for other options if necessary
+                }}
+            >
+                {/* <option disabled>
             <option className=" text-red-500"> Pick your favorite anime</option>
           </option> */}
-          <option>BFS</option>
-          <option>DFS</option>
-          <option>A*</option>
-        </select>
-        <button
-          className="btn ml-[10px]  text-[1.2rem] p-[8px] "
-          onClick={() => boardController.animatePath()}
-        >
-          RUN
-        </button>
-        <button
-          className="btn ml-[10px]  text-[1.2rem] p-[8px] "
-          onClick={() => {
-            boardController.clearBoard();
-          }}
-        >
-          clear
-        </button>
-        <button
-          className="ml-[10px] btn  text-lg p-[8px] "
-          onClick={() => boardController.ganarateMaze()}
-        >
-          MAZE
-        </button>
-        <button
-          className="ml-[10px] btn  text-lg p-[8px] "
-          onClick={() => boardController.animateMaze()}
-        >
-          AnimateMaze
-        </button>
-        <div className={` form-control w-52  navbar-end ${hidetoggle}`}>
-          <label className="cursor-pointer label font-bold">
-            <span className=" pr-[10px]">AUTO</span>
+                <option>BFS</option>
+                <option>DFS</option>
+                <option>A*</option>
+            </select>
+            <button
+                className="btn ml-[10px]  text-[1.2rem] p-[8px] "
+                onClick={() => boardController.animatePath()}
+            >
+                RUN
+            </button>
+            <button
+                className="btn ml-[10px]  text-[1.2rem] p-[8px] "
+                onClick={() => {
+                    boardController.clearBoard();
+                }}
+            >
+                clear
+            </button>
+            <button
+                className="ml-[10px] btn  text-lg p-[8px] "
+                onClick={() => boardController.ganarateMaze()}
+            >
+                MAZE
+            </button>
+            <button
+                className="ml-[10px] btn  text-lg p-[8px] "
+                onClick={() => boardController.animateMaze()}
+            >
+                AnimateMaze
+            </button>
+            <button
+                className="ml-[10px] btn  text-lg p-[8px] "
+                onClick={() => boardController.resetBoard(new AutoCellState())}
+            >
+                resetBoard
+            </button>
+            <div className={` form-control w-52  navbar-end ${hidetoggle}`}>
+                <label className="cursor-pointer label font-bold">
+                    <span className=" pr-[10px]">AUTO</span>
 
-            <input
-              id="toggle"
-              type="checkbox"
-              className={`toggle  border-blue-500 ${toggoleHoverColor} ${toggoleColor} `}
-              onChange={() => {
-                if (location.pathname === "/manualPathfinding") {
-                  navigate("/autoPathfinding");
-                } else if (location.pathname === "/autoPathfinding") {
-                  navigate("/manualPathfinding");
-                }
-              }}
-              checked={location.pathname === "/manualPathfinding"}
-            />
-            <span className="pl-[10px]">MANUAL</span>
-          </label>
+                    <input
+                        id="toggle"
+                        type="checkbox"
+                        className={`toggle  border-blue-500 ${toggleHoverColor} ${toggleColor} `}
+                        onChange={() => {
+                            if (location.pathname === "/manualPathfinding") {
+                                navigate("/autoPathfinding");
+                            } else if (location.pathname === "/autoPathfinding") {
+                                navigate("/manualPathfinding");
+                            }
+                        }}
+                        checked={location.pathname === "/manualPathfinding"}
+                    />
+                    <span className="pl-[10px]">MANUAL</span>
+                </label>
+            </div>
         </div>
-      </div>
-      <div
-        className={` flex  items-center form-control w-52  navbar-end ${hidetoggle}`}
-      >
-        <span className="pl-[10px]">Diagonal</span>
+        <div
+            className={` flex  items-center form-control w-52  navbar-end ${hidetoggle}`}
+        >
+            <span className="pl-[10px]">Diagonal</span>
 
-        <label className="cursor-pointer label font-bold">
+            <label className="cursor-pointer label font-bold">
           <span className="px-[10px]">off</span>
 
           <input
             id="toggle"
             type="checkbox"
-            className={`toggle  border-blue-500 ${toggoleHoverColor} ${toggoleColor} `}
+            className={`toggle  border-blue-500 ${toggleHoverColor} ${toggleColor} `}
             onChange={handleToggleChange}
             checked={isManual}
           />

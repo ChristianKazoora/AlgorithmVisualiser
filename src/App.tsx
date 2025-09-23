@@ -1,7 +1,7 @@
 import { BoardManager } from "./controller/board/boardManager";
 import { BoardController } from "./controller/interfaces/boardController";
-import { AutoCellState } from "./controller/pathfindingCellStates/auto/autoCellState";
-import { ManualCellState } from "./controller/pathfindingCellStates/manual/manualCellState";
+// import { AutoCellState } from "./controller/pathfindingCellStates/auto/autoCellState";
+// import { ManualCellState } from "./controller/pathfindingCellStates/manual/manualCellState";
 import Line from "./test/line";
 import Navbar from "./view/components/navbar";
 import AutoPathFindingPage from "./view/pages/autoPathfinding";
@@ -15,7 +15,7 @@ import {
 } from "react-router-dom";
 
 function App() {
-  let boardController: BoardController = new BoardManager();
+  const boardController: BoardController = new BoardManager();
 
   return (
     <BrowserRouter>

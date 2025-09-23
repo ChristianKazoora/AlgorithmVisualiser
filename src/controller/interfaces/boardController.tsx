@@ -1,6 +1,7 @@
 import { HuristicModel } from "../../model/Interfaces/huristicModel";
 import { Board } from "../../model/subject/board/board";
 import { mainController } from "./mainController";
+import {CellState} from "./cellState.tsx";
 
 export interface BoardController extends mainController {
   animatePath(): void;
@@ -17,4 +18,5 @@ export interface BoardController extends mainController {
   getEnd(): any;
   getWalls(): any;
   animateMaze(): void;
+  resetBoard(cellState:CellState): void;
 }

@@ -1,6 +1,6 @@
 import { Stack } from "../../../../../shared/stack";
 import { MazeMovementModel } from "../../../../Interfaces/mazeMovementModel";
-import { MovementModel } from "../../../../Interfaces/movementModel";
+// import { MovementModel } from "../../../../Interfaces/movementModel";
 import { Cell } from "../../../Cell";
 
 export class MazeAutoMovement implements MazeMovementModel {
@@ -11,12 +11,12 @@ export class MazeAutoMovement implements MazeMovementModel {
   }
 
   getNeighbour(cell: Cell): any {
-    let neighbours: Cell[] = [];
+    const neighbours: Cell[] = [];
 
-    let top = cell.top;
-    let bottom = cell.bottom;
-    let left = cell.left;
-    let right = cell.right;
+    const top = cell.top;
+    const bottom = cell.bottom;
+    const left = cell.left;
+    const right = cell.right;
 
     if (top && !this.visited.includes(top)) {
       neighbours.push(top);
@@ -32,7 +32,7 @@ export class MazeAutoMovement implements MazeMovementModel {
     }
 
     if (neighbours.length > 0) {
-      let r = Math.floor(Math.random() * neighbours.length);
+      const r = Math.floor(Math.random() * neighbours.length);
       return neighbours[r];
     }
 

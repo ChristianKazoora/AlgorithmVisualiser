@@ -24,7 +24,7 @@ export abstract class PathFindingHelper implements PathFindingModel {
     this.huristicModel = huristicModel;
   }
   backtrackPath(end: Cell): Array<Cell> {
-    let path: Array<Cell> = new Array<Cell>();
+    const path: Array<Cell> = new Array<Cell>();
     let current: Cell = end;
 
     while (current != this.startP) {
@@ -82,7 +82,7 @@ export abstract class PathFindingHelper implements PathFindingModel {
     this.ifNull(this.grid)[pos.x][pos.y].isStart = true;
     this.startP = this.ifNull(this.grid)[pos.x][pos.y];
   }
-  setAllOtherCellsToFalse(startOrEnd: String): void {
+  setAllOtherCellsToFalse(startOrEnd: string): void {
     if (startOrEnd == "start") {
       for (let i = 0; i < this.ifNull(this.grid).length; i++) {
         for (let j = 0; j < this.ifNull(this.grid)[i].length; j++) {
@@ -107,7 +107,7 @@ export abstract class PathFindingHelper implements PathFindingModel {
     this.endP = this.ifNull(this.grid)[pos.x][pos.y];
   }
   toggleWall(pos: Point): void {
-    let cell: Cell = this.ifNull(this.grid)[pos.x][pos.y];
+    const cell: Cell = this.ifNull(this.grid)[pos.x][pos.y];
     cell.isWall = !cell.isWall;
   }
   getPath(): Array<Cell> {

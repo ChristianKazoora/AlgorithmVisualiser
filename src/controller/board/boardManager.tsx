@@ -14,7 +14,8 @@ export class BoardManager implements BoardController {
   board: Board;
   grid: Array<Array<Cell>>;
   cellState: CellState;
-  cellStateManager: CellState;
+  cellStateManager: CellState ;
+  strategy : MovementModel |undefined;
   height: number;
   width: number;
   start: Point;
@@ -180,19 +181,33 @@ export class BoardManager implements BoardController {
     );
   }
   setMovementModel(strategy: MovementModel): void {
+    this.strategy = strategy;
     this.cellStateManager.setMovementStrategy(strategy);
   }
-  setStart(pos: Point): void {
-    throw new Error("Method not implemented.");
+  resetBoard(cellState:CellState): void {
+    debugger
+   const  newBoard =         new Board({ y: this.height, x: this.width });
+       this.cellStateManager = new CellStateManager(
+           newBoard,
+           this.start,
+        this.end,
+this.strategy,
+        cellState
+        // this.walls
+    );
+    this.cellState=cellState
   }
-  setEnd(pos: Point): void {
-    throw new Error("Method not implemented.");
-  }
-
-  setWalls(walls: Point[]): void {
-    throw new Error("Method not implemented.");
-  }
-  getData(): void {
-    throw new Error("Method not implemented.");
-  }
+  // setStart(pos: Point): void {
+  //   throw new Error("Method not implemented.");
+  // }
+  // setEnd(pos: Point): void {
+  //   throw new Error("Method not implemented.");
+  // }
+  //
+  // setWalls(walls: Point[]): void {
+  //   throw new Error("Method not implemented.");
+  // }
+  // getData(): void {
+  //   throw new Error("Method not implemented.");
+  // }
 }

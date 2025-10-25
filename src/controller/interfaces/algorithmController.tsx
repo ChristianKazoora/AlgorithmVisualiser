@@ -9,8 +9,10 @@ import { Cell } from "../../model/subject/Cell";
 
 export interface AlgorithmController extends mainController {
   setMazeVisitedOrder(OrderVisited: Stack<Cell>): void;
-  animateMaze(): void;
-  animatePath(): void;
+  animateMaze(onComplete?: () => void): void;
+  completeMazeImmediately(): void;
+  animatePath(onComplete?: () => void): void;
+  completePathImmediately(): void;
   reRunAnimatePath(): void;
   setBoard(board: Board): void;
   setStart(pos: Point): void;

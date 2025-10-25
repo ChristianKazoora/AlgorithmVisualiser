@@ -61,8 +61,15 @@ export class AutoGridRenderer implements GridRenderer {
       throw new Error("object is undefined");
     }
   }
-  animateMaze(): void {
+  animateMaze(onComplete?: () => void): void {
     const points = this.ifNull(this.mazeVisitedOrder) as Stack<Cell>;
+
+    // Clear any existing timeouts first
+    this.clearTimeouts();
+
+    // Calculate animation timing constants
+    const delayPerCell = Math.sqrt(this.ANIMATIONSPEED + 330) * 3;
+    const fadeoutTime = delayPerCell + 100;
 
     for (let i = 0; i < points.size(); i++) {
       let cell = points.get(i);
@@ -70,41 +77,47 @@ export class AutoGridRenderer implements GridRenderer {
         `cell-${cell?.x}-${cell?.y}`
       );
 
-      setTimeout(
-        () => {
-          if (currentElement) {
-            // Rerender walls
-            currentElement.style.borderTop = "1px solid black";
-            currentElement.style.borderBottom = "1px solid black";
-            currentElement.style.borderLeft = "1px solid black";
-            currentElement.style.borderRight = "1px solid black";
-            if (!cell?.northW) {
-              currentElement.style.borderTop = "1px solid transparent";
-            }
-            if (!cell?.southW) {
-              currentElement.style.borderBottom = "1px solid transparent";
-            }
-            if (!cell?.eastW) {
-              currentElement.style.borderRight = "1px solid transparent";
-            }
-            if (!cell?.westW) {
-              currentElement.style.borderLeft = "1px solid transparent";
-            }
-
-            // Set background color for the current element
-            currentElement.style.background = "black";
-
-            // Reset background color after a short delay
-            setTimeout(
-              () => {
-                currentElement.style.backgroundColor = "";
-              },
-              Math.sqrt(this.ANIMATIONSPEED + 330) * 3
-            );
+      const timeoutId = setTimeout(() => {
+        if (currentElement) {
+          // Rerender walls based on the cell's current state
+          currentElement.style.borderTop = "1px solid black";
+          currentElement.style.borderBottom = "1px solid black";
+          currentElement.style.borderLeft = "1px solid black";
+          currentElement.style.borderRight = "1px solid black";
+          if (!cell?.northW) {
+            currentElement.style.borderTop = "1px solid transparent";
           }
-        },
-        Math.sqrt(this.ANIMATIONSPEED + 330) * 3 * i
-      );
+          if (!cell?.southW) {
+            currentElement.style.borderBottom = "1px solid transparent";
+          }
+          if (!cell?.eastW) {
+            currentElement.style.borderRight = "1px solid transparent";
+          }
+          if (!cell?.westW) {
+            currentElement.style.borderLeft = "1px solid transparent";
+          }
+
+          // Set background color for the current element (black cube tracer)
+          currentElement.style.background = "black";
+
+          // Reset background color after a short delay
+          setTimeout(() => {
+            currentElement.style.backgroundColor = "";
+          }, delayPerCell);
+        }
+
+        // On the last iteration, ensure final maze state is rendered
+        if (i === points.size() - 1) {
+          setTimeout(() => {
+            this.reRenderBoard();
+            // Call the completion callback if provided
+            if (onComplete) {
+              onComplete();
+            }
+          }, fadeoutTime);
+        }
+      }, delayPerCell * i);
+      this.timeouts.push(timeoutId);
     }
   }
 
@@ -239,86 +252,101 @@ export class AutoGridRenderer implements GridRenderer {
       }
     }
   }
-  animatePath(): void {
+  animatePath(onComplete?: () => void): void {
     const points = this.ifNull(this.currentPoints);
+
+    // Handle edge case: no points to animate
+    if (points.size() === 0) {
+      this.animateLinePath(onComplete);
+      return;
+    }
 
     for (let i = 0; i < points.size(); i++) {
       if (i === points.size() - 1) {
-        const timeoutId = setTimeout(
-          () => {
-            this.animateLinePath();
-          },
-          this.ANIMATIONSPEED * 1.55 * i
-        );
+        const timeoutId = setTimeout(() => {
+          this.animateLinePath(onComplete);
+        }, this.ANIMATIONSPEED * 1.55 * i);
         this.timeouts.push(timeoutId);
 
         return;
       }
-      const timeoutId = setTimeout(
-        () => {
-          const cell = points.get(i);
+      const timeoutId = setTimeout(() => {
+        const cell = points.get(i);
 
-          if (!cell.isStart && !cell.isEnd) {
-            const visitedElement = this.ifNull(document).getElementById(
-              `cell-${cell.x}-${cell.y}-visited`
-            );
-            const currentElement = this.ifNull(document).getElementById(
-              `cell-${cell.x}-${cell.y}-current`
-            );
+        if (!cell.isStart && !cell.isEnd) {
+          const visitedElement = this.ifNull(document).getElementById(
+            `cell-${cell.x}-${cell.y}-visited`
+          );
+          const currentElement = this.ifNull(document).getElementById(
+            `cell-${cell.x}-${cell.y}-current`
+          );
 
-            if (currentElement) {
-              currentElement.className = " block ";
-            }
-            setTimeout(() => {
-              if (visitedElement) {
-                currentElement.className = "hidden";
-                visitedElement.className = "block";
-              }
-            }, this.ANIMATIONSPEED);
+          if (currentElement) {
+            currentElement.className = " block ";
           }
-        },
-        this.ANIMATIONSPEED * 1.55 * i
-      );
+          setTimeout(() => {
+            if (visitedElement) {
+              currentElement.className = "hidden";
+              visitedElement.className = "block";
+            }
+          }, this.ANIMATIONSPEED);
+        }
+      }, this.ANIMATIONSPEED * 1.55 * i);
       this.timeouts.push(timeoutId);
     }
   }
-  animateLinePath(): void {
+  animateLinePath(onComplete?: () => void): void {
     const path = this.ifNull(this.path);
-    for (let i = 0; i < path.length; i++) {
-      const timeoutId = setTimeout(
-        () => {
-          const cell = path[i];
-          if (!cell.isStart && !cell.isEnd) {
-            const cellId = `cell-${cell.x}-${cell.y}-path`;
 
-            const pathElement = this.ifNull(document).getElementById(
-              `cell-${cell.x}-${cell.y}-path`
-            );
-            const visitedElement = this.ifNull(document).getElementById(
-              `cell-${cell.x}-${cell.y}-visited`
-            );
-            if (pathElement) {
-              let toAdd = new Line(cell).animate();
-              // Check if a root already exists for this element
-              if (this.rootsMap.has(cellId)) {
-                const existingRoot = this.rootsMap.get(cellId);
-                existingRoot.render(toAdd); // Use the existing root to render
-              } else {
-                // Create a new root and store it in the map
-                const newRoot = createRoot(pathElement);
-                newRoot.render(toAdd);
-                this.rootsMap.set(cellId, newRoot);
-              }
-              pathElement.className = "block";
-              pathElement.className = "block";
+    // Handle edge case: empty path or only start/end cells
+    if (path.length === 0) {
+      if (onComplete) {
+        onComplete();
+      }
+      return;
+    }
+
+    for (let i = 0; i < path.length; i++) {
+      const isLastCell = i === path.length - 1;
+
+      const timeoutId = setTimeout(() => {
+        const cell = path[i];
+        if (!cell.isStart && !cell.isEnd) {
+          const cellId = `cell-${cell.x}-${cell.y}-path`;
+
+          const pathElement = this.ifNull(document).getElementById(
+            `cell-${cell.x}-${cell.y}-path`
+          );
+          const visitedElement = this.ifNull(document).getElementById(
+            `cell-${cell.x}-${cell.y}-visited`
+          );
+          if (pathElement) {
+            let toAdd = new Line(cell).animate();
+            // Check if a root already exists for this element
+            if (this.rootsMap.has(cellId)) {
+              const existingRoot = this.rootsMap.get(cellId);
+              existingRoot.render(toAdd); // Use the existing root to render
+            } else {
+              // Create a new root and store it in the map
+              const newRoot = createRoot(pathElement);
+              newRoot.render(toAdd);
+              this.rootsMap.set(cellId, newRoot);
             }
-            if (visitedElement) {
-              visitedElement.className = "hidden";
-            }
+            pathElement.className = "block";
+            pathElement.className = "block";
           }
-        },
-        Math.pow(this.ANIMATIONSPEED, 6) * i
-      );
+          if (visitedElement) {
+            visitedElement.className = "hidden";
+          }
+        }
+
+        // Call onComplete callback after last cell (regardless of whether it was rendered)
+        if (isLastCell && onComplete) {
+          setTimeout(() => {
+            onComplete();
+          }, Math.pow(this.ANIMATIONSPEED, 6));
+        }
+      }, Math.pow(this.ANIMATIONSPEED, 6) * i);
       this.timeouts.push(timeoutId);
     }
   }
@@ -327,5 +355,21 @@ export class AutoGridRenderer implements GridRenderer {
       clearTimeout(timeoutId);
     }
     this.timeouts = [];
+  }
+
+  completeMazeImmediately(): void {
+    // Clear all pending animations
+    this.clearTimeouts();
+
+    // Immediately render the final maze state
+    this.reRenderBoard();
+  }
+
+  completePathImmediately(): void {
+    // Clear all pending animations
+    this.clearTimeouts();
+
+    // Immediately render visited cells and path
+    this.reRunAnimatePath();
   }
 }

@@ -1,7 +1,5 @@
 import { Grid } from "@mui/material";
 import { CellDecorator } from "../cellDecorator";
-import { motion } from "framer-motion";
-import { Line } from "./line";
 import { WallCellAnimation } from "../decorators/wallCellAnimation";
 import { StartCellAnimation } from "../decorators/startCellAnimation";
 import { EndCellAnimation } from "../decorators/endCellAnimation";
@@ -26,9 +24,8 @@ export class VisitedPath extends CellDecorator {
         data-col={this.y}
         className={" flex justify-center items-center"}
         style={{
-          width: "20px",
-          height: "20px",
-          border: "1px solid black",
+          width: "var(--dynamic-cell-size, 20px)",
+          height: "var(--dynamic-cell-size, 20px)",
         }}
       >
         {new StartCellAnimation(this).animate()}

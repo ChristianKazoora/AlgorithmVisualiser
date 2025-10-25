@@ -18,7 +18,8 @@
     "framer-motion": "^11.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^5.1.0"
+    "react-hot-toast": "^2.6.0",
+    "react-icons": "^5.5.0"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.30",

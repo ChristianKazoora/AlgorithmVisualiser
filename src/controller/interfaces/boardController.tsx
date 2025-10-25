@@ -1,22 +1,23 @@
 import { HuristicModel } from "../../model/Interfaces/huristicModel";
 import { Board } from "../../model/subject/board/board";
 import { mainController } from "./mainController";
-import {CellState} from "./cellState.tsx";
 
 export interface BoardController extends mainController {
-  animatePath(): void;
+  animatePath(onComplete?: () => void): void;
   addEventListeners(): void;
   setBoard(board: Board): void;
+  resize(width: number, height: number): void;
   setCellState(cellState: any, renderer: any, movementModel: any): void;
   setHuristicModel(huristicModel: HuristicModel): void;
   setMovementModel(movementModel: any): void;
   ganarateMaze(): void;
   setAlgorithmController(algorithm: any): void;
+  getAlgorithmController(): any;
   clearBoard(): void;
   getBoard(): Board;
   getStart(): any;
   getEnd(): any;
   getWalls(): any;
-  animateMaze(): void;
-  resetBoard(cellState:CellState): void;
+  animateMaze(onComplete?: () => void): void;
+  resetBoard(): void;
 }

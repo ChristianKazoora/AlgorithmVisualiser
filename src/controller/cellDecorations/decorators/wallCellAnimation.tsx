@@ -7,7 +7,13 @@ export class WallCellAnimation extends CellDecorator {
         style={{ background: "black" }}
         className="hidden"
       >
-        <div className=" bg-black w-[1.1rem] h-[1.13rem] "></div>
+        <div
+          className="bg-black"
+          style={{
+            width: "calc(var(--dynamic-cell-size, 20px) - 2px)",
+            height: "calc(var(--dynamic-cell-size, 20px) - 2px)",
+          }}
+        />
       </div>
     );
   }

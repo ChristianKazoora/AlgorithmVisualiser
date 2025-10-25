@@ -31,12 +31,15 @@ export class CellStateManager implements CellState {
     this.setMovementStrategy(_movementStrategy);
     this.setRenderer(_renderer);
   }
-  animateMazeGenaration(): void {
-    this.cellState.animateMazeGenaration();
+  animateMazeGenaration(onComplete?: () => void): void {
+    this.cellState.animateMazeGenaration(onComplete);
   }
 
   clearBoard(): void {
     this.cellState.clearBoard();
+  }
+  resetBoard(): void {
+    this.cellState.resetBoard();
   }
   setHuristicModel(huristicModel: HuristicModel): void {
     this.cellState.setHuristicModel(huristicModel);
@@ -69,8 +72,8 @@ export class CellStateManager implements CellState {
   addEventListeners(): void {
     this.cellState.addEventListeners();
   }
-  animatePath(): void {
-    this.cellState.animatePath();
+  animatePath(onComplete?: () => void): void {
+    this.cellState.animatePath(onComplete);
   }
   setAlgorithmController(algorithmController: AlgorithmController): void {
     this.cellState.setAlgorithmController(algorithmController);

@@ -3,8 +3,10 @@ import { Board } from "../../model/subject/board/board";
 import { Stack } from "../../shared/stack";
 
 export interface GridRenderer {
-  animatePath(): void;
-  animateMaze(): void;
+  animatePath(onComplete?: () => void): void;
+  completePathImmediately(): void;
+  animateMaze(onComplete?: () => void): void;
+  completeMazeImmediately(): void;
   render(): any;
   setPath(path: Array<Cell>): void;
   setBoard(board: Board): void;

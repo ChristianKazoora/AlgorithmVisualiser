@@ -21,6 +21,9 @@ export class ManualGridRenderer implements GridRenderer {
   animateMaze(): void {
     throw new Error("Method not implemented.");
   }
+  completeMazeImmediately(): void {
+    throw new Error("Method not implemented.");
+  }
   setMazeVisitedOrder(OrderVisited: Stack<Cell>): void {
     this.mazeVisitedOrder = OrderVisited;
   }
@@ -173,87 +176,110 @@ export class ManualGridRenderer implements GridRenderer {
       }
     }
   }
-  animatePath(): void {
+  animatePath(onComplete?: () => void): void {
     const points = this.ifNull(this.currentPoints);
+
+    // Handle edge case: no points to animate
+    if (points.size() === 0) {
+      this.animateLinePath(onComplete);
+      return;
+    }
 
     for (let i = 0; i < points.size(); i++) {
       if (i === points.size() - 1) {
-        const timeoutId = setTimeout(
-          () => {
-            this.animateLinePath();
-          },
-          this.ANIMATIONSPEED * 1.55 * i
-        );
+        const timeoutId = setTimeout(() => {
+          this.animateLinePath(onComplete);
+        }, this.ANIMATIONSPEED * 1.55 * i);
         this.timeouts.push(timeoutId);
         return;
       }
 
-      const timeoutId = setTimeout(
-        () => {
-          const cell = points.get(i);
+      const timeoutId = setTimeout(() => {
+        const cell = points.get(i);
 
-          if (!cell.isStart && !cell.isEnd) {
-            const visitedElement = this.ifNull(document).getElementById(
-              `cell-${cell.x}-${cell.y}-visited`
-            );
-            const currentElement = this.ifNull(document).getElementById(
-              `cell-${cell.x}-${cell.y}-current`
-            );
+        if (!cell.isStart && !cell.isEnd) {
+          const visitedElement = this.ifNull(document).getElementById(
+            `cell-${cell.x}-${cell.y}-visited`
+          );
+          const currentElement = this.ifNull(document).getElementById(
+            `cell-${cell.x}-${cell.y}-current`
+          );
 
-            if (currentElement) {
-              currentElement.className = " block ";
-            }
-            setTimeout(() => {
-              if (visitedElement) {
-                currentElement.className = "hidden";
-                visitedElement.className = "block";
-              }
-            }, this.ANIMATIONSPEED * 1.55);
+          if (currentElement) {
+            currentElement.className = " block ";
           }
-        },
-        this.ANIMATIONSPEED * 1.55 * i
-      );
+          setTimeout(() => {
+            if (visitedElement) {
+              currentElement.className = "hidden";
+              visitedElement.className = "block";
+            }
+          }, this.ANIMATIONSPEED * 1.55);
+        }
+      }, this.ANIMATIONSPEED * 1.55 * i);
       this.timeouts.push(timeoutId);
     }
   }
 
-  animateLinePath(): void {
+  animateLinePath(onComplete?: () => void): void {
     const path = this.ifNull(this.path);
+
+    // Handle edge case: empty path or only start/end cells
+    if (path.length === 0) {
+      if (onComplete) {
+        onComplete();
+      }
+      return;
+    }
+
     for (let i = 0; i < path.length; i++) {
-      const timeoutId = setTimeout(
-        () => {
-          const cell = path[i];
-          if (!cell.isStart && !cell.isEnd) {
-            const cellId = `cell-${cell.x}-${cell.y}-path`;
-            const pathElement = this.ifNull(document).getElementById(cellId);
-            const visitedElement = this.ifNull(document).getElementById(
-              `cell-${cell.x}-${cell.y}-visited`
-            );
+      const isLastCell = i === path.length - 1;
 
-            if (pathElement) {
-              const toAdd = new Line(cell).animate();
-              // Check if a root already exists for this element
-              if (this.rootsMap.has(cellId)) {
-                const existingRoot = this.rootsMap.get(cellId);
-                existingRoot.render(toAdd); // Use the existing root to render
-              } else {
-                // Create a new root and store it in the map
-                const newRoot = createRoot(pathElement);
-                newRoot.render(toAdd);
-                this.rootsMap.set(cellId, newRoot);
-              }
-              pathElement.className = "block";
-            }
+      const timeoutId = setTimeout(() => {
+        const cell = path[i];
+        if (!cell.isStart && !cell.isEnd) {
+          const cellId = `cell-${cell.x}-${cell.y}-path`;
+          const pathElement = this.ifNull(document).getElementById(cellId);
+          const visitedElement = this.ifNull(document).getElementById(
+            `cell-${cell.x}-${cell.y}-visited`
+          );
 
-            if (visitedElement) {
-              visitedElement.className = "hidden";
+          if (pathElement) {
+            const toAdd = new Line(cell).animate();
+            // Check if a root already exists for this element
+            if (this.rootsMap.has(cellId)) {
+              const existingRoot = this.rootsMap.get(cellId);
+              existingRoot.render(toAdd); // Use the existing root to render
+            } else {
+              // Create a new root and store it in the map
+              const newRoot = createRoot(pathElement);
+              newRoot.render(toAdd);
+              this.rootsMap.set(cellId, newRoot);
             }
+            pathElement.className = "block";
           }
-        },
-        Math.pow(this.ANIMATIONSPEED, Math.sqrt(this.ANIMATIONSPEED)) * i
-      );
+
+          if (visitedElement) {
+            visitedElement.className = "hidden";
+          }
+        }
+
+        // Call onComplete callback after last cell (regardless of whether it was rendered)
+        if (isLastCell && onComplete) {
+          setTimeout(() => {
+            onComplete();
+          }, Math.pow(this.ANIMATIONSPEED, Math.sqrt(this.ANIMATIONSPEED)));
+        }
+      }, Math.pow(this.ANIMATIONSPEED, Math.sqrt(this.ANIMATIONSPEED)) * i);
       this.timeouts.push(timeoutId);
     }
+  }
+
+  completePathImmediately(): void {
+    // Clear all pending animations
+    this.clearTimeouts();
+
+    // Immediately render visited cells and path
+    this.reRunAnimatePath();
   }
 
   clearTimeouts(): void {

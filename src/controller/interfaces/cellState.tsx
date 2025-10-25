@@ -7,7 +7,7 @@ import { AlgorithmController } from "./algorithmController";
 import { GridRenderer } from "./gridRenderer";
 
 export interface CellState extends mainController {
-  animatePath(): void;
+  animatePath(onComplete?: () => void): void;
   setBoard(board: Board): void;
   setStart(pos: Point): void;
   setEnd(pos: Point): void;
@@ -15,12 +15,13 @@ export interface CellState extends mainController {
   removeEnd(pos: Point): void;
   setMovementStrategy(strategy: MovementModel): void;
   clearBoard(): void;
+  resetBoard(): void;
   setWalls(walls: Array<Point>): void;
   getData(): void;
   setAlgorithmController(algorithmController: AlgorithmController): void;
   // addWalls(pos: Point): void;
   // removeWalls(pos: Point): void;
-  animateMazeGenaration(): void;
+  animateMazeGenaration(onComplete?: () => void): void;
   setHuristicModel(huristicModel: HuristicModel): void;
   addEventListeners(): void;
   setRenderer(renderer: GridRenderer): void;

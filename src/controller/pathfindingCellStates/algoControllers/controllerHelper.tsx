@@ -26,8 +26,12 @@ export abstract class ControllerHelper implements AlgorithmController {
   setHuristicModel(huristicModel: HuristicModel): void {
     this.huristicModel = huristicModel;
   }
-  animatePath(): void {
-    this.renderer.animatePath();
+  animatePath(onComplete?: () => void): void {
+    this.renderer.animatePath(onComplete);
+  }
+
+  completePathImmediately(): void {
+    this.renderer.completePathImmediately();
   }
 
   reRunAnimatePath(): void {
@@ -37,8 +41,11 @@ export abstract class ControllerHelper implements AlgorithmController {
     this.renderer.setMazeVisitedOrder(OrderVisited);
     this.renderer.animateMaze();
   }
-  animateMaze(): void {
-    this.renderer.animateMaze();
+  animateMaze(onComplete?: () => void): void {
+    this.renderer.animateMaze(onComplete);
+  }
+  completeMazeImmediately(): void {
+    this.renderer.completeMazeImmediately();
   }
 
   setBoard(board: any): void {

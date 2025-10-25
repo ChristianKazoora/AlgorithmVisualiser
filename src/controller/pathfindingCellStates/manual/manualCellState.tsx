@@ -3,8 +3,11 @@ import { MazeManager } from "../../../model/subject/maze/mazeManager";
 import { manualMazeGenarotor } from "../../../model/subject/maze/manual/manualMazeGenarotor";
 import { CellStateHelper } from "../cellStateHelper";
 export class ManualCellState extends CellStateHelper {
-  animateMazeGenaration(): void {
-    throw new Error("Method not implemented.");
+  animateMazeGenaration(onComplete?: () => void): void {
+    // Manual mode doesn't animate, so just call the callback immediately if provided
+    if (onComplete) {
+      onComplete();
+    }
   }
   ganarateMaze(): void {
     const ganarator = new MazeManager(new manualMazeGenarotor());
@@ -12,6 +15,8 @@ export class ManualCellState extends CellStateHelper {
     ganarator.generateMaze();
     this.setBoard(ganarator.getBoard());
     this.mazeVisitedOrder = ganarator.getOrderVisited();
+    // Update pathfinding data after maze generation
+    this.algorithmController?.getData();
   }
   addWalls(pos: Point): void {
     this.walls.push(pos);

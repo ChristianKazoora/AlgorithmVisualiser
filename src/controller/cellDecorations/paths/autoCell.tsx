@@ -17,8 +17,8 @@ export class AutoCell extends CellDecorator {
         data-col={this.y}
         className={" flex justify-center items-center"}
         style={{
-          width: "20px",
-          height: "20px",
+          width: "var(--dynamic-cell-size, 20px)",
+          height: "var(--dynamic-cell-size, 20px)",
         }}
       >
         {new StartCellAnimation(this).animate()}

@@ -1,3 +1,74 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Background patterns and gradients */
+.app-background {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--b2)) 0%,
+    hsl(var(--b3)) 50%,
+    hsl(var(--b2)) 100%
+  );
+  min-height: 100vh;
+}
+
+.board-container {
+  background: radial-gradient(
+    ellipse at center,
+    hsl(var(--b1) / 0.8) 0%,
+    hsl(var(--b1) / 0.95) 100%
+  );
+  backdrop-filter: blur(10px);
+  border: 1px solid hsl(var(--bc) / 0.1);
+}
+
+/* Grid improvements */
+.algorithm-grid {
+  display: grid;
+  gap: 0;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px hsl(var(--bc) / 0.1),
+    0 4px 6px -2px hsl(var(--bc) / 0.05);
+  border: 2px solid hsl(var(--bc) / 0.3);
+}
+
+.grid-cell {
+  border: 1px solid hsl(var(--bc) / 0.2);
+  transition: all 0.1s ease;
+  position: relative;
+  overflow: visible;
+}
+
+.grid-cell:hover {
+  z-index: 10;
+  box-shadow: 0 2px 4px hsl(var(--bc) / 0.3);
+}
+
+/* Toast animations */
+@keyframes enter {
+  0% {
+    transform: translateX(calc(100% + 2rem));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes leave {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(100% + 2rem));
+  }
+}
+
+.animate-enter {
+  animation: enter 0.3s ease-out;
+}
+
+.animate-leave {
+  animation: leave 0.2s ease-in;
+}

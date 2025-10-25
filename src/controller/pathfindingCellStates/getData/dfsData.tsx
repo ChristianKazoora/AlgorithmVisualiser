@@ -3,7 +3,7 @@ import { Cell } from "../../../model/subject/Cell";
 import { DfsModel } from "../../../model/subject/algorithms/pathFinding/dfsModel";
 import { PathFindingController } from "../../../model/subject/algorithms/pathFinding/pathFindingController";
 import { Stack } from "../../../shared/stack";
-import { PathFindingModel } from "../../../model/Interfaces/pathfindingModel";
+import { PathFindingModel } from "../../../model/Interfaces/pathFindingModel";
 import { DataHelper } from "./dataHelper";
 
 export class DfsData extends DataHelper {

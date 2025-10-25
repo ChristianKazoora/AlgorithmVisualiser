@@ -24,9 +24,18 @@ export class BoardManager implements BoardController {
   renderer: any;
   huristicModel: HuristicModel | undefined;
   private resetCallback?: () => void;
+  private mazeGenerated: boolean = false;
 
   setResetCallback(callback?: () => void): void {
     this.resetCallback = callback;
+  }
+
+  isMazeGenerated(): boolean {
+    return this.mazeGenerated;
+  }
+
+  setMazeGenerated(value: boolean): void {
+    this.mazeGenerated = value;
   }
 
   constructor(_cellState: CellState = new ManualCellState()) {
@@ -137,12 +146,14 @@ export class BoardManager implements BoardController {
   clearBoard(): void {
     // this.cellState.clearAnimation();
     this.cellState.clearBoard();
+    this.mazeGenerated = false;
   }
   getBoard(): Board {
     return this.board;
   }
   ganarateMaze(): void {
     this.cellState.ganarateMaze();
+    this.mazeGenerated = true;
   }
   addEventListeners(): void {
     this.cellState.addEventListeners();
@@ -155,7 +166,12 @@ export class BoardManager implements BoardController {
   }
   animateMaze(onComplete?: () => void): void {
     // Don't call ganarateMaze() here - animateMazeGenaration handles everything
-    this.cellState.animateMazeGenaration(onComplete);
+    this.cellState.animateMazeGenaration(() => {
+      this.mazeGenerated = true;
+      if (onComplete) {
+        onComplete();
+      }
+    });
   }
   setAlgorithmController(algorithm: any): void {
     const bfsController = algorithm;
@@ -198,24 +214,6 @@ export class BoardManager implements BoardController {
 
     this.cellState = cellState;
     this.renderer = renderer;
-
-    // When switching to Auto mode, initialize maze walls to true
-    // Check if the new cellState is AutoCellState by checking its constructor name
-    if (cellState.constructor.name === "AutoCellState") {
-      // Initialize all maze walls to true for auto mode
-      const gridLength = this.grid.length;
-      const gridWidth = this.grid[0].length;
-      for (let i = 0; i < gridLength; i++) {
-        for (let j = 0; j < gridWidth; j++) {
-          const cell = this.grid[i][j];
-          // Only set maze walls, don't touch isWall or start/end
-          cell.northW = true;
-          cell.southW = true;
-          cell.eastW = true;
-          cell.westW = true;
-        }
-      }
-    }
 
     this.cellStateManager = new CellStateManager(
       this.board, //board
@@ -270,6 +268,9 @@ export class BoardManager implements BoardController {
 
     // Clear walls array
     this.walls = [];
+
+    // Reset maze generated flag
+    this.mazeGenerated = false;
 
     // Update the actual cells on the board to mark start and end positions
     this.board.grid[this.start.x][this.start.y].isStart = true;

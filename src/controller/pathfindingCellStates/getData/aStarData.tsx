@@ -1,7 +1,7 @@
 import { Board } from "../../../model/subject/board/board";
 import { Cell } from "../../../model/subject/Cell";
 import { Stack } from "../../../shared/stack";
-import { PathFindingModel } from "../../../model/Interfaces/pathfindingModel";
+import { PathFindingModel } from "../../../model/Interfaces/pathFindingModel";
 import { PathFindingController } from "../../../model/subject/algorithms/pathFinding/pathFindingController";
 import { A_StarModel } from "../../../model/subject/algorithms/pathFinding/aStarModel";
 import { DataHelper } from "./dataHelper";

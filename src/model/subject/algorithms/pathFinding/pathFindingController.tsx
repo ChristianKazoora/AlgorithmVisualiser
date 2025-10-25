@@ -6,7 +6,7 @@ import { BfsModel } from "./bfsModel";
 import { Stack } from "../../../../shared/stack";
 import { MovementModel } from "../../../Interfaces/movementModel";
 import { MovementManager } from "../../board/movementManager";
-import { PathFindingModel } from "../../../Interfaces/pathfindingModel";
+import { PathFindingModel } from "../../../Interfaces/pathFindingModel";
 import { GetManulNeigbourWD } from "../../board/strategies/manual/getManulNeigbourWD";
 import { HuristicModel } from "../../../Interfaces/huristicModel";
 import { manhattanDistance } from "../../board/huristics/manhattanDistance";

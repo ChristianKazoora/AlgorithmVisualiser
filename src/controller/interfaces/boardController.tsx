@@ -20,4 +20,6 @@ export interface BoardController extends mainController {
   getWalls(): any;
   animateMaze(onComplete?: () => void): void;
   resetBoard(): void;
+  isMazeGenerated(): boolean;
+  setMazeGenerated(value: boolean): void;
 }

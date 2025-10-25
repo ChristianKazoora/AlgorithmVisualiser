@@ -2,7 +2,7 @@ import { Board } from "../../../model/subject/board/board";
 import { Cell } from "../../../model/subject/Cell";
 import { BfsModel } from "../../../model/subject/algorithms/pathFinding/bfsModel";
 import { Stack } from "../../../shared/stack";
-import { PathFindingModel } from "../../../model/Interfaces/pathfindingModel";
+import { PathFindingModel } from "../../../model/Interfaces/pathFindingModel";
 import { DataHelper } from "./dataHelper";
 import { PathFindingController } from "../../../model/subject/algorithms/pathFinding/pathFindingController";
 

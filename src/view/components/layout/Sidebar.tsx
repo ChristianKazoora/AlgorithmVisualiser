@@ -28,7 +28,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, boardController }) => {
   const [isManual, setIsManual] = useState(true);
   const [isMazeAnimating, setIsMazeAnimating] = useState(false);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState("BFS");
-  const [hasMazeBeenGenerated, setHasMazeBeenGenerated] = useState(false);
   const { showSuccess, showError, showInfo, showWarning } = useNotification();
 
   const handleAlgorithmChange = (algorithm: string) => {
@@ -52,9 +51,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, boardController }) => {
   // Check if heuristic should be disabled
   const isHeuristicDisabled = !algorithmUsesHeuristic(selectedAlgorithm);
 
-  // Check if run button should be disabled
+  // Check if run button should be disabled (use boardController's state)
   const isRunDisabled =
-    location.pathname === "/autoPathfinding" && !hasMazeBeenGenerated;
+    location.pathname === "/autoPathfinding" &&
+    !boardController.isMazeGenerated();
 
   const handleHeuristicChange = (heuristic: string) => {
     switch (heuristic) {
@@ -101,8 +101,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, boardController }) => {
   // Enhanced control functions with notifications
   const handleRunAlgorithm = () => {
     try {
-      // In auto mode, check if maze has been generated
-      if (location.pathname === "/autoPathfinding" && !hasMazeBeenGenerated) {
+      // In auto mode, check if maze has been generated (use controller's state)
+      if (
+        location.pathname === "/autoPathfinding" &&
+        !boardController.isMazeGenerated()
+      ) {
         showWarning(
           "Please generate a maze first before running the algorithm in auto mode."
         );
@@ -145,7 +148,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, boardController }) => {
           controller.completeMazeImmediately();
         }
         setIsMazeAnimating(false);
-        setHasMazeBeenGenerated(true);
+        boardController.setMazeGenerated(true);
         showInfo("Maze generation completed.");
       } else {
         // Start animation
@@ -156,13 +159,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, boardController }) => {
           // Use callback to properly track when animation completes
           boardController.animateMaze(() => {
             setIsMazeAnimating(false);
-            setHasMazeBeenGenerated(true);
+            // Maze generated flag is now set in boardController.animateMaze()
             showSuccess("Maze generated! Ready for pathfinding.");
           });
         } else {
           // In manual mode, just generate without animation
           boardController.ganarateMaze();
-          setHasMazeBeenGenerated(true);
+          // Maze generated flag is now set in boardController.ganarateMaze()
           showSuccess("Maze generated! Ready for pathfinding.");
         }
       }

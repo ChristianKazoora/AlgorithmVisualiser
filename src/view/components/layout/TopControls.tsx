@@ -25,7 +25,7 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
   const [isMazeAnimating, setIsMazeAnimating] = useState(false);
   const [isPathAnimating, setIsPathAnimating] = useState(false);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState("BFS");
-  const [hasMazeBeenGenerated, setHasMazeBeenGenerated] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(0); // Used to force re-render when maze state changes
   const { showSuccess, showError, showInfo, showWarning } = useNotification();
 
   const isPathfindingPage =
@@ -36,7 +36,7 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
   useEffect(() => {
     setIsMazeAnimating(false);
     setIsPathAnimating(false);
-    setHasMazeBeenGenerated(false);
+    // Don't reset maze state - it persists in the boardController
   }, [location.pathname]);
 
   if (!isPathfindingPage) return null;
@@ -62,9 +62,12 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
   // Check if heuristic should be disabled
   const isHeuristicDisabled = !algorithmUsesHeuristic(selectedAlgorithm);
 
-  // Check if run button should be disabled
+  // Check if run button should be disabled - use boardController's state directly
+  // forceUpdate triggers re-calculation when maze state changes
   const isRunDisabled =
-    location.pathname === "/autoPathfinding" && !hasMazeBeenGenerated;
+    (location.pathname === "/autoPathfinding" &&
+      !boardController.isMazeGenerated()) ||
+    forceUpdate < 0; // Reference forceUpdate to ensure recalculation (always false)
 
   const handleHeuristicChange = (heuristic: string) => {
     switch (heuristic) {
@@ -111,7 +114,10 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
   const handleRunAlgorithm = () => {
     try {
       // In auto mode, check if maze has been generated
-      if (location.pathname === "/autoPathfinding" && !hasMazeBeenGenerated) {
+      if (
+        location.pathname === "/autoPathfinding" &&
+        !boardController.isMazeGenerated()
+      ) {
         showWarning(
           "Please generate a maze first before running the algorithm in auto mode."
         );
@@ -168,7 +174,8 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
           controller.completeMazeImmediately();
         }
         setIsMazeAnimating(false);
-        setHasMazeBeenGenerated(true);
+        boardController.setMazeGenerated(true);
+        setForceUpdate((prev) => prev + 1); // Force re-render
         showInfo("Maze generation completed.");
       } else {
         // Start animation
@@ -179,13 +186,15 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
           // Use callback to properly track when animation completes
           boardController.animateMaze(() => {
             setIsMazeAnimating(false);
-            setHasMazeBeenGenerated(true);
+            setForceUpdate((prev) => prev + 1); // Force re-render
+            // Maze generated flag is set in boardController.animateMaze()
             showSuccess("Maze generated! Ready for pathfinding.");
           });
         } else {
           // In manual mode, just generate without animation
           boardController.ganarateMaze();
-          setHasMazeBeenGenerated(true);
+          setForceUpdate((prev) => prev + 1); // Force re-render
+          // Maze generated flag is set in boardController.ganarateMaze()
           showSuccess("Maze generated! Ready for pathfinding.");
         }
       }
@@ -198,6 +207,11 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
   const handleResetBoard = () => {
     try {
       boardController.resetBoard();
+      // Reset animation states when board is reset
+      setIsMazeAnimating(false);
+      setIsPathAnimating(false);
+      setForceUpdate((prev) => prev + 1); // Force re-render to update isRunDisabled
+      // The boardController.resetBoard() already sets mazeGenerated to false
       showInfo("Board reset to initial state.");
     } catch (error) {
       showError("Failed to reset the board.");

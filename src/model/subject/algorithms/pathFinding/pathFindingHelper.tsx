@@ -3,7 +3,7 @@ import { Set } from "../../../../shared/set";
 import { Stack } from "../../../../shared/stack";
 import { HuristicModel } from "../../../Interfaces/huristicModel";
 import { MovementModel } from "../../../Interfaces/movementModel";
-import { PathFindingModel } from "../../../Interfaces/pathfindingModel";
+import { PathFindingModel } from "../../../Interfaces/pathFindingModel";
 import { Board } from "../../board/board";
 import { Cell } from "../../Cell";
 

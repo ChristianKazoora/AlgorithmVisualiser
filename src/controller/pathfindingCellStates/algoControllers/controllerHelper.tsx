@@ -23,6 +23,8 @@ export abstract class ControllerHelper implements AlgorithmController {
   renderer: GridRenderer = new GridRenderManager();
   huristicModel: HuristicModel | undefined;
   abstract getData(): void;
+  abstract getAlgorithmName(): string;
+
   setHuristicModel(huristicModel: HuristicModel): void {
     this.huristicModel = huristicModel;
   }

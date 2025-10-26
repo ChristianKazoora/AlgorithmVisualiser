@@ -25,6 +25,7 @@ export class BoardManager implements BoardController {
   huristicModel: HuristicModel | undefined;
   private resetCallback?: () => void;
   private mazeGenerated: boolean = false;
+  private currentAlgorithmController: any = null; // Store current algorithm
 
   setResetCallback(callback?: () => void): void {
     this.resetCallback = callback;
@@ -36,6 +37,24 @@ export class BoardManager implements BoardController {
 
   setMazeGenerated(value: boolean): void {
     this.mazeGenerated = value;
+  }
+
+  // Helper method to check if a maze actually exists in the board
+  private checkIfMazeExistsInBoard(): boolean {
+    // A maze exists if any cell has at least one wall broken (not all walls are true)
+    const gridLength = this.grid.length;
+    const gridWidth = this.grid[0].length;
+
+    for (let i = 0; i < gridLength; i++) {
+      for (let j = 0; j < gridWidth; j++) {
+        const cell = this.grid[i][j];
+        // If any cell has a broken wall (false), then a maze exists
+        if (!cell.northW || !cell.southW || !cell.eastW || !cell.westW) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   constructor(_cellState: CellState = new ManualCellState()) {
@@ -146,7 +165,6 @@ export class BoardManager implements BoardController {
   clearBoard(): void {
     // this.cellState.clearAnimation();
     this.cellState.clearBoard();
-    this.mazeGenerated = false;
   }
   getBoard(): Board {
     return this.board;
@@ -182,6 +200,9 @@ export class BoardManager implements BoardController {
     bfsController.setMovementStrategy(this.getMovementModel());
     bfsController.setRenderer(this.renderer);
     this.cellState.setAlgorithmController(bfsController);
+    
+    // Store the current algorithm controller for mode switching
+    this.currentAlgorithmController = algorithm;
   }
   getAlgorithmController(): any {
     return this.cellState.getAlgorithmController();
@@ -226,6 +247,21 @@ export class BoardManager implements BoardController {
       undefined, //AlgorithmController
       renderer //renderer
     );
+
+    // When switching to auto mode, check if a maze already exists in the board
+    // This handles the edge case where you generate a maze, switch to manual,
+    // reset, then switch back to auto - the maze walls are still there
+    if (cellState.constructor.name === "AutoCellState") {
+      if (this.checkIfMazeExistsInBoard()) {
+        this.mazeGenerated = true;
+      }
+    }
+
+    // Reapply the current algorithm controller if one was previously set
+    // This maintains the algorithm selection when switching between modes
+    if (this.currentAlgorithmController) {
+      this.setAlgorithmController(this.currentAlgorithmController);
+    }
   }
 
   draw() {
@@ -248,76 +284,16 @@ export class BoardManager implements BoardController {
     this.cellStateManager.setMovementStrategy(strategy);
   }
   resetBoard(): void {
-    // Create a new board (this gives us a fresh grid with no walls)
-    this.board = new Board({ y: this.height, x: this.width });
-    this.grid = this.board.grid;
-
-    // Calculate initial center positions
-    const centerX = parseInt((this.height - 1) / 2 + "");
-    const centerY = parseInt((this.width - 1) / 2 + "");
-
-    // Reset start and end to initial center positions
-    this.start = {
-      x: centerX,
-      y: centerY + 2,
-    };
-    this.end = {
-      x: centerX,
-      y: centerY - 2,
-    };
-
-    // Clear walls array
-    this.walls = [];
-
+    this.cellState.resetBoard();
     // Reset maze generated flag
     this.mazeGenerated = false;
-
-    // Update the actual cells on the board to mark start and end positions
-    this.board.grid[this.start.x][this.start.y].isStart = true;
-    this.board.grid[this.end.x][this.end.y].isEnd = true;
-
-    // Get the current renderer and movement strategy to preserve them
-    const currentRenderer =
-      this.renderer || this.cellStateManager.getRenderer();
-    const currentStrategy =
-      this.strategy || this.cellStateManager.getMovementStrategy();
-
-    // DON'T change the cellState - keep the current one (Auto or Manual)
-    // Update the cell state manager with the fresh board but same cell state
-    this.cellStateManager = new CellStateManager(
-      this.board,
-      this.start,
-      this.end,
-      currentStrategy,
-      this.cellState, // Keep the current cell state (Auto or Manual)
-      [], // empty walls array
-      undefined, // let it use default algorithm controller
-      currentRenderer
-    );
-
-    // Let the cell state handle its specific reset logic (walls, maze, etc.)
-    // But DON'T call reRenderBoard() here - let React handle the re-render
-    this.cellStateManager.resetBoard();
 
     // Notify React component to re-render
     if (this.resetCallback) {
       this.resetCallback();
     }
 
-    // Re-add event listeners through the properly initialized cellStateManager
-    this.cellStateManager.addEventListeners();
+    // Trigger a re-render
+    this.cellState.clearBoard();
   }
-  // setStart(pos: Point): void {
-  //   throw new Error("Method not implemented.");
-  // }
-  // setEnd(pos: Point): void {
-  //   throw new Error("Method not implemented.");
-  // }
-  //
-  // setWalls(walls: Point[]): void {
-  //   throw new Error("Method not implemented.");
-  // }
-  // getData(): void {
-  //   throw new Error("Method not implemented.");
-  // }
 }

@@ -10,6 +10,10 @@ export class BfsController extends ControllerHelper {
     this.data = new BfsData();
   }
 
+  getAlgorithmName(): string {
+    return "BFS";
+  }
+
   getData(): void {
     this.data?.setBoard(this.ifNull(this.board));
     this.data?.setEnd(this.ifNull(this.end));

@@ -32,12 +32,21 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
     location.pathname === "/manualPathfinding" ||
     location.pathname === "/autoPathfinding";
 
-  // Reset animation states when page changes
+  // Reset animation states when page changes and sync algorithm selection
   useEffect(() => {
     setIsMazeAnimating(false);
     setIsPathAnimating(false);
+    // Force re-render to update Run button availability after mode switch
+    setForceUpdate((prev) => prev + 1);
+
+    // Sync the selected algorithm from the controller when switching modes
+    const currentController = boardController.getAlgorithmController();
+    if (currentController && currentController.getAlgorithmName) {
+      setSelectedAlgorithm(currentController.getAlgorithmName());
+    }
+
     // Don't reset maze state - it persists in the boardController
-  }, [location.pathname]);
+  }, [location.pathname, boardController]);
 
   if (!isPathfindingPage) return null;
 
@@ -211,7 +220,7 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
       setIsMazeAnimating(false);
       setIsPathAnimating(false);
       setForceUpdate((prev) => prev + 1); // Force re-render to update isRunDisabled
-      // The boardController.resetBoard() already sets mazeGenerated to false
+      boardController.setMazeGenerated(false);
       showInfo("Board reset to initial state.");
     } catch (error) {
       showError("Failed to reset the board.");

@@ -10,6 +10,10 @@ export class DfsController extends ControllerHelper {
     this.data = new DfsData();
   }
 
+  getAlgorithmName(): string {
+    return "DFS";
+  }
+
   getData(): void {
     this.data?.setBoard(this.ifNull(this.board));
     this.data?.setEnd(this.ifNull(this.end));

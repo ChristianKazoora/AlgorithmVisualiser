@@ -11,6 +11,11 @@ export class A_StarController extends ControllerHelper {
     this.data = new A_StarData();
     this.huristicModel = new manhattanDistance();
   }
+
+  getAlgorithmName(): string {
+    return "A*";
+  }
+
   getData(): void {
     this.data?.setBoard(this.ifNull(this.board));
     this.data?.setEnd(this.ifNull(this.end));

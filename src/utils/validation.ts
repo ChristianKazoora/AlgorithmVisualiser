@@ -118,10 +118,3 @@ export const algorithmUsesHeuristic = (algorithm: string): boolean => {
   const heuristicAlgorithms = ["a*", "astar"];
   return heuristicAlgorithms.includes(algorithm.toLowerCase());
 };
-
-// Check if a maze has been generated (for auto mode)
-export const hasMazeGenerated = (_board: any): boolean => {
-  // In auto mode, check if any walls have been broken down from initial state
-  // This is a placeholder - actual implementation would check the board state
-  return true; // Placeholder
-};

@@ -30,8 +30,8 @@ export class AutoCell extends CellDecorator {
         <div
           id={`cell-${this.x}-${this.y}-current`}
           style={{
-            height: ".6rem",
-            width: ".6rem",
+            width: "calc(var(--dynamic-cell-size, 20px) - 1px)",
+            height: "calc(var(--dynamic-cell-size, 20px) - 1px)",
             background: "yellow",
             borderRadius: "100%",
           }}
@@ -41,8 +41,8 @@ export class AutoCell extends CellDecorator {
           id={`cell-${this.x}-${this.y}-visited`}
           style={{
             background: "grey",
-            height: ".8rem",
-            width: ".8rem",
+            width: "calc(var(--dynamic-cell-size, 20px) - 1px)",
+            height: "calc(var(--dynamic-cell-size, 20px) - 1px)",
             borderRadius: "100%",
           }}
           className="hidden"

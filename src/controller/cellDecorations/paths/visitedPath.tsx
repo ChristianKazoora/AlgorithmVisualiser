@@ -22,7 +22,7 @@ export class VisitedPath extends CellDecorator {
         key={this.y}
         data-row={this.x}
         data-col={this.y}
-        className={" flex justify-center items-center"}
+        className={" flex justify-center items-center "}
         style={{
           width: "var(--dynamic-cell-size, 20px)",
           height: "var(--dynamic-cell-size, 20px)",
@@ -31,7 +31,7 @@ export class VisitedPath extends CellDecorator {
         {new StartCellAnimation(this).animate()}
         {new EndCellAnimation(this).animate()}
         {new WallCellAnimation(this).animate()}
-        <div id={`cell-${this.x}-${this.y}-path`}>
+        <div style={{ zIndex: -10 }} id={`cell-${this.x}-${this.y}-path`}>
           {/* {new Line(this).animate()} */}
         </div>
         <div
@@ -41,6 +41,7 @@ export class VisitedPath extends CellDecorator {
             width: ".6rem",
             background: "yellow",
             borderRadius: "100%",
+            zIndex: -10,
           }}
           className="hidden"
         />
@@ -48,9 +49,10 @@ export class VisitedPath extends CellDecorator {
           id={`cell-${this.x}-${this.y}-visited`}
           style={{
             background: "grey",
-            height: ".8rem",
-            width: ".8rem",
+            width: "calc(var(--dynamic-cell-size, 20px) - 1px)",
+            height: "calc(var(--dynamic-cell-size, 20px) - 1px)",
             borderRadius: "100%",
+            zIndex: -10,
           }}
           className="hidden"
         />

@@ -17,8 +17,8 @@ export class EmptyCellAnimation
         data-col={this.y}
         className={" flex justify-center items-center"}
         style={{
-          width: "20px",
-          height: "20px",
+          width: "calc(var(--dynamic-cell-size, 20px) )",
+          height: "calc(var(--dynamic-cell-size, 20px) )",
           border: "1px solid black",
         }}
       >

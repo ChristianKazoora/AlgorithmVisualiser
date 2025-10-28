@@ -97,7 +97,18 @@ export class Line extends CellDecorator {
         } else if (TurnHelper.southEastToSouthWest(this)) {
           pos = new SouthEastToSouthWestTurn(this).animate();
         }
-        return <div className="flex  justify-center items-center">{pos}</div>;
+        return (
+          <div
+            className="flex  justify-center items-center -z-10"
+            style={{
+              width: "calc(var(--dynamic-cell-size, 20px) + 5px)",
+              height: "var(--dynamic-cell-size, 20px)",
+              zIndex: -5,
+            }}
+          >
+            {pos}
+          </div>
+        );
       })();
     }
   }

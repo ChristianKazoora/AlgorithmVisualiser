@@ -1,6 +1,9 @@
 // import { Grid } from "@mui/material";
 import { CellDecorator } from "../cellDecorator";
 import { Line } from "./line";
+/**
+ * MainPath class that extends CellDecorator to represent the main path cell.
+ */
 export class MainPath extends CellDecorator {
   animate(): any {
     // this.classNames = " bg-red-500";

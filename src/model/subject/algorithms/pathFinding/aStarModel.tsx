@@ -1,11 +1,15 @@
-import { Point } from "../../../../shared/point";
 import { MovementModel } from "../../../Interfaces/movementModel";
 import { Cell } from "../../Cell";
 import { PathFindingHelper } from "./pathFindingHelper";
-
+/**
+ * A_StarModel class that extends PathFindingHelper to implement the A* Search algorithm.
+ */
 export class A_StarModel extends PathFindingHelper {
   private movementStrategy: MovementModel | undefined;
-
+  /**
+   * A* pathfinding algorithm implementation.
+   * @returns void
+   */
   aStar(): void {
     let start = this.ifNull(this.startP);
     let openSet = new Set<Cell>();
@@ -58,6 +62,8 @@ export class A_StarModel extends PathFindingHelper {
       this.ifNull(this.visited).add(current);
     }
   }
+  /**  * Resets the fScore, gScore, and hScore of all cells in the grid.
+   */
   resetAllCellFscroreGscoreHscore(): void {
     this.grid?.forEach((row) => {
       row.forEach((cell) => {
@@ -67,22 +73,30 @@ export class A_StarModel extends PathFindingHelper {
       });
     });
   }
+  /**
+   * Finds the cell in the open set with the lowest fScore.
+   * @param openSet The set of cells to search.
+   * @returns The cell with the lowest fScore.
+   */
 
   lowestFscore(openSet: Set<Cell>): Cell {
     return Array.from(openSet).reduce((min, point) =>
       point.fScore < min.fScore ? point : min
     );
   }
-  huristic(a: Point, b: Point): number {
-    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-  }
 
   setMovementModel(movementModel: MovementModel): void {
     this.movementStrategy = movementModel;
   }
+  usesHeuristic(): boolean {
+    return true;
+  }
+  getAlgorithmName(): string {
+    return "A* Search";
+  }
   start(): void {
     this.resetPrevNext();
-    this.resetA_startVars;
+    this.resetHuristicVars;
     this.resetAllCellFscroreGscoreHscore();
     this.aStar();
   }

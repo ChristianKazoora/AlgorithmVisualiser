@@ -10,11 +10,7 @@ import { chebyshevDistance } from "../../../model/subject/board/huristics/chebys
 import { GetManulNeighbours } from "../../../model/subject/board/strategies/manual/getManulNeighbours";
 import { GetManulNeigbourWD } from "../../../model/subject/board/strategies/manual/getManulNeigbourWD";
 import { useNotification } from "../notifications/NotificationProvider";
-import {
-  ValidationError,
-  validateAction,
-  algorithmUsesHeuristic,
-} from "../../../utils/validation";
+import { ValidationError } from "../../../utils/validation";
 
 const TopControls: React.FC<{ boardController: BoardController }> = ({
   boardController,
@@ -24,7 +20,9 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
   const [isManualDiagonal, setIsManualDiagonal] = useState(true);
   const [isMazeAnimating, setIsMazeAnimating] = useState(false);
   const [isPathAnimating, setIsPathAnimating] = useState(false);
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState("BFS");
+  const [selectedAlgorithmController, setSelectedAlgorithmController] =
+    useState<BfsController | DfsController | A_StarController | null>(null);
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState<string>("BFS");
   const [forceUpdate, setForceUpdate] = useState(0); // Used to force re-render when maze state changes
   const { showSuccess, showError, showInfo, showWarning } = useNotification();
 
@@ -40,9 +38,19 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
     setForceUpdate((prev) => prev + 1);
 
     // Sync the selected algorithm from the controller when switching modes
-    const currentController = boardController.getAlgorithmController();
-    if (currentController && currentController.getAlgorithmName) {
-      setSelectedAlgorithm(currentController.getAlgorithmName());
+    const currentController = boardController.getAlgorithmController() as
+      | BfsController
+      | DfsController
+      | A_StarController
+      | null;
+
+    if (currentController) {
+      setSelectedAlgorithmController(currentController);
+    } else {
+      // Initialize with BFS if no controller exists
+      const defaultController = new BfsController();
+      boardController.setAlgorithmController(defaultController);
+      setSelectedAlgorithmController(defaultController);
     }
 
     // Don't reset maze state - it persists in the boardController
@@ -52,24 +60,35 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
 
   const handleAlgorithmChange = (algorithm: string) => {
     setSelectedAlgorithm(algorithm);
+    let newController: BfsController | DfsController | A_StarController;
+
     switch (algorithm) {
       case "DFS":
-        boardController.setAlgorithmController(new DfsController());
+        newController = new DfsController();
+        boardController.setAlgorithmController(newController);
+        setSelectedAlgorithmController(newController);
         showSuccess(`Algorithm changed to Depth-First Search (DFS)`);
         break;
       case "BFS":
-        boardController.setAlgorithmController(new BfsController());
+        newController = new BfsController();
+        boardController.setAlgorithmController(newController);
+        setSelectedAlgorithmController(newController);
         showSuccess(`Algorithm changed to Breadth-First Search (BFS)`);
         break;
       case "A*":
-        boardController.setAlgorithmController(new A_StarController());
+        newController = new A_StarController();
+        boardController.setAlgorithmController(newController);
+        setSelectedAlgorithmController(newController);
         showSuccess(`Algorithm changed to A* Search`);
         break;
     }
   };
 
   // Check if heuristic should be disabled
-  const isHeuristicDisabled = !algorithmUsesHeuristic(selectedAlgorithm);
+  // If controller is null, default to disabled. Only enable if usesHeuristic() returns true.
+  const isHeuristicDisabled =
+    !selectedAlgorithmController ||
+    selectedAlgorithmController.usesHeuristic() !== true;
 
   // Check if run button should be disabled - use boardController's state directly
   // forceUpdate triggers re-calculation when maze state changes
@@ -143,7 +162,7 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
         showInfo("Pathfinding animation completed.");
       } else {
         // Start animation
-        validateAction.runAlgorithm(null, null);
+        // validateAction.runAlgorithm(null, null);
         setIsPathAnimating(true);
         showSuccess("Algorithm started! Watch the pathfinding in action.");
 
@@ -201,9 +220,9 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
           });
         } else {
           // In manual mode, just generate without animation
-          boardController.ganarateMaze();
+          boardController.generateMaze();
           setForceUpdate((prev) => prev + 1); // Force re-render
-          // Maze generated flag is set in boardController.ganarateMaze()
+          // Maze generated flag is set in boardController.generateMaze()
           showSuccess("Maze generated! Ready for pathfinding.");
         }
       }
@@ -259,7 +278,7 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
           {/* Algorithm Selection */}
           <select
             className="select select-bordered"
-            defaultValue="BFS"
+            value={selectedAlgorithm}
             onChange={(e) => handleAlgorithmChange(e.target.value)}
           >
             <option value="BFS">BFS</option>

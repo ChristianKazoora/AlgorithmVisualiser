@@ -1,5 +1,7 @@
 import { LinkedList } from "./linkedList";
-
+/**
+ * A Set data structure implementation using a linked list.
+ */
 export class Set<T> extends LinkedList<T> {
   constructor() {
     super();

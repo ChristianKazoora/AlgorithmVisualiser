@@ -2,11 +2,16 @@ import { Cell } from "../../Cell";
 import { Queue } from "../../../../shared/queue";
 import { MovementModel } from "../../../Interfaces/movementModel";
 import { PathFindingHelper } from "./pathFindingHelper";
-
+/**
+ * BfsModel class that extends PathFindingHelper to implement the Breadth-First Search algorithm.
+ */
 export class BfsModel extends PathFindingHelper {
   private movementStrategy: MovementModel | undefined;
   private queue: Queue<Cell> = new Queue<Cell>();
-
+  /**
+   * Performs the Breadth-First Search algorithm.
+   * @returns void
+   */
   bfs(): void {
     let start: Cell = this.ifNull(this.startP);
     this.queue.enqueue(start);
@@ -34,6 +39,9 @@ export class BfsModel extends PathFindingHelper {
         }
       }
     }
+  }
+  getAlgorithmName(): string {
+    return "Breadth-First Search";
   }
   start(): void {
     this.resetPrevNext();

@@ -2,22 +2,29 @@ import { Point } from "../../../shared/point";
 import { MazeManager } from "../../../model/subject/maze/mazeManager";
 import { manualMazeGenarotor } from "../../../model/subject/maze/manual/manualMazeGenarotor";
 import { CellStateHelper } from "../cellStateHelper";
+/**
+ * Cell state class for manual maze generation and pathfinding.
+ */
 export class ManualCellState extends CellStateHelper {
-  animateMazeGenaration(onComplete?: () => void): void {
+  animateMazeGeneration(onComplete?: () => void): void {
     // Manual mode doesn't animate, so just call the callback immediately if provided
     if (onComplete) {
       onComplete();
     }
   }
-  ganarateMaze(): void {
-    const ganarator = new MazeManager(new manualMazeGenarotor());
-    ganarator.setBoard(this.ifNull(this.board));
-    ganarator.generateMaze();
-    this.setBoard(ganarator.getBoard());
-    this.mazeVisitedOrder = ganarator.getOrderVisited();
+  generateMaze(): void {
+    const generator = new MazeManager(new manualMazeGenarotor());
+    generator.setBoard(this.ifNull(this.board));
+    generator.generateMaze();
+    this.setBoard(generator.getBoard());
+    this.mazeVisitedOrder = generator.getOrderVisited();
     // Update pathfinding data after maze generation
     this.algorithmController?.getData();
   }
+  /**
+   * Add walls to the maze.
+   * @param pos - The position of the wall to add.
+   */
   addWalls(pos: Point): void {
     this.walls.push(pos);
     this.setWalls(this.walls);
@@ -52,6 +59,10 @@ export class ManualCellState extends CellStateHelper {
     // Update the algorithm controller with empty walls
     this.setWalls([]);
   }
+  /**
+   * Remove walls from the maze.
+   * @param pos - The position of the wall to remove.
+   */
 
   removeWalls(pos: Point): void {
     for (let i = 0; i < this.walls.length; i++) {

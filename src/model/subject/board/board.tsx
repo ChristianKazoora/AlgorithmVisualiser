@@ -1,6 +1,8 @@
 import { Point } from "../../../shared/point";
 import { Cell } from "../Cell";
-
+/**
+ * Represents the board/grid for the pathfinding visualizer.
+ */
 export class Board {
   public grid: Array<Array<Cell>>;
 
@@ -45,7 +47,9 @@ export class Board {
       }
     }
   }
-
+  /**
+   * Sets the neighboring cells for each cell in the grid.
+   */
   private settingNeighbors(): void {
     const row = this.grid.length;
     const col = this.grid[0].length;

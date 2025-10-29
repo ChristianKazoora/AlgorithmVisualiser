@@ -1,6 +1,9 @@
 import { MazeManager } from "../../../model/subject/maze/mazeManager";
 import { autoMazeGenarator } from "../../../model/subject/maze/auto/autoMazeGenarator";
 import { CellStateHelper } from "../cellStateHelper";
+/**
+ * Cell state class for automatic maze generation and pathfinding.
+ */
 export class AutoCellState extends CellStateHelper {
   resetBoard(): void {
     // Clear walls array
@@ -46,13 +49,13 @@ export class AutoCellState extends CellStateHelper {
     this.algorithmController?.animatePath(onComplete);
   }
 
-  animateMazeGenaration(onComplete?: () => void): void {
+  animateMazeGeneration(onComplete?: () => void): void {
     // First, generate the maze data (but don't render the final state yet)
-    const ganarator = new MazeManager(new autoMazeGenarator());
-    ganarator.setBoard(this.ifNull(this.board));
-    ganarator.generateMaze();
-    this.setBoard(ganarator.getBoard());
-    this.mazeVisitedOrder = ganarator.getOrderVisited();
+    const generator = new MazeManager(new autoMazeGenarator());
+    generator.setBoard(this.ifNull(this.board));
+    generator.generateMaze();
+    this.setBoard(generator.getBoard());
+    this.mazeVisitedOrder = generator.getOrderVisited();
 
     // Now animate the wall-breaking process
     this.algorithmController?.setMazeVisitedOrder(
@@ -70,13 +73,13 @@ export class AutoCellState extends CellStateHelper {
     });
   }
 
-  ganarateMaze(): void {
+  generateMaze(): void {
     // Just generate the maze and render the final state immediately (no animation)
-    const ganarator = new MazeManager(new autoMazeGenarator());
-    ganarator.setBoard(this.ifNull(this.board));
-    ganarator.generateMaze();
-    this.setBoard(ganarator.getBoard());
-    this.mazeVisitedOrder = ganarator.getOrderVisited();
+    const generator = new MazeManager(new autoMazeGenarator());
+    generator.setBoard(this.ifNull(this.board));
+    generator.generateMaze();
+    this.setBoard(generator.getBoard());
+    this.mazeVisitedOrder = generator.getOrderVisited();
     this.algorithmController?.reRenderBoard();
     // Update pathfinding data after maze generation
     this.algorithmController?.getData();

@@ -11,11 +11,7 @@ import { chebyshevDistance } from "../../../model/subject/board/huristics/chebys
 import { GetManulNeighbours } from "../../../model/subject/board/strategies/manual/getManulNeighbours";
 import { GetManulNeigbourWD } from "../../../model/subject/board/strategies/manual/getManulNeigbourWD";
 import { useNotification } from "../notifications/NotificationProvider";
-import {
-  ValidationError,
-  validateAction,
-  algorithmUsesHeuristic,
-} from "../../../utils/validation";
+import { ValidationError } from "../../../utils/validation";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -28,6 +24,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, boardController }) => {
   const [isManual, setIsManual] = useState(true);
   const [isMazeAnimating, setIsMazeAnimating] = useState(false);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState("BFS");
+  const [selectedAlgorithmController, setSelectedAlgorithmController] =
+    useState<BfsController | DfsController | A_StarController | null>(null);
   const { showSuccess, showError, showInfo, showWarning } = useNotification();
 
   const handleAlgorithmChange = (algorithm: string) => {
@@ -49,7 +47,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, boardController }) => {
   };
 
   // Check if heuristic should be disabled
-  const isHeuristicDisabled = !algorithmUsesHeuristic(selectedAlgorithm);
+  const isHeuristicDisabled =
+    !selectedAlgorithmController ||
+    selectedAlgorithmController.usesHeuristic() !== true;
 
   // Check if run button should be disabled (use boardController's state)
   const isRunDisabled =
@@ -113,7 +113,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, boardController }) => {
       }
 
       // Validate before running
-      validateAction.runAlgorithm(null, null); // We'd pass actual board state here
+      // validateAction.runAlgorithm(null, null); // We'd pass actual board state here
 
       boardController.animatePath();
       showSuccess("Algorithm started! Watch the pathfinding in action.");
@@ -164,8 +164,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, boardController }) => {
           });
         } else {
           // In manual mode, just generate without animation
-          boardController.ganarateMaze();
-          // Maze generated flag is now set in boardController.ganarateMaze()
+          boardController.generateMaze();
+          // Maze generated flag is now set in boardController.generateMaze()
           showSuccess("Maze generated! Ready for pathfinding.");
         }
       }

@@ -46,7 +46,7 @@ function Navbar({ boardController }: { boardController: BoardController }) {
         });
       } else {
         // In manual mode, just generate without animation
-        boardController.ganarateMaze();
+        boardController.generateMaze();
       }
     }
   };

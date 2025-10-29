@@ -1,5 +1,8 @@
 import { LinkedList } from "./linkedList";
 import { Node } from "./Node";
+/**
+ * A Stack data structure implementation using a linked list.
+ */
 export class Stack<T> extends LinkedList<T> {
   push(data: T) {
     let newNode: Node<T> = { data: data, next: this.head };

@@ -7,7 +7,9 @@ import { Stack } from "../../shared/stack";
 import { AlgorithmController } from "../interfaces/algorithmController";
 import { CellState } from "../interfaces/cellState";
 import { GridRenderer } from "../interfaces/gridRenderer";
-
+/**
+ * Abstract helper class for Cell State management in the pathfinding visualizer.
+ */
 export abstract class CellStateHelper implements CellState {
   board: Board | undefined;
   grid: Array<Array<Cell>> | undefined;
@@ -20,8 +22,8 @@ export abstract class CellStateHelper implements CellState {
   mazeVisitedOrder: Stack<Cell> | undefined;
 
   abstract addEventListeners(): void;
-  abstract ganarateMaze(): void;
-  abstract animateMazeGenaration(onComplete?: () => void): void;
+  abstract generateMaze(): void;
+  abstract animateMazeGeneration(onComplete?: () => void): void;
   abstract resetBoard(): void;
 
   clearBoard(): void {
@@ -149,6 +151,11 @@ export abstract class CellStateHelper implements CellState {
   draw() {
     return this.algorithmController?.draw();
   }
+  /**
+   *
+   * @param data
+   * @returns
+   */
   ifNull(data: any): any {
     if (data) {
       return data;

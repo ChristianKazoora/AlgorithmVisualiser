@@ -9,6 +9,9 @@ import { GetDataController } from "../../interfaces/getDataController";
 import { GridRenderer } from "../../interfaces/gridRenderer";
 import { GridRenderManager } from "../renderer/gridRenderManager";
 
+/**
+ * Abstract helper class for algorithm controllers.
+ */
 export abstract class ControllerHelper implements AlgorithmController {
   board: Board | undefined;
   grid: Array<Array<Cell>> | undefined;
@@ -23,7 +26,12 @@ export abstract class ControllerHelper implements AlgorithmController {
   renderer: GridRenderer = new GridRenderManager();
   huristicModel: HuristicModel | undefined;
   abstract getData(): void;
-  abstract getAlgorithmName(): string;
+  getAlgorithmName(): string {
+    return this.data?.getAlgorithmName() as string;
+  }
+  usesHeuristic(): boolean {
+    return this.data?.usesHeuristic() as boolean;
+  }
 
   setHuristicModel(huristicModel: HuristicModel): void {
     this.huristicModel = huristicModel;
@@ -121,6 +129,11 @@ export abstract class ControllerHelper implements AlgorithmController {
     this.renderer.setBoard(this.ifNull(this.board));
     return this.renderer.render();
   }
+  /**
+   * checks if an object is null or undefined
+   * @param object object to check
+   * @returns true object or throws error
+   */
   ifNull(object: any) {
     if (object) {
       return object;

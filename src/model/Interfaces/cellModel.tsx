@@ -1,5 +1,7 @@
 import { Cell } from "../subject/Cell";
-
+/**
+ * Interface representing the model of a Cell in the pathfinding visualizer.
+ */
 export interface CellModel {
   isWall: boolean;
   isStart: boolean;

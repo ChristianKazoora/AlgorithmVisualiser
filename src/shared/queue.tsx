@@ -1,4 +1,7 @@
 import { LinkedList } from "./linkedList";
+/**
+ * A generic Queue class extending LinkedList.
+ */
 export class Queue<T> extends LinkedList<T> {
   enqueue(data: T) {
     this.insert(data);

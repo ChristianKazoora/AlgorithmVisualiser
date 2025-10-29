@@ -1,5 +1,8 @@
 import { CellModel } from "../../model/Interfaces/cellModel";
 import { Cell } from "../../model/subject/Cell";
+/**
+ * Abstract decorator class for Cell models.
+ */
 export abstract class CellDecorator implements CellModel {
   isWall: boolean;
   isStart: boolean;

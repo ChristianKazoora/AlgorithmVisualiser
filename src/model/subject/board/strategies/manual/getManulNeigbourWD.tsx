@@ -1,6 +1,8 @@
 import { MovementModel } from "../../../../Interfaces/movementModel";
 import { Cell } from "../../../Cell";
-
+/**
+ * GetManulNeigbourWD class that implements the MovementModel interface to get manual neighbors with diagonal movement allowed.
+ */
 export class GetManulNeigbourWD implements MovementModel {
   getNeighbours(cell: Cell): Array<Cell> {
     let neighbours: Array<Cell> = [];

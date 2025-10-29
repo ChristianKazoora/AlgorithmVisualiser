@@ -1,8 +1,9 @@
 import { Stack } from "../../../../../shared/stack";
 import { MazeMovementModel } from "../../../../Interfaces/mazeMovementModel";
-// import { MovementModel } from "../../../../Interfaces/movementModel";
 import { Cell } from "../../../Cell";
-
+/**
+ * MazeAutoMovement class that implements the MazeMovementModel interface.
+ */
 export class MazeAutoMovement implements MazeMovementModel {
   visited = new Stack<Cell>();
 
@@ -10,7 +11,7 @@ export class MazeAutoMovement implements MazeMovementModel {
     this.visited = cells;
   }
 
-  getNeighbour(cell: Cell): any {
+  getNeighbour(cell: Cell): Cell | null {
     const neighbours: Cell[] = [];
 
     const top = cell.top;

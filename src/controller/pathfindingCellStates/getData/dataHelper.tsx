@@ -6,6 +6,9 @@ import { Cell } from "../../../model/subject/Cell";
 import { Stack } from "../../../shared/stack";
 import { HuristicModel } from "../../../model/Interfaces/huristicModel";
 
+/**
+ * Abstract helper class for data retrieval for pathfinding algorithms.
+ */
 export abstract class DataHelper implements GetDataController {
   board: Board | undefined;
   grid: Array<Array<Cell>> | undefined;
@@ -22,6 +25,8 @@ export abstract class DataHelper implements GetDataController {
   abstract getData(): any;
   abstract getVisited(): Set<Cell>;
   abstract getPath(): Array<Cell>;
+  abstract usesHeuristic(): boolean;
+  abstract getAlgorithmName(): string;
   setHuristicModel(huristicModel: HuristicModel): void {
     this.huristicModel = huristicModel;
   }
@@ -40,6 +45,11 @@ export abstract class DataHelper implements GetDataController {
   setWalls(walls: Point[]): void {
     this.walls = walls;
   }
+  /**
+   * checks if an object is null or undefined
+   * @param object object to check
+   * @returns true object or throws error
+   */
   ifNull(object: any) {
     if (object) {
       return object;

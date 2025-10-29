@@ -1,6 +1,8 @@
 import { MovementModel } from "../../../../Interfaces/movementModel";
 import { Cell } from "../../../Cell";
-
+/**
+ * GetManulNeighbours class that implements the MovementModel interface.
+ */
 export class GetManulNeighbours implements MovementModel {
   getNeighbours(cell: Cell): Array<Cell> {
     let neighbours: Array<Cell> = [];

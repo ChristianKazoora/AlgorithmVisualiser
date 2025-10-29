@@ -1,5 +1,5 @@
 import { CellDecorator } from "../cellDecorator";
-import { SlRocket } from "react-icons/sl";
+import { PiAirplaneTakeoffThin } from "react-icons/pi";
 
 export class StartCellAnimation extends CellDecorator {
   animate(): any {
@@ -12,7 +12,7 @@ export class StartCellAnimation extends CellDecorator {
             height: "calc(var(--dynamic-cell-size, 20px) )",
           }}
         >
-          <SlRocket className="rounded-[2px] bg-red-300   h-[1rem]" />
+          <PiAirplaneTakeoffThin className="rounded-[2px]   h-[1rem]" />
         </div>
       </div>
     );

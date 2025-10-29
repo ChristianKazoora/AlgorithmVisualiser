@@ -4,14 +4,13 @@ import { Stack } from "../../../shared/stack";
 import { DfsData } from "../getData/dfsData";
 import { ControllerHelper } from "./controllerHelper";
 
+/**
+ * Controller class for the DFS pathfinding algorithm.
+ */
 export class DfsController extends ControllerHelper {
   constructor() {
     super();
     this.data = new DfsData();
-  }
-
-  getAlgorithmName(): string {
-    return "DFS";
   }
 
   getData(): void {
@@ -23,7 +22,7 @@ export class DfsController extends ControllerHelper {
     this.data?.getData();
     this.setData();
   }
-  setData(): void {
+  private setData(): void {
     this.visited = this.data?.getVisited() as Set<Cell> | undefined;
     this.currentPoints = new Stack<Cell>(); // Create a new Stack object
     this.visited?.forEach((cell) => this.currentPoints?.push(cell)); // Copy elements from the Set to the Stack

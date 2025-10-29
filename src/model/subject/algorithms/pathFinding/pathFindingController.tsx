@@ -10,7 +10,9 @@ import { PathFindingModel } from "../../../Interfaces/pathFindingModel";
 import { GetManulNeigbourWD } from "../../board/strategies/manual/getManulNeigbourWD";
 import { HuristicModel } from "../../../Interfaces/huristicModel";
 import { manhattanDistance } from "../../board/huristics/manhattanDistance";
-
+/**
+ * PathFindingController class that implements the PathFindingModel interface.
+ */
 export class PathFindingController implements PathFindingModel {
   algorithm: PathFindingModel;
   constructor(
@@ -34,14 +36,20 @@ export class PathFindingController implements PathFindingModel {
   setHuristicModel(huristicModel: HuristicModel): void {
     this.algorithm.setHuristicModel(huristicModel);
   }
-  resetA_startVars(): void {
-    this.algorithm.resetA_startVars();
+  resetHuristicVars(): void {
+    this.algorithm.resetHuristicVars();
   }
   resetPrevNext(): void {
     this.algorithm.resetPrevNext();
   }
   getBoard(): Board {
     return this.algorithm.getBoard();
+  }
+  usesHeuristic(): boolean {
+    return this.algorithm.usesHeuristic();
+  }
+  getAlgorithmName(): string {
+    return this.algorithm.getAlgorithmName();
   }
 
   start(): void {

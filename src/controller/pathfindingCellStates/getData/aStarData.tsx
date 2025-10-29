@@ -6,11 +6,20 @@ import { PathFindingController } from "../../../model/subject/algorithms/pathFin
 import { A_StarModel } from "../../../model/subject/algorithms/pathFinding/aStarModel";
 import { DataHelper } from "./dataHelper";
 
+/**
+ * Data class for the A* pathfinding algorithm.
+ */
 export class A_StarData extends DataHelper {
   A_StarModel: PathFindingModel | undefined;
 
   getBoard(): Board {
     return this.A_StarModel?.getBoard() as Board;
+  }
+  usesHeuristic(): boolean {
+    return new A_StarModel().usesHeuristic();
+  }
+  getAlgorithmName(): string {
+    return new A_StarModel().getAlgorithmName() ?? "";
   }
 
   getCurrentPoints(): Stack<Cell> {

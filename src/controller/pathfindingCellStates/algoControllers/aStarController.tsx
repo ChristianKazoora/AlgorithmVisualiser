@@ -5,15 +5,14 @@ import { Stack } from "../../../shared/stack";
 import { A_StarData } from "../getData/aStarData";
 import { ControllerHelper } from "./controllerHelper";
 
+/**
+ * Controller class for the A* pathfinding algorithm.
+ */
 export class A_StarController extends ControllerHelper {
   constructor() {
     super();
     this.data = new A_StarData();
     this.huristicModel = new manhattanDistance();
-  }
-
-  getAlgorithmName(): string {
-    return "A*";
   }
 
   getData(): void {
@@ -26,7 +25,7 @@ export class A_StarController extends ControllerHelper {
     this.data?.getData();
     this.setData();
   }
-  setData(): void {
+  private setData(): void {
     this.visited = this.data?.getVisited();
     this.currentPoints = new Stack<Cell>(); // Create a new Stack object
     this.visited?.forEach((cell) => this.currentPoints?.push(cell)); // Copy elements from the Set to the Stack

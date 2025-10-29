@@ -3,7 +3,9 @@ import { Board } from "../../board/board";
 import { MazeAutoMovement } from "../../board/strategies/maze/mazeAutoMovement";
 import { Cell } from "../../Cell";
 import { Stack } from "../../../../shared/stack";
-
+/**
+ * autoMazeGenarator class that implements the MazeModel interface.
+ */
 export class autoMazeGenarator implements MazeModel {
   board: Board | undefined;
   grid: any | undefined;

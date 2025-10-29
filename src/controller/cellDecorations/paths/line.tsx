@@ -23,6 +23,10 @@ import { NorthEastToNorthWestTurn } from "../decorators/turns/cornerTurns/northE
 import { NorthEastToSouthEastTurn } from "../decorators/turns/cornerTurns/northEastToSouthEastTurnAnimation";
 import { NorthWestToSouthWestTurn } from "../decorators/turns/cornerTurns/northWestToSouthWestTurnAnimation";
 import { SouthEastToSouthWestTurn } from "../decorators/turns/cornerTurns/southEastToSouthWestTurnAnimation";
+
+/**
+ * Line class that extends CellDecorator to represent the path.
+ */
 export class Line extends CellDecorator {
   animate(): any {
     {

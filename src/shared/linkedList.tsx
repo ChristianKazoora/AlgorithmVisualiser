@@ -1,4 +1,7 @@
 import { Node } from "./Node";
+/**
+ * A Linked List data structure implementation.
+ */
 export class LinkedList<T> {
   head: Node<T> | null;
   constructor() {

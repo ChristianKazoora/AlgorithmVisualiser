@@ -5,6 +5,9 @@ import { WallCellAnimation } from "../decorators/wallCellAnimation";
 import { Line } from "./line";
 import { Grid } from "@mui/material";
 
+/**
+ * AutoCell class that extends CellDecorator to represent an automatic path cell.
+ */
 export class AutoCell extends CellDecorator {
   animate(): JSX.Element {
     return (

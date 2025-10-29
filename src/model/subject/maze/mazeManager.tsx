@@ -2,7 +2,9 @@ import { MazeModel } from "../../Interfaces/mazeModel";
 import { Board } from "../board/board";
 import { Cell } from "../Cell";
 import { Stack } from "../../../shared/stack";
-
+/**
+ * MazeManager class that implements the MazeModel interface.
+ */
 export class MazeManager implements MazeModel {
   state: MazeModel;
   constructor(state: MazeModel) {

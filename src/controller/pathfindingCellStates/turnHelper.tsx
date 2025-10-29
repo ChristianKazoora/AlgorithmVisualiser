@@ -13,6 +13,9 @@ import { Cell } from "../../model/subject/Cell";
 // NorthWest to SouthWest || SouthWest to NorthWest
 // SouthEast to SouthWest || SouthWest to SouthEast
 
+/**
+ * Helper class for determining turn types between cells.
+ */
 export class TurnHelper {
   // corner turns
   //horizontal

@@ -6,10 +6,20 @@ import { PathFindingModel } from "../../../model/Interfaces/pathFindingModel";
 import { DataHelper } from "./dataHelper";
 import { PathFindingController } from "../../../model/subject/algorithms/pathFinding/pathFindingController";
 
+/**
+ * Data class for the BFS pathfinding algorithm.
+ */
 export class BfsData extends DataHelper {
   bfsModel: PathFindingModel | undefined;
   getBoard(): Board {
     return this.bfsModel?.getBoard() as Board;
+  }
+  usesHeuristic(): boolean {
+    return new BfsModel().usesHeuristic();
+  }
+
+  getAlgorithmName(): string {
+    return new BfsModel().getAlgorithmName();
   }
 
   getCurrentPoints(): Stack<Cell> {

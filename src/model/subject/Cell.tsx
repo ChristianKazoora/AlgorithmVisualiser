@@ -1,5 +1,7 @@
 import { CellModel } from "../Interfaces/cellModel";
-
+/**
+ * Represents a cell in the grid/board for the pathfinding visualizer.
+ */
 export class Cell implements CellModel {
   isWall: boolean;
   isStart: boolean;

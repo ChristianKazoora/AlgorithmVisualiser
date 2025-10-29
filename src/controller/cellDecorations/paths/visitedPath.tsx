@@ -4,6 +4,9 @@ import { WallCellAnimation } from "../decorators/wallCellAnimation";
 import { StartCellAnimation } from "../decorators/startCellAnimation";
 import { EndCellAnimation } from "../decorators/endCellAnimation";
 
+/**
+ * VisitedPath class that extends CellDecorator to represent a visited path cell.
+ */
 export class VisitedPath extends CellDecorator {
   animate(): any {
     return (

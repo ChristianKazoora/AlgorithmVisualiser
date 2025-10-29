@@ -6,18 +6,24 @@ import { Stack } from "../../../shared/stack";
 import { PathFindingModel } from "../../../model/Interfaces/pathFindingModel";
 import { DataHelper } from "./dataHelper";
 
+/**
+ * Data class for the DFS pathfinding algorithm.
+ */
 export class DfsData extends DataHelper {
-  bfsModel: PathFindingModel | undefined;
+  dfsModel: PathFindingModel | undefined;
 
   getBoard(): Board {
-    return this.bfsModel?.getBoard() as Board;
+    return this.dfsModel?.getBoard() as Board;
   }
 
+  usesHeuristic(): boolean {
+    return new DfsModel().usesHeuristic();
+  }
   getCurrentPoints(): Stack<Cell> {
-    return this.bfsModel?.getCurrentPoints() as unknown as Stack<Cell>;
+    return this.dfsModel?.getCurrentPoints() as unknown as Stack<Cell>;
   }
   getData(): any {
-    this.bfsModel = new PathFindingController(
+    this.dfsModel = new PathFindingController(
       new DfsModel(),
       this.ifNull(this.start),
       this.ifNull(this.end),
@@ -25,13 +31,16 @@ export class DfsData extends DataHelper {
       this.walls,
       this.movementStrategy
     );
-    this.bfsModel?.start();
+    this.dfsModel?.start();
   }
   getVisited(): Set<Cell> {
     //todo: implement yeild one by one
-    return this.bfsModel?.getVisited() as unknown as Set<Cell>;
+    return this.dfsModel?.getVisited() as unknown as Set<Cell>;
   }
   getPath(): Array<Cell> {
-    return this.bfsModel?.getPath() as unknown as Array<Cell>;
+    return this.dfsModel?.getPath() as unknown as Array<Cell>;
+  }
+  getAlgorithmName(): string {
+    return new DfsModel().getAlgorithmName();
   }
 }

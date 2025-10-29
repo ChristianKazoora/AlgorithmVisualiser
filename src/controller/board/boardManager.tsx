@@ -10,6 +10,9 @@ import { MovementModel } from "../../model/Interfaces/movementModel";
 import { Point } from "../../shared/point";
 
 import { HuristicModel } from "../../model/Interfaces/huristicModel";
+/**
+ * BoardManager class that implements the BoardController interface.
+ */
 export class BoardManager implements BoardController {
   board: Board;
   grid: Array<Array<Cell>>;
@@ -23,13 +26,9 @@ export class BoardManager implements BoardController {
   walls: Point[] = [];
   renderer: any;
   huristicModel: HuristicModel | undefined;
-  private resetCallback?: () => void;
+
   private mazeGenerated: boolean = false;
   private currentAlgorithmController: any = null; // Store current algorithm
-
-  setResetCallback(callback?: () => void): void {
-    this.resetCallback = callback;
-  }
 
   isMazeGenerated(): boolean {
     return this.mazeGenerated;
@@ -39,7 +38,10 @@ export class BoardManager implements BoardController {
     this.mazeGenerated = value;
   }
 
-  // Helper method to check if a maze actually exists in the board
+  /**
+   * Helper method to check if a maze actually exists in the board.
+   * @returns True if a maze exists, false otherwise.
+   */
   private checkIfMazeExistsInBoard(): boolean {
     // A maze exists if any cell has at least one wall broken (not all walls are true)
     const gridLength = this.grid.length;
@@ -169,8 +171,8 @@ export class BoardManager implements BoardController {
   getBoard(): Board {
     return this.board;
   }
-  ganarateMaze(): void {
-    this.cellState.ganarateMaze();
+  generateMaze(): void {
+    this.cellState.generateMaze();
     this.mazeGenerated = true;
   }
   addEventListeners(): void {
@@ -183,8 +185,8 @@ export class BoardManager implements BoardController {
     this.cellState.animatePath(onComplete);
   }
   animateMaze(onComplete?: () => void): void {
-    // Don't call ganarateMaze() here - animateMazeGenaration handles everything
-    this.cellState.animateMazeGenaration(() => {
+    // Don't call generateMaze() here - animateMazeGeneration handles everything
+    this.cellState.animateMazeGeneration(() => {
       this.mazeGenerated = true;
       if (onComplete) {
         onComplete();
@@ -200,7 +202,7 @@ export class BoardManager implements BoardController {
     bfsController.setMovementStrategy(this.getMovementModel());
     bfsController.setRenderer(this.renderer);
     this.cellState.setAlgorithmController(bfsController);
-    
+
     // Store the current algorithm controller for mode switching
     this.currentAlgorithmController = algorithm;
   }
@@ -287,11 +289,6 @@ export class BoardManager implements BoardController {
     this.cellState.resetBoard();
     // Reset maze generated flag
     this.mazeGenerated = false;
-
-    // Notify React component to re-render
-    if (this.resetCallback) {
-      this.resetCallback();
-    }
 
     // Trigger a re-render
     this.cellState.clearBoard();

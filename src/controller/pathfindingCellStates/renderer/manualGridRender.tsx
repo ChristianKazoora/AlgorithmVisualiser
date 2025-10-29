@@ -1,10 +1,8 @@
 import { Cell } from "../../../model/subject/Cell";
 import { Board } from "../../../model/subject/board/board";
 import { GridRenderer } from "../../interfaces/gridRenderer";
-
 import { Stack } from "../../../shared/stack";
 import { VisitedPath } from "../../cellDecorations/paths/visitedPath";
-
 import { createRoot } from "react-dom/client";
 import { Line } from "../../cellDecorations/paths/line";
 export class ManualGridRenderer implements GridRenderer {

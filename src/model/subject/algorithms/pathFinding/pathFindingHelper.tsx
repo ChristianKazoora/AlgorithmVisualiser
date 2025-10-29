@@ -6,7 +6,9 @@ import { MovementModel } from "../../../Interfaces/movementModel";
 import { PathFindingModel } from "../../../Interfaces/pathFindingModel";
 import { Board } from "../../board/board";
 import { Cell } from "../../Cell";
-
+/**
+ * Abstract helper class for pathfinding algorithms implementing the PathFindingModel interface.
+ */
 export abstract class PathFindingHelper implements PathFindingModel {
   protected grid: Array<Array<Cell>> | undefined;
   protected board: Board | undefined;
@@ -20,9 +22,18 @@ export abstract class PathFindingHelper implements PathFindingModel {
 
   abstract setMovementModel(movementModel: MovementModel): void;
   abstract start(): void;
+  abstract getAlgorithmName(): string;
+  usesHeuristic(): boolean {
+    return false;
+  }
   setHuristicModel(huristicModel: HuristicModel): void {
     this.huristicModel = huristicModel;
   }
+  /**
+   * Backtracks the path from the end cell to the start cell.
+   * @param end The end cell to backtrack from.
+   * @returns An array of cells representing the path from start to end.
+   */
   backtrackPath(end: Cell): Array<Cell> {
     const path: Array<Cell> = new Array<Cell>();
     let current: Cell = end;
@@ -48,7 +59,7 @@ export abstract class PathFindingHelper implements PathFindingModel {
 
     throw new Error("Object is null or undefined");
   }
-  resetA_startVars(): void {
+  resetHuristicVars(): void {
     for (let i = 0; i < this.ifNull(this.grid).length; i++) {
       for (let j = 0; j < this.ifNull(this.grid)[i].length; j++) {
         this.ifNull(this.grid)[i][j].gScore = 0;

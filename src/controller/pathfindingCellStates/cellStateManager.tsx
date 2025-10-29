@@ -10,6 +10,9 @@ import { GridRenderer } from "../interfaces/gridRenderer";
 import { AutoGridRenderer } from "./renderer/autoGridRender";
 import { HuristicModel } from "../../model/Interfaces/huristicModel";
 
+/**
+ * Cell State Manager class that implements the CellState interface.
+ */
 export class CellStateManager implements CellState {
   private cellState: CellState;
   constructor(
@@ -31,8 +34,8 @@ export class CellStateManager implements CellState {
     this.setMovementStrategy(_movementStrategy);
     this.setRenderer(_renderer);
   }
-  animateMazeGenaration(onComplete?: () => void): void {
-    this.cellState.animateMazeGenaration(onComplete);
+  animateMazeGeneration(onComplete?: () => void): void {
+    this.cellState.animateMazeGeneration(onComplete);
   }
 
   clearBoard(): void {
@@ -56,8 +59,8 @@ export class CellStateManager implements CellState {
   getAlgorithmController(): AlgorithmController {
     return this.cellState.getAlgorithmController();
   }
-  ganarateMaze(): void {
-    this.cellState.ganarateMaze();
+  generateMaze(): void {
+    this.cellState.generateMaze();
   }
   setRenderer(renderer: GridRenderer): void {
     this.cellState.setRenderer(renderer);

@@ -16,6 +16,12 @@ export interface CellState extends mainController {
   animatePath(onComplete?: () => void): void;
 
   /**
+   * Animates the pathfinding process asynchronously with step-by-step visualization.
+   * @param onComplete - Callback function to be called when the animation is complete.
+   */
+  animatePathAsync?(onComplete?: () => void): Promise<void>;
+
+  /**
    * Sets the board for the cell state.
    * @param board - The board to be set.
    */

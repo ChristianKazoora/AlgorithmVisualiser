@@ -44,8 +44,18 @@ export abstract class CellStateHelper implements CellState {
         cell.gScore = 0;
         cell.hScore = 0;
 
+        // Reset previousCell to avoid stale path data
+        cell.previousCell = undefined;
+        cell.nextCell = undefined;
+
         // DO NOT reset northW, southW, eastW, westW - preserve maze structure
       }
+    }
+
+    // Reset renderer state (tracked path cells, timeouts)
+    const renderer = this.algorithmController?.getRenderer() as any;
+    if (renderer?.resetState) {
+      renderer.resetState();
     }
 
     // Trigger re-render
@@ -96,6 +106,49 @@ export abstract class CellStateHelper implements CellState {
   animatePath(onComplete?: () => void): void {
     this.getData();
     this.algorithmController?.animatePath(onComplete);
+  }
+
+  /**
+   * Async variant that streams algorithm steps into the renderer if supported.
+   * Falls back to the existing synchronous path if async is not implemented.
+   */
+  async animatePathAsync(onComplete?: () => void): Promise<void> {
+    const controller = this.algorithmController;
+    const renderer = controller?.getRenderer();
+
+    if (
+      controller &&
+      controller.getDataAsync &&
+      renderer &&
+      renderer.applyStep
+    ) {
+      let lastSnapshot: any = null;
+
+      await controller.getDataAsync((snapshot) => {
+        // applyStep now handles all visual updates directly
+        renderer.applyStep?.(snapshot);
+        lastSnapshot = snapshot;
+      });
+
+      // For algorithms like BFS that only have path at the end,
+      // animate the final path step by step (not all at once)
+      if (lastSnapshot?.isComplete && lastSnapshot?.path?.length > 0) {
+        // Set the path data first
+        renderer.setPath(lastSnapshot.path);
+
+        // Animate the path step-by-step using animateLinePath
+        await new Promise<void>((resolve) => {
+          renderer.animateLinePath(() => {
+            resolve();
+          });
+        });
+      }
+
+      if (onComplete) onComplete();
+    } else {
+      // Fallback to existing synchronous behavior
+      this.animatePath(onComplete);
+    }
   }
   setBoard(board: Board): void {
     this.algorithmController?.setBoard(board);

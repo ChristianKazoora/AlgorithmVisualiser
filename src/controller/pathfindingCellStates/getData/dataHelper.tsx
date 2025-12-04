@@ -5,6 +5,7 @@ import { GetDataController } from "../../interfaces/getDataController";
 import { Cell } from "../../../model/subject/Cell";
 import { Stack } from "../../../shared/stack";
 import { HuristicModel } from "../../../model/Interfaces/huristicModel";
+import { Set as CellSet } from "../../../shared/set";
 
 /**
  * Abstract helper class for data retrieval for pathfinding algorithms.
@@ -16,14 +17,14 @@ export abstract class DataHelper implements GetDataController {
   end: Point | undefined;
   movementStrategy: MovementModel | undefined;
   walls: Array<Point> | undefined;
-  visited: Set<Cell> | undefined;
+  visited: CellSet<Cell> | undefined;
   path: Array<Cell> | undefined;
   huristicModel: HuristicModel | undefined;
 
   abstract getBoard(): Board;
   abstract getCurrentPoints(): Stack<Cell>;
   abstract getData(): any;
-  abstract getVisited(): Set<Cell>;
+  abstract getVisited(): CellSet<Cell>;
   abstract getPath(): Array<Cell>;
   abstract usesHeuristic(): boolean;
   abstract getAlgorithmName(): string;

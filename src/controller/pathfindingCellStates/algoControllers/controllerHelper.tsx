@@ -4,6 +4,7 @@ import { Board } from "../../../model/subject/board/board";
 import { Cell } from "../../../model/subject/Cell";
 import { Point } from "../../../shared/point";
 import { Stack } from "../../../shared/stack";
+import { Set as CellSet } from "../../../shared/set";
 import { AlgorithmController } from "../../interfaces/algorithmController";
 import { GetDataController } from "../../interfaces/getDataController";
 import { GridRenderer } from "../../interfaces/gridRenderer";
@@ -17,7 +18,7 @@ export abstract class ControllerHelper implements AlgorithmController {
   grid: Array<Array<Cell>> | undefined;
   start: Point | undefined;
   end: Point | undefined;
-  visited: Set<Cell> | undefined;
+  visited: CellSet<Cell> | undefined;
   path: Array<Cell> | undefined;
   currentPoints: Stack<Cell> | undefined;
   neighbourStrategy: MovementModel | undefined;
@@ -25,6 +26,10 @@ export abstract class ControllerHelper implements AlgorithmController {
   data: GetDataController | undefined;
   renderer: GridRenderer = new GridRenderManager();
   huristicModel: HuristicModel | undefined;
+
+  /** Used to abort async animation when skip is requested */
+  private asyncAborted: boolean = false;
+
   abstract getData(): void;
   getAlgorithmName(): string {
     return this.data?.getAlgorithmName() as string;
@@ -41,7 +46,19 @@ export abstract class ControllerHelper implements AlgorithmController {
   }
 
   completePathImmediately(): void {
+    // Signal async animation to abort
+    this.asyncAborted = true;
     this.renderer.completePathImmediately();
+  }
+
+  /** Check if async animation was aborted */
+  isAsyncAborted(): boolean {
+    return this.asyncAborted;
+  }
+
+  /** Reset abort flag (call before starting new animation) */
+  resetAsyncAbort(): void {
+    this.asyncAborted = false;
   }
 
   reRunAnimatePath(): void {

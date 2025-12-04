@@ -78,6 +78,16 @@ export class CellStateManager implements CellState {
   animatePath(onComplete?: () => void): void {
     this.cellState.animatePath(onComplete);
   }
+
+  async animatePathAsync(onComplete?: () => void): Promise<void> {
+    const helper = this.cellState as any;
+    if (typeof helper.animatePathAsync === "function") {
+      await helper.animatePathAsync(onComplete);
+    } else {
+      this.cellState.animatePath(onComplete);
+    }
+  }
+
   setAlgorithmController(algorithmController: AlgorithmController): void {
     this.cellState.setAlgorithmController(algorithmController);
   }

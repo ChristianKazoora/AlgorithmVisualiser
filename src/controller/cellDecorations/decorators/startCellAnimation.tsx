@@ -6,13 +6,19 @@ export class StartCellAnimation extends CellDecorator {
     return (
       <div id={`cell-${this.x}-${this.y}-start`} className="hidden">
         <div
-          className="flex justify-center "
+          className="flex justify-center items-center"
           style={{
-            width: "calc(var(--dynamic-cell-size, 20px) )",
-            height: "calc(var(--dynamic-cell-size, 20px) )",
+            width: "calc(var(--dynamic-cell-size, 20px))",
+            height: "calc(var(--dynamic-cell-size, 20px))",
           }}
         >
-          <PiAirplaneTakeoffThin className="rounded-[2px]   h-[1rem]" />
+          <PiAirplaneTakeoffThin
+            className="text-success"
+            style={{
+              width: "calc(var(--dynamic-cell-size, 20px) * 0.85)",
+              height: "calc(var(--dynamic-cell-size, 20px) * 0.85)",
+            }}
+          />
         </div>
       </div>
     );

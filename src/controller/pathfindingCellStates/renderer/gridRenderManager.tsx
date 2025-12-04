@@ -45,4 +45,7 @@ export class GridRenderManager implements GridRenderer {
   reRenderBoard(): void {
     this.renderer?.reRenderBoard();
   }
+  animateLinePath(onComplete?: () => void): void {
+    this.renderer?.animateLinePath(onComplete);
+  }
 }

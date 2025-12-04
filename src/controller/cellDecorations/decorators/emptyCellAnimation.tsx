@@ -15,11 +15,12 @@ export class EmptyCellAnimation
         key={this.y}
         data-row={this.x}
         data-col={this.y}
-        className={" flex justify-center items-center"}
+        className={
+          " flex justify-center items-center border border-base-content/20"
+        }
         style={{
           width: "calc(var(--dynamic-cell-size, 20px) )",
           height: "calc(var(--dynamic-cell-size, 20px) )",
-          border: "1px solid black",
         }}
       >
         {/* <div id={`cell-${this.x}-${this.y}-animation`} /> */}

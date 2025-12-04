@@ -22,6 +22,28 @@ export class BfsController extends ControllerHelper {
     this.data?.getData();
     this.setData();
   }
+
+  async getDataAsync(
+    onStep?: (snapshot: {
+      current: Cell | null;
+      visited: import("../../../shared/set").Set<Cell>;
+      path: Array<Cell>;
+      isComplete: boolean;
+    }) => void
+  ): Promise<void> {
+    // Reset abort flag before starting
+    this.resetAsyncAbort();
+
+    this.data?.setBoard(this.ifNull(this.board));
+    this.data?.setEnd(this.ifNull(this.end));
+    this.data?.setStart(this.ifNull(this.start));
+    this.data?.setWalls(this.ifNull(this.walls));
+    this.data?.setMovementStrategy(this.ifNull(this.neighbourStrategy));
+    if (this.data?.getDataAsync) {
+      await this.data.getDataAsync(onStep as any, () => this.isAsyncAborted());
+    }
+    this.setData();
+  }
   private setData(): void {
     this.visited = this.data?.getVisited();
     this.currentPoints = new Stack<Cell>(); // Create a new Stack object

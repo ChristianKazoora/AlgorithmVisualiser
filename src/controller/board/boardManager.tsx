@@ -4,7 +4,13 @@ import { GetManulNeigbourWD } from "../../model/subject/board/strategies/manual/
 import { CellState } from "../interfaces/cellState";
 import { CellStateManager } from "../pathfindingCellStates/cellStateManager";
 import { ManualCellState } from "../pathfindingCellStates/manual/manualCellState";
-import { BoardController } from "../interfaces/boardController";
+import { AutoCellState } from "../pathfindingCellStates/auto/autoCellState";
+import {
+  BoardController,
+  AutoMazeAlgorithm,
+  ManualMazeAlgorithm,
+  WallDistribution,
+} from "../interfaces/boardController";
 import { Grid } from "@mui/material";
 import { MovementModel } from "../../model/Interfaces/movementModel";
 import { Point } from "../../shared/point";
@@ -29,6 +35,11 @@ export class BoardManager implements BoardController {
 
   private mazeGenerated: boolean = false;
   private currentAlgorithmController: any = null; // Store current algorithm
+  private wallDensity: number = 0.3; // Default wall density for manual mode
+  private wallDistribution: WallDistribution = "uniform"; // Default wall distribution
+
+  // Callback to notify UI of animation state changes
+  public setAnimatingCallback?: (isAnimating: boolean) => void;
 
   isMazeGenerated(): boolean {
     return this.mazeGenerated;
@@ -36,6 +47,52 @@ export class BoardManager implements BoardController {
 
   setMazeGenerated(value: boolean): void {
     this.mazeGenerated = value;
+  }
+
+  /**
+   * Set the maze algorithm for generation
+   */
+  setMazeAlgorithm(algorithm: AutoMazeAlgorithm | ManualMazeAlgorithm): void {
+    const state = this.cellState as any;
+    if (typeof state.setMazeAlgorithm === "function") {
+      state.setMazeAlgorithm(algorithm);
+    }
+  }
+
+  /**
+   * Set wall density for manual mode maze generation
+   */
+  setWallDensity(density: number): void {
+    this.wallDensity = Math.max(0, Math.min(1, density));
+    const state = this.cellState as any;
+    if (typeof state.setWallDensity === "function") {
+      state.setWallDensity(this.wallDensity);
+    }
+  }
+
+  /**
+   * Get current wall density
+   */
+  getWallDensity(): number {
+    return this.wallDensity;
+  }
+
+  /**
+   * Set wall distribution pattern for manual mode maze generation
+   */
+  setWallDistribution(distribution: WallDistribution): void {
+    this.wallDistribution = distribution;
+    const state = this.cellState as any;
+    if (typeof state.setWallDistribution === "function") {
+      state.setWallDistribution(distribution);
+    }
+  }
+
+  /**
+   * Get current wall distribution pattern
+   */
+  getWallDistribution(): WallDistribution {
+    return this.wallDistribution;
   }
 
   /**
@@ -182,12 +239,53 @@ export class BoardManager implements BoardController {
     this.cellState.clearBoard();
     // Ensure pathfinding data is calculated before animating
     this.cellState.getData();
-    this.cellState.animatePath(onComplete);
+
+    // Notify UI that animation is starting
+    this.setAnimatingCallback?.(true);
+
+    this.cellState.animatePath(() => {
+      // Notify UI that animation is complete
+      this.setAnimatingCallback?.(false);
+      onComplete?.();
+    });
+  }
+
+  /**
+   * Animates the pathfinding process asynchronously with step-by-step visualization.
+   * Uses async generators to stream algorithm progress for real-time updates.
+   * @param onComplete - Callback function to be called when the animation is complete.
+   */
+  async animatePathAsync(onComplete?: () => void): Promise<void> {
+    this.cellState.clearBoard();
+
+    // Notify UI that animation is starting
+    this.setAnimatingCallback?.(true);
+
+    // Check if async animation is supported
+    const helper = this.cellState as any;
+    if (typeof helper.animatePathAsync === "function") {
+      await helper.animatePathAsync(() => {
+        this.setAnimatingCallback?.(false);
+        onComplete?.();
+      });
+    } else {
+      // Fallback to synchronous animation
+      this.cellState.getData();
+      this.cellState.animatePath(() => {
+        this.setAnimatingCallback?.(false);
+        onComplete?.();
+      });
+    }
   }
   animateMaze(onComplete?: () => void): void {
+    // Notify UI that animation is starting
+    this.setAnimatingCallback?.(true);
+
     // Don't call generateMaze() here - animateMazeGeneration handles everything
     this.cellState.animateMazeGeneration(() => {
       this.mazeGenerated = true;
+      // Notify UI that animation is complete
+      this.setAnimatingCallback?.(false);
       if (onComplete) {
         onComplete();
       }
@@ -235,6 +333,11 @@ export class BoardManager implements BoardController {
       theEnd = this.end;
     }
 
+    // Reset the old renderer state before switching to prevent stale state issues
+    if (this.renderer?.resetState) {
+      this.renderer.resetState();
+    }
+
     this.cellState = cellState;
     this.renderer = renderer;
 
@@ -270,7 +373,7 @@ export class BoardManager implements BoardController {
     const state = this.cellStateManager;
     const iterator: JSX.Element[][] = state.draw();
     return (
-      <div className="border-black border-[1px] flex m-auto justify-center">
+      <div className="border-base-content border-[1px] flex m-auto justify-center">
         <Grid id="board">
           {iterator.map((row: JSX.Element[], i: number) => (
             <Grid container item key={i} style={{ flexWrap: "nowrap" }}>
@@ -289,8 +392,7 @@ export class BoardManager implements BoardController {
     this.cellState.resetBoard();
     // Reset maze generated flag
     this.mazeGenerated = false;
-
-    // Trigger a re-render
-    this.cellState.clearBoard();
+    // Clear BoardManager's walls array
+    this.walls = [];
   }
 }

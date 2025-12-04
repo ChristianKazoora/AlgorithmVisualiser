@@ -18,7 +18,7 @@ export class AutoCell extends CellDecorator {
         key={this.y}
         data-row={this.x}
         data-col={this.y}
-        className={" flex justify-center items-center"}
+        className="relative flex justify-center items-center"
         style={{
           width: "var(--dynamic-cell-size, 20px)",
           height: "var(--dynamic-cell-size, 20px)",
@@ -27,28 +27,26 @@ export class AutoCell extends CellDecorator {
         {new StartCellAnimation(this).animate()}
         {new EndCellAnimation(this).animate()}
         {new WallCellAnimation(this).animate()}
-        <div id={`cell-${this.x}-${this.y}-path`}>
+        <div className="absolute" id={`cell-${this.x}-${this.y}-path`}>
           {new Line(this).animate()}
         </div>
         <div
           id={`cell-${this.x}-${this.y}-current`}
+          className="hidden bg-warning rounded-full absolute"
           style={{
             width: "calc(var(--dynamic-cell-size, 20px) - 1px)",
             height: "calc(var(--dynamic-cell-size, 20px) - 1px)",
-            background: "yellow",
-            borderRadius: "100%",
+            zIndex: 5,
           }}
-          className="hidden"
         />
         <div
           id={`cell-${this.x}-${this.y}-visited`}
+          className="hidden bg-neutral rounded-full absolute"
           style={{
-            background: "grey",
             width: "calc(var(--dynamic-cell-size, 20px) - 1px)",
             height: "calc(var(--dynamic-cell-size, 20px) - 1px)",
-            borderRadius: "100%",
+            zIndex: 1,
           }}
-          className="hidden"
         />
       </Grid>
     );

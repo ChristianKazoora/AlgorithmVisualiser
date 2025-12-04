@@ -1,10 +1,48 @@
 import { MazeManager } from "../../../model/subject/maze/mazeManager";
 import { autoMazeGenarator } from "../../../model/subject/maze/auto/autoMazeGenarator";
+import { BinaryTreeMazeAuto } from "../../../model/subject/maze/auto/binaryTreeMazeAuto";
+import { PrimsMazeAuto } from "../../../model/subject/maze/auto/primsMazeAuto";
+import { RecursiveDivisionMazeAuto } from "../../../model/subject/maze/auto/recursiveDivisionMazeAuto";
+import { MazeModel } from "../../../model/Interfaces/mazeModel";
 import { CellStateHelper } from "../cellStateHelper";
+
+/** Available maze algorithms for auto mode */
+export type AutoMazeAlgorithm =
+  | "backtracker"
+  | "binary-tree"
+  | "prims"
+  | "recursive-division";
+
 /**
  * Cell state class for automatic maze generation and pathfinding.
  */
 export class AutoCellState extends CellStateHelper {
+  private mazeAlgorithm: AutoMazeAlgorithm = "backtracker";
+
+  /**
+   * Set the maze generation algorithm
+   */
+  setMazeAlgorithm(algorithm: AutoMazeAlgorithm): void {
+    this.mazeAlgorithm = algorithm;
+  }
+
+  /**
+   * Create the appropriate maze generator based on selected algorithm
+   */
+  private createMazeGenerator(): MazeModel {
+    switch (this.mazeAlgorithm) {
+      case "binary-tree":
+        return new BinaryTreeMazeAuto();
+      case "prims":
+        return new PrimsMazeAuto();
+      case "recursive-division":
+        return new RecursiveDivisionMazeAuto();
+      case "backtracker":
+      default:
+        return new autoMazeGenarator();
+    }
+  }
+
   resetBoard(): void {
     // Clear walls array
     this.walls = [];
@@ -34,14 +72,22 @@ export class AutoCellState extends CellStateHelper {
         cell.fScore = 0;
         cell.gScore = 0;
         cell.hScore = 0;
+
+        // Reset previousCell/nextCell to clear stale path data
+        cell.previousCell = undefined;
+        cell.nextCell = undefined;
       }
     }
 
     // Update the algorithm controller with empty walls
     this.setWalls([]);
 
-    // DON'T call reRenderBoard() here - the board version increment
-    // will trigger a full React re-render which is what we want
+    // Reset renderer state and re-render the board to show walls reset
+    const renderer = this.algorithmController?.getRenderer() as any;
+    if (renderer?.resetState) {
+      renderer.resetState();
+    }
+    this.algorithmController?.reRenderBoard();
   }
 
   animatePath(onComplete?: () => void): void {
@@ -51,7 +97,7 @@ export class AutoCellState extends CellStateHelper {
 
   animateMazeGeneration(onComplete?: () => void): void {
     // First, generate the maze data (but don't render the final state yet)
-    const generator = new MazeManager(new autoMazeGenarator());
+    const generator = new MazeManager(this.createMazeGenerator());
     generator.setBoard(this.ifNull(this.board));
     generator.generateMaze();
     this.setBoard(generator.getBoard());
@@ -75,7 +121,7 @@ export class AutoCellState extends CellStateHelper {
 
   generateMaze(): void {
     // Just generate the maze and render the final state immediately (no animation)
-    const generator = new MazeManager(new autoMazeGenarator());
+    const generator = new MazeManager(this.createMazeGenerator());
     generator.setBoard(this.ifNull(this.board));
     generator.generateMaze();
     this.setBoard(generator.getBoard());

@@ -13,8 +13,8 @@ const Line = () => {
         data-row={0}
         data-col={0}
         style={{
-          width: "20px",
-          height: "20px",
+          width: "var(--dynamic-cell-size, 20px)",
+          height: "var(--dynamic-cell-size, 20px)",
           border: "1px solid black",
         }}
       >
@@ -36,8 +36,8 @@ const Line = () => {
         data-row={0}
         data-col={0}
         style={{
-          width: "80px",
-          height: "80px",
+          width: "var(--dynamic-cell-size, 20px)",
+          height: "var(--dynamic-cell-size, 20px)",
           border: "1px solid black",
         }}
       >

@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { BoardController } from "../../../controller/interfaces/boardController";
+import { useLocation } from "react-router-dom";
+import {
+  BoardController,
+  AutoMazeAlgorithm,
+  ManualMazeAlgorithm,
+  WallDistribution,
+} from "../../../controller/interfaces/boardController";
 import { BfsController } from "../../../controller/pathfindingCellStates/algoControllers/bfsController";
 import { DfsController } from "../../../controller/pathfindingCellStates/algoControllers/dfsController";
 import { A_StarController } from "../../../controller/pathfindingCellStates/algoControllers/aStarController";
@@ -12,32 +17,68 @@ import { GetManulNeigbourWD } from "../../../model/subject/board/strategies/manu
 import { useNotification } from "../notifications/NotificationProvider";
 import { ValidationError } from "../../../utils/validation";
 
+// Set to true to enable notifications, false to disable
+const NOTIFICATIONS_ENABLED = false;
+
 const TopControls: React.FC<{ boardController: BoardController }> = ({
   boardController,
 }) => {
   const location = useLocation();
-  const navigate = useNavigate();
   const [isManualDiagonal, setIsManualDiagonal] = useState(true);
   const [isMazeAnimating, setIsMazeAnimating] = useState(false);
   const [isPathAnimating, setIsPathAnimating] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedAlgorithmController, setSelectedAlgorithmController] =
     useState<BfsController | DfsController | A_StarController | null>(null);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<string>("BFS");
-  const [forceUpdate, setForceUpdate] = useState(0); // Used to force re-render when maze state changes
-  const { showSuccess, showError, showInfo, showWarning } = useNotification();
+  const [selectedMazeAlgorithm, setSelectedMazeAlgorithm] =
+    useState<string>("backtracker");
+  const [wallDensity, setWallDensity] = useState<number>(0.3);
+  const [wallDistribution, setWallDistribution] =
+    useState<WallDistribution>("uniform");
+  const [showDensityFab, setShowDensityFab] = useState<boolean>(false);
+  const [forceUpdate, setForceUpdate] = useState(0);
+  const notification = useNotification();
+
+  // Wrapper functions that respect NOTIFICATIONS_ENABLED flag
+  const showSuccess = (msg: string) =>
+    NOTIFICATIONS_ENABLED && notification.showSuccess(msg);
+  const showError = (msg: string) =>
+    NOTIFICATIONS_ENABLED && notification.showError(msg);
+  const showInfo = (msg: string) =>
+    NOTIFICATIONS_ENABLED && notification.showInfo(msg);
+  const showWarning = (msg: string) =>
+    NOTIFICATIONS_ENABLED && notification.showWarning(msg);
 
   const isPathfindingPage =
     location.pathname === "/manualPathfinding" ||
     location.pathname === "/autoPathfinding";
 
+  const isAutoMode = location.pathname === "/autoPathfinding";
+
+  // Notify board controller of any loading state changes
+  React.useEffect(() => {
+    const callback = (boardController as any).setAnimatingCallback;
+    if (callback) {
+      callback(isLoading || isMazeAnimating || isPathAnimating);
+    }
+  }, [isLoading, isMazeAnimating, isPathAnimating, boardController]);
+
   // Reset animation states when page changes and sync algorithm selection
   useEffect(() => {
     setIsMazeAnimating(false);
     setIsPathAnimating(false);
-    // Force re-render to update Run button availability after mode switch
     setForceUpdate((prev) => prev + 1);
 
-    // Sync the selected algorithm from the controller when switching modes
+    // Reset maze algorithm selection based on mode
+    if (isAutoMode) {
+      setSelectedMazeAlgorithm("backtracker");
+      boardController.setMazeAlgorithm("backtracker");
+    } else {
+      setSelectedMazeAlgorithm("random");
+      boardController.setMazeAlgorithm("random");
+    }
+
     const currentController = boardController.getAlgorithmController() as
       | BfsController
       | DfsController
@@ -47,13 +88,10 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
     if (currentController) {
       setSelectedAlgorithmController(currentController);
     } else {
-      // Initialize with BFS if no controller exists
       const defaultController = new BfsController();
       boardController.setAlgorithmController(defaultController);
       setSelectedAlgorithmController(defaultController);
     }
-
-    // Don't reset maze state - it persists in the boardController
   }, [location.pathname, boardController]);
 
   if (!isPathfindingPage) return null;
@@ -84,49 +122,33 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
     }
   };
 
-  // Check if heuristic should be disabled
-  // If controller is null, default to disabled. Only enable if usesHeuristic() returns true.
   const isHeuristicDisabled =
     !selectedAlgorithmController ||
     selectedAlgorithmController.usesHeuristic() !== true;
 
-  // Check if run button should be disabled - use boardController's state directly
-  // forceUpdate triggers re-calculation when maze state changes
   const isRunDisabled =
-    (location.pathname === "/autoPathfinding" &&
-      !boardController.isMazeGenerated()) ||
-    forceUpdate < 0; // Reference forceUpdate to ensure recalculation (always false)
+    (isAutoMode && !boardController.isMazeGenerated()) || forceUpdate < 0;
 
   const handleHeuristicChange = (heuristic: string) => {
     switch (heuristic) {
-      case "Manhattan Distance":
+      case "Manhattan":
         boardController.setHuristicModel(new manhattanDistance());
         showInfo(`Heuristic set to Manhattan Distance`);
         break;
-      case "Euclidean Distance":
+      case "Euclidean":
         boardController.setHuristicModel(new euclideanDistance());
         showInfo(`Heuristic set to Euclidean Distance`);
         break;
-      case "Chebyshev Distance":
+      case "Chebyshev":
         boardController.setHuristicModel(new chebyshevDistance());
         showInfo(`Heuristic set to Chebyshev Distance`);
         break;
     }
   };
 
-  const handleModeToggle = () => {
-    if (location.pathname === "/manualPathfinding") {
-      navigate("/autoPathfinding");
-      showSuccess("Switched to Auto Pathfinding mode");
-    } else if (location.pathname === "/autoPathfinding") {
-      navigate("/manualPathfinding");
-      showSuccess("Switched to Manual Pathfinding mode");
-    }
-  };
-
   const handleDiagonalToggle = () => {
-    if (location.pathname === "/autoPathfinding") {
-      showWarning("Diagonal movement settings are not available in auto mode");
+    if (isAutoMode) {
+      showWarning("Diagonal movement is not available in auto mode");
       return;
     }
     if (isManualDiagonal) {
@@ -139,21 +161,55 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
     setIsManualDiagonal(!isManualDiagonal);
   };
 
-  const handleRunAlgorithm = () => {
+  const handleMazeAlgorithmChange = (algorithm: string) => {
+    setSelectedMazeAlgorithm(algorithm);
+    boardController.setMazeAlgorithm(
+      algorithm as AutoMazeAlgorithm | ManualMazeAlgorithm
+    );
+
+    const algorithmNames: Record<string, string> = {
+      // Auto mode algorithms
+      backtracker: "Recursive Backtracker",
+      "binary-tree": "Binary Tree",
+      prims: "Prim's Algorithm",
+      "recursive-division": "Recursive Division",
+      // Manual mode algorithms
+      random: "Random Walls",
+      "cellular-automata": "Cellular Automata",
+    };
+    showInfo(`Maze algorithm set to ${algorithmNames[algorithm] || algorithm}`);
+  };
+
+  const handleDensityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const density = parseFloat(e.target.value);
+    setWallDensity(density);
+    boardController.setWallDensity(density);
+  };
+
+  const handleDistributionChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const distribution = e.target.value as WallDistribution;
+    setWallDistribution(distribution);
+    boardController.setWallDistribution(distribution);
+
+    const distributionNames: Record<WallDistribution, string> = {
+      uniform: "Uniform Distribution",
+      "center-focused": "Center Focused",
+      "edge-focused": "Edge Focused",
+      gradient: "Gradient Pattern",
+    };
+    showInfo(`Wall distribution set to ${distributionNames[distribution]}`);
+  };
+
+  const handleRunAlgorithm = async () => {
     try {
-      // In auto mode, check if maze has been generated
-      if (
-        location.pathname === "/autoPathfinding" &&
-        !boardController.isMazeGenerated()
-      ) {
-        showWarning(
-          "Please generate a maze first before running the algorithm in auto mode."
-        );
+      if (isAutoMode && !boardController.isMazeGenerated()) {
+        showWarning("Please generate a maze first in auto mode.");
         return;
       }
 
       if (isPathAnimating) {
-        // Skip to end of animation by completing immediately
         const controller = boardController.getAlgorithmController();
         if (controller) {
           controller.completePathImmediately();
@@ -161,13 +217,10 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
         setIsPathAnimating(false);
         showInfo("Pathfinding animation completed.");
       } else {
-        // Start animation
-        // validateAction.runAlgorithm(null, null);
         setIsPathAnimating(true);
-        showSuccess("Algorithm started! Watch the pathfinding in action.");
+        showSuccess("Algorithm started!");
 
-        // Use callback to properly track when animation completes
-        boardController.animatePath(() => {
+        await boardController.animatePathAsync(() => {
           setIsPathAnimating(false);
           showSuccess("Pathfinding complete!");
         });
@@ -178,7 +231,7 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
         if (error.type === "warning") showWarning(error.message);
         else showError(error.message);
       } else {
-        showError("Failed to run algorithm. Please check your setup.");
+        showError("Failed to run algorithm.");
         console.error("Run algorithm error:", error);
       }
     }
@@ -187,7 +240,7 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
   const handleClearBoard = () => {
     try {
       boardController.clearBoard();
-      showInfo("Board cleared successfully.");
+      showInfo("Board cleared.");
     } catch (error) {
       showError("Failed to clear the board.");
     }
@@ -196,34 +249,28 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
   const handleMazeToggle = () => {
     try {
       if (isMazeAnimating) {
-        // Skip to end of animation by completing immediately
         const controller = boardController.getAlgorithmController();
         if (controller) {
           controller.completeMazeImmediately();
         }
         setIsMazeAnimating(false);
         boardController.setMazeGenerated(true);
-        setForceUpdate((prev) => prev + 1); // Force re-render
+        setForceUpdate((prev) => prev + 1);
         showInfo("Maze generation completed.");
       } else {
-        // Start animation
-        if (location.pathname === "/autoPathfinding") {
+        if (isAutoMode) {
           setIsMazeAnimating(true);
-          showInfo("Maze generation animation started.");
+          showInfo("Generating maze...");
 
-          // Use callback to properly track when animation completes
           boardController.animateMaze(() => {
             setIsMazeAnimating(false);
-            setForceUpdate((prev) => prev + 1); // Force re-render
-            // Maze generated flag is set in boardController.animateMaze()
-            showSuccess("Maze generated! Ready for pathfinding.");
+            setForceUpdate((prev) => prev + 1);
+            showSuccess("Maze generated!");
           });
         } else {
-          // In manual mode, just generate without animation
           boardController.generateMaze();
-          setForceUpdate((prev) => prev + 1); // Force re-render
-          // Maze generated flag is set in boardController.generateMaze()
-          showSuccess("Maze generated! Ready for pathfinding.");
+          setForceUpdate((prev) => prev + 1);
+          showSuccess("Maze generated!");
         }
       }
     } catch (error) {
@@ -235,12 +282,11 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
   const handleResetBoard = () => {
     try {
       boardController.resetBoard();
-      // Reset animation states when board is reset
       setIsMazeAnimating(false);
       setIsPathAnimating(false);
-      setForceUpdate((prev) => prev + 1); // Force re-render to update isRunDisabled
+      setForceUpdate((prev) => prev + 1);
       boardController.setMazeGenerated(false);
-      showInfo("Board reset to initial state.");
+      showInfo("Board reset.");
     } catch (error) {
       showError("Failed to reset the board.");
       console.error("Reset board error:", error);
@@ -248,133 +294,185 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
   };
 
   return (
-    <div className="bg-base-200 border-b border-base-300">
-      <div className="max-w-full px-4 py-2">
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Mode Toggle */}
-          <div className="join">
-            <button
-              className={`btn join-item ${
-                location.pathname === "/autoPathfinding"
-                  ? "btn-primary"
-                  : "btn-outline"
-              }`}
-              onClick={handleModeToggle}
-            >
-              Auto
-            </button>
-            <button
-              className={`btn join-item ${
-                location.pathname === "/manualPathfinding"
-                  ? "btn-primary"
-                  : "btn-outline"
-              }`}
-              onClick={handleModeToggle}
-            >
-              Manual
-            </button>
-          </div>
+    <div className="bg-base-200 border-b border-base-300 px-2 py-2">
+      {/* Row 1: Selectors */}
+      <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
+        {/* Algorithm Selection */}
+        <select
+          className="select select-bordered select-sm"
+          value={selectedAlgorithm}
+          onChange={(e) => handleAlgorithmChange(e.target.value)}
+        >
+          <option value="BFS">BFS</option>
+          <option value="DFS">DFS</option>
+          <option value="A*">A*</option>
+        </select>
 
-          {/* Algorithm Selection */}
+        {/* Heuristic */}
+        <select
+          className="select select-bordered select-sm"
+          defaultValue="Manhattan"
+          onChange={(e) => handleHeuristicChange(e.target.value)}
+          disabled={isHeuristicDisabled}
+          style={isHeuristicDisabled ? { opacity: 0.5 } : {}}
+          title={isHeuristicDisabled ? "Only used by A*" : ""}
+        >
+          <option value="Manhattan">Manhattan</option>
+          <option value="Euclidean">Euclidean</option>
+          <option value="Chebyshev">Chebyshev</option>
+        </select>
+
+        {/* Maze Algorithm Selector */}
+        {isAutoMode ? (
           <select
-            className="select select-bordered"
-            value={selectedAlgorithm}
-            onChange={(e) => handleAlgorithmChange(e.target.value)}
+            className="select select-bordered select-sm"
+            value={selectedMazeAlgorithm}
+            onChange={(e) => handleMazeAlgorithmChange(e.target.value)}
+            title="Maze generation algorithm"
           >
-            <option value="BFS">BFS</option>
-            <option value="DFS">DFS</option>
-            <option value="A*">A*</option>
+            <option value="backtracker">Recursive Backtracker</option>
+            <option value="binary-tree">Binary Tree</option>
+            <option value="prims">Prim's Algorithm</option>
+            <option value="recursive-division">Recursive Division</option>
           </select>
+        ) : (
+          <select
+            className="select select-bordered select-sm"
+            value={selectedMazeAlgorithm}
+            onChange={(e) => handleMazeAlgorithmChange(e.target.value)}
+            title="Maze generation algorithm"
+          >
+            <option value="random">Random Walls</option>
+            <option value="cellular-automata">Cellular Automata</option>
+          </select>
+        )}
 
-          {/* Heuristic (disabled if algorithm doesn't use it) */}
-          {isHeuristicDisabled ? (
+        {/* Diagonal Toggle - Manual mode only */}
+        {!isAutoMode && (
+          <label className="flex items-center gap-1 cursor-pointer">
+            <span className="text-sm">Diagonal</span>
+            <input
+              type="checkbox"
+              className="toggle toggle-sm toggle-primary"
+              checked={isManualDiagonal}
+              onChange={handleDiagonalToggle}
+            />
+          </label>
+        )}
+      </div>
+
+      {/* Row 2: Action Buttons */}
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <button
+          className={`btn btn-sm ${
+            isPathAnimating ? "btn-warning" : "btn-primary"
+          }`}
+          onClick={handleRunAlgorithm}
+          disabled={isRunDisabled && !isPathAnimating}
+          title={isRunDisabled ? "Generate a maze first" : ""}
+        >
+          {isPathAnimating ? "Skip" : "Run"}
+        </button>
+
+        <button className="btn btn-sm" onClick={handleClearBoard}>
+          Clear
+        </button>
+
+        <button
+          className={`btn btn-sm ${isMazeAnimating ? "btn-warning" : ""}`}
+          onClick={handleMazeToggle}
+        >
+          {isMazeAnimating ? "Skip" : "Maze"}
+        </button>
+
+        <button className="btn btn-sm" onClick={handleResetBoard}>
+          Reset
+        </button>
+      </div>
+
+      {/* FAB for Wall Density Control - Manual mode only */}
+      {!isAutoMode && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <div className={`fab fab-flower ${showDensityFab ? "fab-open" : ""}`}>
+            {/* Main FAB button */}
             <div
-              className="tooltip"
-              data-tip="Heuristic is only used by A* algorithm"
+              tabIndex={0}
+              role="button"
+              className="btn btn-lg btn-primary btn-circle shadow-lg"
+              onClick={() => setShowDensityFab(!showDensityFab)}
+              title="Wall Density Settings"
             >
-              <select
-                className="select select-bordered"
-                defaultValue="Manhattan Distance"
-                onChange={(e) => handleHeuristicChange(e.target.value)}
-                disabled={isHeuristicDisabled}
-                style={{
-                  opacity: 0.5,
-                  cursor: "not-allowed",
-                }}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                <option value="Manhattan Distance">Manhattan</option>
-                <option value="Euclidean Distance">Euclidean</option>
-                <option value="Chebyshev Distance">Chebyshev</option>
-              </select>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                />
+              </svg>
             </div>
-          ) : (
-            <select
-              className="select select-bordered"
-              defaultValue="Manhattan Distance"
-              onChange={(e) => handleHeuristicChange(e.target.value)}
-            >
-              <option value="Manhattan Distance">Manhattan</option>
-              <option value="Euclidean Distance">Euclidean</option>
-              <option value="Chebyshev Distance">Chebyshev</option>
-            </select>
-          )}
 
-          {/* Diagonal (manual only) */}
-          {location.pathname === "/manualPathfinding" && (
-            <label className="label cursor-pointer gap-2 items-center">
-              <span className="label-text">Diagonal</span>
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                checked={isManualDiagonal}
-                onChange={handleDiagonalToggle}
-              />
-            </label>
-          )}
+            {/* Density slider popup */}
+            {showDensityFab && (
+              <div className="absolute bottom-16 right-0 bg-base-200 rounded-lg shadow-xl p-4 min-w-[220px] border border-base-300">
+                <div className="text-sm font-medium mb-2">
+                  Wall Density: {Math.round(wallDensity * 100)}%
+                </div>
+                <input
+                  type="range"
+                  min="0.1"
+                  max="0.6"
+                  step="0.05"
+                  value={wallDensity}
+                  onChange={handleDensityChange}
+                  className="range range-primary range-sm w-full"
+                />
+                <div className="flex justify-between text-xs text-base-content/60 mt-1 mb-3">
+                  <span>Sparse</span>
+                  <span>Dense</span>
+                </div>
 
-          <div className="ml-auto flex flex-wrap gap-2">
-            {isRunDisabled ? (
-              <div
-                className="tooltip"
-                data-tip="Generate a maze first in auto mode"
-              >
-                <button
-                  className="btn btn-primary"
-                  onClick={handleRunAlgorithm}
-                  disabled={isRunDisabled}
-                  style={{
-                    opacity: 0.5,
-                    cursor: "not-allowed",
-                  }}
-                >
-                  Run
-                </button>
+                {/* Distribution selector - only for Random Walls */}
+                {selectedMazeAlgorithm === "random" && (
+                  <>
+                    <div className="divider my-2"></div>
+                    <div className="text-sm font-medium mb-2">
+                      Wall Distribution
+                    </div>
+                    <select
+                      className="select select-bordered select-sm w-full"
+                      value={wallDistribution}
+                      onChange={handleDistributionChange}
+                      title="How walls are distributed across the board"
+                    >
+                      <option value="uniform">Uniform</option>
+                      <option value="center-focused">Center Focused</option>
+                      <option value="edge-focused">Edge Focused</option>
+                      <option value="gradient">Gradient</option>
+                    </select>
+                    <div className="text-xs text-base-content/60 mt-2">
+                      {wallDistribution === "uniform" &&
+                        "Equal chance everywhere"}
+                      {wallDistribution === "center-focused" &&
+                        "More walls in the center"}
+                      {wallDistribution === "edge-focused" &&
+                        "More walls at edges"}
+                      {wallDistribution === "gradient" &&
+                        "Density increases left to right"}
+                    </div>
+                  </>
+                )}
               </div>
-            ) : (
-              <button
-                className={`btn ${
-                  isPathAnimating ? "btn-warning" : "btn-primary"
-                }`}
-                onClick={handleRunAlgorithm}
-              >
-                {isPathAnimating ? "Skip" : "Run"}
-              </button>
             )}
-            <button className="btn" onClick={handleClearBoard}>
-              Clear
-            </button>
-            <button
-              className={`btn ${isMazeAnimating ? "btn-warning" : ""}`}
-              onClick={handleMazeToggle}
-            >
-              {isMazeAnimating ? "Skip" : "Maze"}
-            </button>
-            <button className="btn" onClick={handleResetBoard}>
-              Reset
-            </button>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

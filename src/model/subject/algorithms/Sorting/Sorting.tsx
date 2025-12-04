@@ -1,12 +1,12 @@
 class Sorting implements SortingModel {
-  private data: number[];
+  private _data: number[];
 
   constructor(data: number[]) {
-    this.data = data;
+    this._data = data;
   }
 
   setData(data: number[]): void {
-    this.data = data;
+    this._data = data;
   }
   sort(): void {
     /* Start sorting process */

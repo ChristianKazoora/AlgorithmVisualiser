@@ -5,6 +5,7 @@ import { Stack } from "../../../shared/stack";
 import AutoCell from "../../cellDecorations/paths/autoCell";
 import { Line } from "../../cellDecorations/paths/line";
 import { GridRenderer } from "../../interfaces/gridRenderer";
+import { PathConfig } from "../../cellDecorations/pathConfig";
 
 export class AutoGridRenderer implements GridRenderer {
   private grid: Array<Array<Cell>> | undefined;
@@ -13,7 +14,7 @@ export class AutoGridRenderer implements GridRenderer {
   private currentPoints: Stack<Cell> | undefined;
   private rootsMap: Map<string, any>; // Map to store roots
   private mazeVisitedOrder: Stack<Cell> | undefined;
-  private ANIMATIONSPEED = 2;
+  private ANIMATIONSPEED = PathConfig.ANIMATION.SPEED; // Normalized with ManualGridRenderer for consistent timing
   private timeouts: ReturnType<typeof setTimeout>[] = [];
 
   constructor() {
@@ -54,6 +55,121 @@ export class AutoGridRenderer implements GridRenderer {
   setCurrentPoints(points: Stack<Cell>): void {
     this.currentPoints = points;
   }
+
+  // Track cells currently shown as path for cleanup
+  private currentPathCells: Set<string> = new Set();
+
+  /**
+   * Reset renderer state - call when clearing/resetting board
+   */
+  resetState(): void {
+    this.currentPathCells.clear();
+    this.clearTimeouts();
+    // Clear cached path data to prevent stale animations after reset
+    this.path = undefined;
+    this.currentPoints = undefined;
+  }
+
+  /**
+   * Apply a step snapshot and immediately render the current state.
+   * This shows the evolving path during A* search (path changes each step).
+   */
+  applyStep(snapshot: {
+    current: Cell | null;
+    visited: import("../../../shared/set").Set<Cell>;
+    path: Array<Cell>;
+    isComplete: boolean;
+  }): void {
+    const points = new Stack<Cell>();
+    snapshot.visited.forEach((cell) => points.push(cell));
+    points.reverse();
+    this.currentPoints = points;
+    this.path = snapshot.path;
+
+    // Render visited cells
+    snapshot.visited.forEach((cell) => {
+      if (!cell.isStart && !cell.isEnd) {
+        const visitedElement = document.getElementById(
+          `cell-${cell.x}-${cell.y}-visited`
+        );
+        if (visitedElement) {
+          visitedElement.className = "block bg-neutral rounded-full absolute";
+        }
+      }
+    });
+
+    // Highlight current cell being explored
+    if (
+      snapshot.current &&
+      !snapshot.current.isStart &&
+      !snapshot.current.isEnd
+    ) {
+      const currentElement = document.getElementById(
+        `cell-${snapshot.current.x}-${snapshot.current.y}-current`
+      );
+      if (currentElement) {
+        currentElement.className = "block bg-warning rounded-full absolute";
+        // Hide it after a brief moment
+        setTimeout(() => {
+          currentElement.className = "hidden bg-warning rounded-full absolute";
+        }, 50);
+      }
+    }
+
+    // Clear previous path cells that are no longer in the current path
+    const newPathCells = new Set<string>();
+    snapshot.path.forEach((cell) => {
+      newPathCells.add(`${cell.x}-${cell.y}`);
+    });
+
+    // Hide cells that were in path but no longer are
+    this.currentPathCells.forEach((cellKey) => {
+      if (!newPathCells.has(cellKey)) {
+        const [x, y] = cellKey.split("-");
+        const pathElement = document.getElementById(`cell-${x}-${y}-path`);
+        const visitedElement = document.getElementById(
+          `cell-${x}-${y}-visited`
+        );
+        if (pathElement) {
+          pathElement.className = "hidden absolute";
+        }
+        // Show as visited instead
+        if (visitedElement) {
+          visitedElement.className = "block bg-neutral rounded-full absolute";
+        }
+      }
+    });
+
+    // Render current path (shows evolving "best path so far" for A*)
+    snapshot.path.forEach((cell) => {
+      if (!cell.isStart && !cell.isEnd) {
+        const cellId = `cell-${cell.x}-${cell.y}-path`;
+        const pathElement = document.getElementById(cellId);
+        const visitedElement = document.getElementById(
+          `cell-${cell.x}-${cell.y}-visited`
+        );
+
+        if (pathElement) {
+          const toAdd = new Line(cell).animate();
+          if (this.rootsMap.has(cellId)) {
+            const existingRoot = this.rootsMap.get(cellId);
+            existingRoot.render(toAdd);
+          } else {
+            const newRoot = createRoot(pathElement);
+            newRoot.render(toAdd);
+            this.rootsMap.set(cellId, newRoot);
+          }
+          pathElement.className = "block absolute";
+        }
+        if (visitedElement) {
+          visitedElement.className = "hidden bg-neutral rounded-full absolute";
+        }
+      }
+    });
+
+    // Update tracked path cells
+    this.currentPathCells = newPathCells;
+  }
   ifNull(object: any) {
     if (object) {
       return object;
@@ -71,6 +187,13 @@ export class AutoGridRenderer implements GridRenderer {
     const delayPerCell = Math.sqrt(this.ANIMATIONSPEED + 330) * 3;
     const fadeoutTime = delayPerCell + 100;
 
+    // Cache CSS variable lookups once (major perf improvement)
+    const borderColor = getComputedStyle(document.documentElement)
+      .getPropertyValue("--bc")
+      .trim();
+    const borderStyle = `1px solid oklch(${borderColor})`;
+    const bgColor = `oklch(${borderColor})`;
+
     for (let i = 0; i < points.size(); i++) {
       let cell = points.get(i);
       let currentElement = document.getElementById(
@@ -79,26 +202,22 @@ export class AutoGridRenderer implements GridRenderer {
 
       const timeoutId = setTimeout(() => {
         if (currentElement) {
-          // Rerender walls based on the cell's current state
-          currentElement.style.borderTop = "1px solid black";
-          currentElement.style.borderBottom = "1px solid black";
-          currentElement.style.borderLeft = "1px solid black";
-          currentElement.style.borderRight = "1px solid black";
-          if (!cell?.northW) {
-            currentElement.style.borderTop = "1px solid transparent";
-          }
-          if (!cell?.southW) {
-            currentElement.style.borderBottom = "1px solid transparent";
-          }
-          if (!cell?.eastW) {
-            currentElement.style.borderRight = "1px solid transparent";
-          }
-          if (!cell?.westW) {
-            currentElement.style.borderLeft = "1px solid transparent";
-          }
+          // Rerender walls based on the cell's current state using cached styles
+          currentElement.style.borderTop = cell?.northW
+            ? borderStyle
+            : "1px solid transparent";
+          currentElement.style.borderBottom = cell?.southW
+            ? borderStyle
+            : "1px solid transparent";
+          currentElement.style.borderLeft = cell?.westW
+            ? borderStyle
+            : "1px solid transparent";
+          currentElement.style.borderRight = cell?.eastW
+            ? borderStyle
+            : "1px solid transparent";
 
-          // Set background color for the current element (black cube tracer)
-          currentElement.style.background = "black";
+          // Set background color for the current element (tracer)
+          currentElement.style.background = bgColor;
 
           // Reset background color after a short delay
           setTimeout(() => {
@@ -125,6 +244,13 @@ export class AutoGridRenderer implements GridRenderer {
     this.clearTimeouts();
     const gridLength = this.ifNull(this.grid).length;
     const gridWidth = this.ifNull(this.grid)[0].length;
+
+    // Cache the border color once instead of per-cell (major perf improvement)
+    const borderColor = getComputedStyle(document.documentElement)
+      .getPropertyValue("--bc")
+      .trim();
+    const borderStyle = `1px solid oklch(${borderColor})`;
+
     for (let i = 0; i < gridLength; i++) {
       for (let j = 0; j < gridWidth; j++) {
         let cell = this.ifNull(this.grid)[i][j];
@@ -146,57 +272,46 @@ export class AutoGridRenderer implements GridRenderer {
         );
 
         if (startElement) {
-          if (cell.isStart) {
-            startElement.className = "block";
-          } else {
-            startElement.className = "hidden";
-          }
+          startElement.className = cell.isStart ? "block" : "hidden";
         }
         if (endElement) {
-          if (cell.isEnd) {
-            endElement.className = "block";
-          } else {
-            endElement.className = "hidden";
-          }
+          endElement.className = cell.isEnd ? "block" : "hidden";
         }
         if (visetedElement) {
-          if (cell.isVisited) {
-            visetedElement.className = "block ";
-          } else {
-            visetedElement.className = "hidden";
-          }
+          visetedElement.className = cell.isVisited
+            ? "block bg-neutral rounded-full absolute"
+            : "hidden bg-neutral rounded-full absolute";
         }
         if (pathElement) {
-          if (cell.isPath) {
-            pathElement.className = "block";
-          } else {
-            pathElement.className = "hidden";
-          }
+          pathElement.className = cell.isPath
+            ? "block absolute"
+            : "hidden absolute";
         }
         if (currentElement) {
-          //rerender walls
-          currentElement.style.borderTop = "1px solid black";
-          currentElement.style.borderBottom = "1px solid black";
-          currentElement.style.borderLeft = "1px solid black";
-          currentElement.style.borderRight = "1px solid black";
-          if (!cell.northW) {
-            currentElement.style.borderTop = "1px solid transparent";
-          }
-          if (!cell.southW) {
-            currentElement.style.borderBottom = "1px solid transparent";
-          }
-          if (!cell.eastW) {
-            currentElement.style.borderRight = "1px solid transparent";
-          }
-          if (!cell.westW) {
-            currentElement.style.borderLeft = "1px solid transparent";
-          }
+          //rerender walls using cached border style
+          currentElement.style.borderTop = cell.northW
+            ? borderStyle
+            : "1px solid transparent";
+          currentElement.style.borderBottom = cell.southW
+            ? borderStyle
+            : "1px solid transparent";
+          currentElement.style.borderLeft = cell.westW
+            ? borderStyle
+            : "1px solid transparent";
+          currentElement.style.borderRight = cell.eastW
+            ? borderStyle
+            : "1px solid transparent";
         }
       }
     }
   }
   reRunAnimatePath(): void {
-    const points = this.ifNull(this.currentPoints);
+    // Handle edge case: no points data (e.g., after reset)
+    if (!this.currentPoints) {
+      return;
+    }
+
+    const points = this.currentPoints;
 
     for (let i = 0; i < points.size(); i++) {
       if (i === points.size() - 1) {
@@ -206,6 +321,7 @@ export class AutoGridRenderer implements GridRenderer {
       }
 
       const cell = points.get(i);
+      if (!cell) continue;
 
       if (!cell.isStart && !cell.isEnd) {
         const visitedElement = this.ifNull(document).getElementById(
@@ -213,13 +329,18 @@ export class AutoGridRenderer implements GridRenderer {
         );
 
         if (visitedElement) {
-          visitedElement.className = "block";
+          visitedElement.className = "block bg-neutral rounded-full absolute";
         }
       }
     }
   }
   reRunAnimateLinePath(): void {
-    const path = this.ifNull(this.path);
+    // Handle edge case: no path data (e.g., after reset)
+    if (!this.path) {
+      return;
+    }
+
+    const path = this.path;
     for (let i = 0; i < path.length; i++) {
       const cell = path[i];
       if (!cell.isStart && !cell.isEnd) {
@@ -243,17 +364,22 @@ export class AutoGridRenderer implements GridRenderer {
             newRoot.render(toAdd);
             this.rootsMap.set(cellId, newRoot);
           }
-          pathElement.className = "block";
-          pathElement.className = "block";
+          pathElement.className = "block absolute";
         }
         if (visitedElement) {
-          visitedElement.className = "hidden";
+          visitedElement.className = "hidden bg-neutral rounded-full absolute";
         }
       }
     }
   }
   animatePath(onComplete?: () => void): void {
-    const points = this.ifNull(this.currentPoints);
+    // Handle edge case: no points data (e.g., after reset)
+    if (!this.currentPoints) {
+      this.animateLinePath(onComplete);
+      return;
+    }
+
+    const points = this.currentPoints;
 
     // Handle edge case: no points to animate
     if (points.size() === 0) {
@@ -272,6 +398,7 @@ export class AutoGridRenderer implements GridRenderer {
       }
       const timeoutId = setTimeout(() => {
         const cell = points.get(i);
+        if (!cell) return;
 
         if (!cell.isStart && !cell.isEnd) {
           const visitedElement = this.ifNull(document).getElementById(
@@ -282,21 +409,33 @@ export class AutoGridRenderer implements GridRenderer {
           );
 
           if (currentElement) {
-            currentElement.className = " block ";
+            currentElement.className = "block bg-warning rounded-full absolute";
           }
           setTimeout(() => {
-            if (visitedElement) {
-              currentElement.className = "hidden";
-              visitedElement.className = "block";
+            if (currentElement) {
+              currentElement.className =
+                "hidden bg-warning rounded-full absolute";
             }
-          }, this.ANIMATIONSPEED);
+            if (visitedElement) {
+              visitedElement.className =
+                "block bg-neutral rounded-full absolute";
+            }
+          }, this.ANIMATIONSPEED * 1.55);
         }
       }, this.ANIMATIONSPEED * 1.55 * i);
       this.timeouts.push(timeoutId);
     }
   }
   animateLinePath(onComplete?: () => void): void {
-    const path = this.ifNull(this.path);
+    // Handle edge case: no path data (e.g., after reset)
+    if (!this.path) {
+      if (onComplete) {
+        onComplete();
+      }
+      return;
+    }
+
+    const path = this.path;
 
     // Handle edge case: empty path or only start/end cells
     if (path.length === 0) {
@@ -332,11 +471,11 @@ export class AutoGridRenderer implements GridRenderer {
               newRoot.render(toAdd);
               this.rootsMap.set(cellId, newRoot);
             }
-            pathElement.className = "block";
-            pathElement.className = "block";
+            pathElement.className = "block absolute";
           }
           if (visitedElement) {
-            visitedElement.className = "hidden";
+            visitedElement.className =
+              "hidden bg-neutral rounded-full absolute";
           }
         }
 
@@ -344,9 +483,9 @@ export class AutoGridRenderer implements GridRenderer {
         if (isLastCell && onComplete) {
           setTimeout(() => {
             onComplete();
-          }, Math.pow(this.ANIMATIONSPEED, 6));
+          }, Math.pow(this.ANIMATIONSPEED, Math.sqrt(this.ANIMATIONSPEED)));
         }
-      }, Math.pow(this.ANIMATIONSPEED, 6) * i);
+      }, Math.pow(this.ANIMATIONSPEED, Math.sqrt(this.ANIMATIONSPEED)) * i);
       this.timeouts.push(timeoutId);
     }
   }

@@ -1,6 +1,7 @@
 import { Cell } from "../../model/subject/Cell";
 import { Board } from "../../model/subject/board/board";
 import { Stack } from "../../shared/stack";
+import { Set } from "../../shared/set";
 /**
  * Interface for Grid Renderers in the pathfinding visualizer.
  */
@@ -60,4 +61,20 @@ export interface GridRenderer {
    * @param OrderVisited - The order of visited cells.
    */
   setMazeVisitedOrder(OrderVisited: Stack<Cell>): void;
+
+  /**
+   * Optional hook to apply a single async algorithm step snapshot.
+   */
+  applyStep?(snapshot: {
+    current: Cell | null;
+    visited: Set<Cell>;
+    path: Array<Cell>;
+    isComplete: boolean;
+  }): void;
+
+  /**
+   * Animates the path line step-by-step.
+   * @param onComplete - Callback function to be called when the animation is complete.
+   */
+  animateLinePath(onComplete?: () => void): void;
 }

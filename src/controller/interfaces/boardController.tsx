@@ -1,6 +1,24 @@
 import { HuristicModel } from "../../model/Interfaces/huristicModel";
 import { Board } from "../../model/subject/board/board";
 import { mainController } from "./mainController";
+
+/** Available maze algorithms for auto mode */
+export type AutoMazeAlgorithm =
+  | "backtracker"
+  | "binary-tree"
+  | "prims"
+  | "recursive-division";
+
+/** Available maze algorithms for manual mode */
+export type ManualMazeAlgorithm = "random" | "cellular-automata";
+
+/** Wall distribution patterns for manual maze generation */
+export type WallDistribution =
+  | "uniform"
+  | "center-focused"
+  | "edge-focused"
+  | "gradient";
+
 /**
  * Interface for Board Controllers in the pathfinding visualizer.
  */
@@ -10,6 +28,12 @@ export interface BoardController extends mainController {
    * @param onComplete - Callback function to be called when the animation is complete.
    */
   animatePath(onComplete?: () => void): void;
+
+  /**
+   * Animates the pathfinding process asynchronously with step-by-step visualization.
+   * @param onComplete - Callback function to be called when the animation is complete.
+   */
+  animatePathAsync(onComplete?: () => void): Promise<void>;
 
   /**
    * Adds event listeners for user interactions.
@@ -103,4 +127,32 @@ export interface BoardController extends mainController {
    * @param value - The value to set the maze generated flag to.
    */
   setMazeGenerated(value: boolean): void;
+
+  /**
+   * Sets the maze algorithm for generation.
+   * @param algorithm - The maze algorithm to use (auto or manual mode).
+   */
+  setMazeAlgorithm(algorithm: AutoMazeAlgorithm | ManualMazeAlgorithm): void;
+
+  /**
+   * Sets the wall density for maze generation (manual mode only).
+   * @param density - Value between 0 and 1.
+   */
+  setWallDensity(density: number): void;
+
+  /**
+   * Gets the current wall density setting.
+   */
+  getWallDensity(): number;
+
+  /**
+   * Sets the wall distribution pattern for maze generation (manual mode only).
+   * @param distribution - The distribution pattern to use.
+   */
+  setWallDistribution(distribution: WallDistribution): void;
+
+  /**
+   * Gets the current wall distribution pattern.
+   */
+  getWallDistribution(): WallDistribution;
 }

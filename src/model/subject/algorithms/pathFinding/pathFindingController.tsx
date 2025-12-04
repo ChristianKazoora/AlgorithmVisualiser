@@ -2,7 +2,9 @@ import { Point } from "../../../../shared/point";
 import { Cell } from "../../Cell";
 import { Set } from "../../../../shared/set";
 import { Board } from "../../board/board";
-import { BfsModel } from "./bfsModel";
+import { BfsModel, BfsStepSnapshot } from "./bfsModel";
+import { DfsModel, DfsStepSnapshot } from "./dfsModel";
+import { A_StarModel, AStarStepSnapshot } from "./aStarModel";
 import { Stack } from "../../../../shared/stack";
 import { MovementModel } from "../../../Interfaces/movementModel";
 import { MovementManager } from "../../board/movementManager";
@@ -54,6 +56,35 @@ export class PathFindingController implements PathFindingModel {
 
   start(): void {
     this.algorithm.start();
+  }
+
+  /**
+   * Async step-wise iteration over the underlying algorithm, if it supports it.
+   * Consumers can use this to visualize progress without blocking the UI.
+   */
+  async *asyncSteps(): AsyncGenerator<AStarStepSnapshot, void, void> {
+    // A* async steps
+    if (this.algorithm instanceof A_StarModel) {
+      for await (const step of (this.algorithm as A_StarModel).aStarAsyncSteps()) {
+        yield step;
+      }
+      return;
+    }
+
+    // BFS async steps
+    if (this.algorithm instanceof BfsModel) {
+      for await (const step of (this.algorithm as BfsModel).bfsAsyncSteps()) {
+        yield step as BfsStepSnapshot;
+      }
+      return;
+    }
+
+    // DFS async steps
+    if (this.algorithm instanceof DfsModel) {
+      for await (const step of (this.algorithm as DfsModel).dfsAsyncSteps()) {
+        yield step as DfsStepSnapshot;
+      }
+    }
   }
   setMovementModel(movementModel: MovementModel): void {
     this.algorithm.setMovementModel(new MovementManager(movementModel));

@@ -6,6 +6,7 @@ import { Point } from "../../shared/point";
 import { HuristicModel } from "../../model/Interfaces/huristicModel";
 import { Stack } from "../../shared/stack";
 import { Cell } from "../../model/subject/Cell";
+import { Set } from "../../shared/set";
 
 /**
  * Interface for Algorithm Controllers in the pathfinding visualizer.
@@ -39,6 +40,14 @@ export interface AlgorithmController extends mainController {
    * Complete the pathfinding animation immediately
    */
   completePathImmediately(): void;
+  /**
+   * Check if async animation was aborted
+   */
+  isAsyncAborted?(): boolean;
+  /**
+   * Reset abort flag (call before starting new animation)
+   */
+  resetAsyncAbort?(): void;
   /**
    * Re-run the pathfinding animation
    */
@@ -93,6 +102,17 @@ export interface AlgorithmController extends mainController {
    * Fetch and prepare data required for the algorithm's execution
    */
   getData(): void;
+  /**
+   * Optional async variant that yields step snapshots during execution.
+   */
+  getDataAsync?(
+    onStep?: (snapshot: {
+      current: Cell | null;
+      visited: Set<Cell>;
+      path: Array<Cell>;
+      isComplete: boolean;
+    }) => void
+  ): Promise<void>;
   /**
    * Get the name of the algorithm
    * @returns The name of the algorithm

@@ -2,10 +2,13 @@ import { MovementModel } from "../../../../Interfaces/movementModel";
 import { Cell } from "../../../Cell";
 /**
  * GetAutoNeigbour class that implements the MovementModel interface.
+ * Only returns neighbors where the wall between cells is DOWN (broken).
  */
 export class GetAutoNeigbour implements MovementModel {
   getNeighbours(cell: Cell): Array<Cell> {
     let neighbours: Array<Cell> = [];
+
+    // Only add neighbor if wall is DOWN (false)
     if (cell.top !== undefined && !cell.northW) {
       neighbours.push(cell.top);
     }
@@ -18,6 +21,14 @@ export class GetAutoNeigbour implements MovementModel {
     if (cell.right !== undefined && !cell.eastW) {
       neighbours.push(cell.right);
     }
+
+    // Debug: Log if we're finding no neighbors when we should have some
+    if (neighbours.length === 0) {
+      console.log(
+        `[AutoNeighbour] Cell (${cell.x},${cell.y}) has no passable neighbors. Walls: N=${cell.northW}, S=${cell.southW}, E=${cell.eastW}, W=${cell.westW}`
+      );
+    }
+
     return neighbours;
   }
 }

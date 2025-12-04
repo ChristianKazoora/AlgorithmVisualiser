@@ -7,8 +7,3 @@ export class ValidationError extends Error {
     this.name = "ValidationError";
   }
 }
-
-export const algorithmUsesHeuristic = (algorithm: string): boolean => {
-  const heuristicAlgorithms = ["a*", "astar"];
-  return heuristicAlgorithms.includes(algorithm.toLowerCase());
-};

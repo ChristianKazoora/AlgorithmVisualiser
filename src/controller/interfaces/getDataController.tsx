@@ -4,6 +4,7 @@ import { MovementModel } from "../../model/Interfaces/movementModel";
 import { Cell } from "../../model/subject/Cell";
 import { Stack } from "../../shared/stack";
 import { HuristicModel } from "../../model/Interfaces/huristicModel";
+import { Set } from "../../shared/set";
 /**
  * Interface for getting (and setting some data) from the controller.
  */
@@ -58,6 +59,19 @@ export interface GetDataController {
    * Fetch and prepare data required for the algorithm's execution
    */
   getData(): void;
+
+  /**
+   * Optional async variant that yields step snapshots during execution.
+   */
+  getDataAsync?(
+    onStep?: (snapshot: {
+      current: Cell | null;
+      visited: Set<Cell>;
+      path: Array<Cell>;
+      isComplete: boolean;
+    }) => void,
+    shouldAbort?: () => boolean
+  ): Promise<void>;
   /**
    * Check if the algorithm uses heuristic
    * @returns true if uses heuristic, false otherwise

@@ -174,8 +174,10 @@ const BoardGrid: React.FC<BoardGridProps> = ({
       ref={containerRef}
       className={`board-container inline-block p-2 rounded-lg ${className}`}
       style={{
-        width: "100%",
-        overflow: "auto",
+        maxWidth: "100%",
+        maxHeight: "100%",
+        overflow: "hidden",
+        touchAction: "none", // Prevent page scroll during cell interactions
       }}
     >
       {/* Rerender to fit button */}
@@ -190,7 +192,9 @@ const BoardGrid: React.FC<BoardGridProps> = ({
           </button>
         </div>
       )}
-      <div className="algorithm-grid">{originalDraw}</div>
+      <div className="algorithm-grid" style={{ touchAction: "none" }}>
+        {originalDraw}
+      </div>
     </div>
   );
 };

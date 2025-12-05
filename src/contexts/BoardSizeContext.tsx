@@ -42,33 +42,48 @@ const calculateOptimalDimensions = (): BoardDimensions => {
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
 
-  // Account for navbar (64px) and padding
-  const availableHeight = viewportHeight - 64 - 80; // navbar + padding
-  // Account for sidebar (320px when open) and padding
-  const availableWidth = viewportWidth - 320 - 80; // sidebar + padding
+  // Account for navbar (~64px), top controls (~80px), title/instructions (~100px), and padding
+  const availableHeight = viewportHeight - 64 - 80 - 100 - 40; // navbar + controls + title + padding
+  // Account for sidebar (on large screens) and padding
+  const sidebarWidth = viewportWidth > 1024 ? 320 : 0;
+  const availableWidth = viewportWidth - sidebarWidth - 60; // sidebar + padding
 
-  // Ensure minimum cell size for visibility and prevent wrapping
-  const minCellSize = 12;
-  const maxCellSize = 30;
+  // Cell size range - keep reasonable for visibility
+  const minCellSize = 18;
+  const maxCellSize = 32;
 
-  // Calculate optimal cell size based on available space
+  // Preferred grid dimensions - balance between grid size and cell visibility
+  const preferredCols =
+    viewportWidth < 768 ? 18 : viewportWidth < 1024 ? 25 : 32;
+  const preferredRows =
+    viewportWidth < 768 ? 12 : viewportWidth < 1024 ? 16 : 20;
+
+  // Calculate the largest cell size that fits the preferred grid in available space
+  const cellSizeByWidth = Math.floor(availableWidth / preferredCols);
+  const cellSizeByHeight = Math.floor(availableHeight / preferredRows);
   let cellSize = Math.max(
     minCellSize,
-    Math.min(maxCellSize, Math.min(availableWidth / 50, availableHeight / 30))
+    Math.min(maxCellSize, Math.min(cellSizeByWidth, cellSizeByHeight))
   );
 
-  // Calculate grid dimensions that fit in available space
+  // Calculate actual grid dimensions that fit with this cell size
   const maxCols = Math.floor(availableWidth / cellSize);
   const maxRows = Math.floor(availableHeight / cellSize);
 
   // Ensure reasonable minimum and maximum grid size
-  const minCols = 15;
-  const minRows = 10;
-  const maxColsLimit = 60;
-  const maxRowsLimit = 40;
+  const minCols = 12;
+  const minRows = 8;
+  const maxColsLimit = 45;
+  const maxRowsLimit = 30;
 
-  const width = Math.max(minCols, Math.min(maxCols, maxColsLimit));
-  const height = Math.max(minRows, Math.min(maxRows, maxRowsLimit));
+  const width = Math.max(
+    minCols,
+    Math.min(maxCols, maxColsLimit, preferredCols)
+  );
+  const height = Math.max(
+    minRows,
+    Math.min(maxRows, maxRowsLimit, preferredRows)
+  );
 
   return {
     width,

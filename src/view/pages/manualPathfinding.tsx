@@ -21,17 +21,17 @@ function ManualPathFindingPage({
   }, [boardController]);
 
   return (
-    <div className="flex flex-col items-center space-y-6">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-primary mb-2">
+    <div className="flex flex-col items-center h-full max-h-full overflow-hidden">
+      <div className="text-center py-2 flex-shrink-0">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary mb-1">
           Manual Pathfinding
         </h1>
-        <p className="text-base-content/70">
+        <p className="text-sm text-base-content/70">
           Click and drag to create walls, then run the algorithm
         </p>
       </div>
 
-      <div className="w-full flex justify-center">
+      <div className="w-full flex-1 flex justify-center items-start overflow-hidden px-2">
         <BoardGrid controller={boardController} />
       </div>
     </div>

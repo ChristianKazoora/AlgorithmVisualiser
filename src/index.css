@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS Custom Properties for dynamic sizing */
+:root {
+  --dynamic-cell-size: 24px; /* Default cell size */
+}
+
 /* Background patterns and gradients */
 .app-background {
   background: linear-gradient(
@@ -32,6 +37,8 @@
   box-shadow: 0 10px 15px -3px hsl(var(--bc) / 0.1),
     0 4px 6px -2px hsl(var(--bc) / 0.05);
   border: 2px solid hsl(var(--bc) / 0.3);
+  touch-action: none; /* Prevent scroll during interactions */
+  user-select: none; /* Prevent text selection during drag */
 }
 
 .grid-cell {
@@ -39,11 +46,18 @@
   transition: all 0.1s ease;
   position: relative;
   overflow: hidden;
+  touch-action: none; /* Prevent scroll on individual cells */
 }
 
 .grid-cell:hover {
   z-index: 10;
   box-shadow: 0 2px 4px hsl(var(--bc) / 0.3);
+}
+
+/* MUI Grid cell overrides for consistent sizing */
+.MuiGrid-item[id^="cell-"] {
+  touch-action: none !important;
+  user-select: none !important;
 }
 
 /* Toast animations */
@@ -71,4 +85,25 @@
 
 .animate-leave {
   animation: leave 0.2s ease-in;
+}
+
+/* FAB drag indicator */
+.fab-dragging {
+  opacity: 0.9;
+  transform: scale(1.1);
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+  :root {
+    --dynamic-cell-size: 20px;
+  }
+
+  .board-container {
+    padding: 0.25rem;
+  }
+
+  .algorithm-grid {
+    padding: 0.25rem;
+  }
 }

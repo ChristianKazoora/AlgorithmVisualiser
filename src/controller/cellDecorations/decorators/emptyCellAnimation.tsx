@@ -19,8 +19,8 @@ export class EmptyCellAnimation
           " flex justify-center items-center border border-base-content/20"
         }
         style={{
-          width: "calc(var(--dynamic-cell-size, 20px) )",
-          height: "calc(var(--dynamic-cell-size, 20px) )",
+          width: "calc(var(--dynamic-cell-size, 24px) )",
+          height: "calc(var(--dynamic-cell-size, 24px) )",
         }}
       >
         {/* <div id={`cell-${this.x}-${this.y}-animation`} /> */}

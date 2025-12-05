@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import {
   BoardController,
@@ -20,6 +20,9 @@ import { ValidationError } from "../../../utils/validation";
 // Set to true to enable notifications, false to disable
 const NOTIFICATIONS_ENABLED = false;
 
+// FAB corner positions
+type FabCorner = "bottom-right" | "bottom-left" | "top-right" | "top-left";
+
 const TopControls: React.FC<{ boardController: BoardController }> = ({
   boardController,
 }) => {
@@ -39,6 +42,130 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
   const [showDensityFab, setShowDensityFab] = useState<boolean>(false);
   const [forceUpdate, setForceUpdate] = useState(0);
   const notification = useNotification();
+
+  // FAB dragging state
+  const [fabCorner, setFabCorner] = useState<FabCorner>("bottom-right");
+  const [isDraggingFab, setIsDraggingFab] = useState(false);
+  const [fabDragOffset, setFabDragOffset] = useState({ x: 0, y: 0 });
+  const [fabTempPos, setFabTempPos] = useState<{ x: number; y: number } | null>(
+    null
+  );
+  const fabRef = useRef<HTMLDivElement>(null);
+
+  // Determine if we're on a small screen (enable FAB dragging)
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  useEffect(() => {
+    const checkScreenSize = () => setIsSmallScreen(window.innerWidth < 1024);
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
+  // Close FAB popup when clicking outside
+  useEffect(() => {
+    if (!showDensityFab) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (fabRef.current && !fabRef.current.contains(e.target as Node)) {
+        setShowDensityFab(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showDensityFab]);
+
+  // Get corner position styles
+  const getCornerStyles = (corner: FabCorner): React.CSSProperties => {
+    switch (corner) {
+      case "bottom-right":
+        return { bottom: 24, right: 24 };
+      case "bottom-left":
+        return { bottom: 24, left: 24 };
+      case "top-right":
+        return { top: 80, right: 24 }; // Account for navbar
+      case "top-left":
+        return { top: 80, left: 24 };
+      default:
+        return { bottom: 24, right: 24 };
+    }
+  };
+
+  // Snap to nearest corner
+  const snapToCorner = useCallback((x: number, y: number) => {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const midX = vw / 2;
+    const midY = vh / 2;
+
+    const isRight = x > midX;
+    const isBottom = y > midY;
+
+    if (isRight && isBottom) return "bottom-right";
+    if (!isRight && isBottom) return "bottom-left";
+    if (isRight && !isBottom) return "top-right";
+    return "top-left";
+  }, []);
+
+  // Handle FAB drag start
+  const handleFabDragStart = (e: React.PointerEvent | React.TouchEvent) => {
+    if (!isSmallScreen) return;
+    e.stopPropagation();
+    setIsDraggingFab(true);
+    setShowDensityFab(false); // Close popup while dragging
+
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+
+    if (fabRef.current) {
+      const rect = fabRef.current.getBoundingClientRect();
+      setFabDragOffset({
+        x: clientX - rect.left,
+        y: clientY - rect.top,
+      });
+      setFabTempPos({ x: rect.left, y: rect.top });
+    }
+  };
+
+  // Handle FAB drag move
+  useEffect(() => {
+    if (!isDraggingFab) return;
+
+    const handleMove = (e: PointerEvent | TouchEvent) => {
+      e.preventDefault();
+      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+      const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+
+      setFabTempPos({
+        x: clientX - fabDragOffset.x,
+        y: clientY - fabDragOffset.y,
+      });
+    };
+
+    const handleEnd = (e: PointerEvent | TouchEvent) => {
+      const clientX =
+        "changedTouches" in e ? e.changedTouches[0].clientX : e.clientX;
+      const clientY =
+        "changedTouches" in e ? e.changedTouches[0].clientY : e.clientY;
+
+      const newCorner = snapToCorner(clientX, clientY);
+      setFabCorner(newCorner);
+      setIsDraggingFab(false);
+      setFabTempPos(null);
+    };
+
+    window.addEventListener("pointermove", handleMove, { passive: false });
+    window.addEventListener("pointerup", handleEnd);
+    window.addEventListener("touchmove", handleMove, { passive: false });
+    window.addEventListener("touchend", handleEnd);
+
+    return () => {
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerup", handleEnd);
+      window.removeEventListener("touchmove", handleMove);
+      window.removeEventListener("touchend", handleEnd);
+    };
+  }, [isDraggingFab, fabDragOffset, snapToCorner]);
 
   // Wrapper functions that respect NOTIFICATIONS_ENABLED flag
   const showSuccess = (msg: string) =>
@@ -392,15 +519,46 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
 
       {/* FAB for Wall Density Control - Manual mode only */}
       {!isAutoMode && (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div
+          ref={fabRef}
+          className="fixed z-50"
+          style={
+            isDraggingFab && fabTempPos
+              ? {
+                  left: fabTempPos.x,
+                  top: fabTempPos.y,
+                  transition: "none",
+                  cursor: "grabbing",
+                }
+              : {
+                  ...getCornerStyles(fabCorner),
+                  transition: "all 0.3s ease-out",
+                  cursor: isSmallScreen ? "grab" : "default",
+                }
+          }
+        >
           <div className={`fab fab-flower ${showDensityFab ? "fab-open" : ""}`}>
             {/* Main FAB button */}
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-lg btn-primary btn-circle shadow-lg"
-              onClick={() => setShowDensityFab(!showDensityFab)}
-              title="Wall Density Settings"
+              className={`btn btn-lg btn-primary btn-circle shadow-lg ${
+                isDraggingFab ? "scale-110" : ""
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!isDraggingFab) {
+                  setShowDensityFab(!showDensityFab);
+                }
+              }}
+              onPointerDown={handleFabDragStart}
+              onTouchStart={handleFabDragStart}
+              title={
+                isSmallScreen
+                  ? "Drag to move, tap to open settings"
+                  : "Wall Density Settings"
+              }
+              style={{ touchAction: "none" }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -418,9 +576,17 @@ const TopControls: React.FC<{ boardController: BoardController }> = ({
               </svg>
             </div>
 
-            {/* Density slider popup */}
-            {showDensityFab && (
-              <div className="absolute bottom-16 right-0 bg-base-200 rounded-lg shadow-xl p-4 min-w-[220px] border border-base-300">
+            {/* Density slider popup - position based on corner */}
+            {showDensityFab && !isDraggingFab && (
+              <div
+                className="absolute bg-base-200 rounded-lg shadow-xl p-4 min-w-[220px] border border-base-300"
+                style={{
+                  ...(fabCorner.includes("bottom")
+                    ? { bottom: 64 }
+                    : { top: 64 }),
+                  ...(fabCorner.includes("right") ? { right: 0 } : { left: 0 }),
+                }}
+              >
                 <div className="text-sm font-medium mb-2">
                   Wall Density: {Math.round(wallDensity * 100)}%
                 </div>

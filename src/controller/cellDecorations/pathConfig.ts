@@ -6,7 +6,7 @@
 export const PathConfig = {
   // SVG stroke settings (relative to 100x100 viewBox)
   SVG: {
-    STROKE_WIDTH: 35, // Stroke width in viewBox units (thicker for visibility)
+    STROKE_WIDTH: 38, // Stroke width in viewBox units
     STROKE_COLOR: "oklch(var(--er))", // DaisyUI error color (theme-aware red)
     STROKE_COLOR_VISITED: "oklch(var(--in))", // DaisyUI info color (theme-aware blue)
     STROKE_LINECAP: "round" as const,
@@ -34,12 +34,12 @@ export const PathConfig = {
  * @param fraction - Fraction of cell size (e.g., 0.5 = 50% of cell size)
  */
 export const getPathSize = (fraction: number): string => {
-  return `calc(var(--dynamic-cell-size, 20px) * ${fraction})`;
+  return `calc(var(--dynamic-cell-size, 24px) * ${fraction})`;
 };
 
 /**
  * Get CSS variable value for dynamic cell size
  */
 export const getCellSizeVar = (): string => {
-  return "var(--dynamic-cell-size, 20px)";
+  return "var(--dynamic-cell-size, 24px)";
 };

@@ -21,6 +21,7 @@ export class ManualCellState extends CellStateHelper {
   private wallDensity: number = 0.3;
   private wallDistribution: WallDistribution = "uniform";
   private mazeAnimationTimeouts: ReturnType<typeof setTimeout>[] = [];
+  private globalMouseMoveListener: ((e: MouseEvent) => void) | null = null;
 
   /**
    * Set the maze generation algorithm
@@ -244,93 +245,205 @@ export class ManualCellState extends CellStateHelper {
     const gridWidth = this.ifNull(this.grid)[0].length;
     let isDragging = false;
     let isAddingWalls = false;
+    let dragStartCell: { i: number; j: number } | null = null;
+    let lastDraggedCell: { i: number; j: number } | null = null;
+    let dragType: "start" | "end" | null = null;
+
+    // Clean up any previously registered listener before adding a new one
+    if (this.globalMouseMoveListener) {
+      document.removeEventListener("mousemove", this.globalMouseMoveListener);
+      document.removeEventListener("pointermove", this.globalMouseMoveListener);
+      this.globalMouseMoveListener = null;
+    }
+
+    const boardEl = document.getElementById("board");
+    const firstCell = document.getElementById("cell-0-0");
+    const cellSize = firstCell
+      ? firstCell.getBoundingClientRect().width
+      : parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            "--dynamic-cell-size"
+          )
+        ) || 20;
+
+    const pointerToCell = (clientX: number, clientY: number) => {
+      if (!boardEl) return null;
+      const rect = boardEl.getBoundingClientRect();
+      const x = Math.floor((clientY - rect.top) / cellSize);
+      const y = Math.floor((clientX - rect.left) / cellSize);
+      if (x < 0 || y < 0) return null;
+      if (x >= gridLength || y >= gridWidth) return null;
+      return { i: x, j: y } as const;
+    };
+
+    // Shared drag start handler
+    const handleDragStart = (i: number, j: number) => {
+      isDragging = true;
+      dragStartCell = { i, j };
+      const cell = this.ifNull(this.grid)[i][j];
+
+      if (cell.isStart || cell.isEnd) {
+        this.currentPressedCell = cell;
+        dragType = cell.isStart ? "start" : "end";
+      }
+
+      if (cell.isWall) {
+        this.currentPressedCell = cell;
+        isAddingWalls = false;
+        this.removeWalls({ x: i, y: j });
+      } else if (!cell.isStart && !cell.isEnd && !cell.isWall) {
+        this.currentPressedCell = cell;
+        isAddingWalls = true;
+        this.addWalls({ x: i, y: j });
+      }
+      this.algorithmController?.reRenderBoard();
+    };
+
+    // Shared drag end handler
+    const handleDragEnd = (i: number, j: number) => {
+      isDragging = false;
+      isAddingWalls = false;
+      lastDraggedCell = null;
+
+      if (dragType === "start") {
+        this.setStart({ x: i, y: j });
+      } else if (dragType === "end") {
+        this.setEnd({ x: i, y: j });
+      }
+
+      this.draggingStart_End = "";
+      dragStartCell = null;
+      dragType = null;
+      this.algorithmController?.getData();
+      this.algorithmController?.reRenderBoard();
+      this.algorithmController?.reRunAnimatePath();
+    };
+
+    // Shared drag over handler - update walls and preview start/end during drag
+    const handleDragOver = (i: number, j: number) => {
+      if (!isDragging || !this.currentPressedCell) return;
+
+      // Skip if we're already on this cell
+      if (lastDraggedCell && lastDraggedCell.i === i && lastDraggedCell.j === j)
+        return;
+      lastDraggedCell = { i, j };
+
+      // Preview start/end markers as they're dragged - clear old position first
+      if (dragType === "start") {
+        this.draggingStart_End = "start";
+        const oldStart = this.getStart();
+        if (oldStart && (oldStart.x !== i || oldStart.y !== j)) {
+          this.removeStart(oldStart);
+        }
+        this.setStart({ x: i, y: j });
+        this.algorithmController?.reRenderBoard();
+      } else if (dragType === "end") {
+        this.draggingStart_End = "end";
+        const oldEnd = this.getEnd();
+        if (oldEnd && (oldEnd.x !== i || oldEnd.y !== j)) {
+          this.removeEnd(oldEnd);
+        }
+        this.setEnd({ x: i, y: j });
+        this.algorithmController?.reRenderBoard();
+      } else if (isAddingWalls) {
+        // Only add/remove walls during drag
+        if (!this.walls.some((wall) => wall.x === i && wall.y === j)) {
+          this.addWalls({ x: i, y: j });
+        } else {
+          this.removeWalls({ x: i, y: j });
+        }
+        this.algorithmController?.reRenderBoard();
+      }
+    };
+
     for (let i = 0; i < gridLength; i++) {
       for (let j = 0; j < gridWidth; j++) {
-        let cell = this.ifNull(this.grid)[i][j];
-        let currentElement = document.getElementById(
+        const cell = this.ifNull(this.grid)[i][j];
+        const currentElement = document.getElementById(
           `cell-${cell.x}-${cell.y}`
         );
+
         if (currentElement) {
-          this.ifNull(currentElement).onmousedown = (e: any) => {
+          // Disable touch scrolling during interactions
+          currentElement.style.touchAction = "none";
+
+          // Mouse events
+          currentElement.onmousedown = (e: MouseEvent) => {
             e.preventDefault();
-            isDragging = true;
-            if (cell.isStart || cell.isEnd) {
-              this.currentPressedCell = cell;
-            }
-            if (cell.isWall) {
-              this.currentPressedCell = cell;
-              isAddingWalls = false;
-            } else if (!cell.isStart && !cell.isEnd && !cell.isWall) {
-              this.currentPressedCell = cell;
-              isAddingWalls = true;
-            }
-            if (isAddingWalls) {
-              this.addWalls({ x: i, y: j });
-            } else if (!isAddingWalls) {
-              this.removeWalls({ x: i, y: j });
-            }
-            this.algorithmController?.reRenderBoard();
+            handleDragStart(i, j);
           };
 
-          this.ifNull(currentElement).onmouseup = (e: any) => {
+          currentElement.onmouseup = (e: MouseEvent) => {
             e.preventDefault();
-            isAddingWalls = false;
-            isDragging = false;
-            this.draggingStart_End = "";
-            if (this.currentPressedCell) {
-              if (this.currentPressedCell.isStart) {
-                this.setStart({ x: i, y: j });
-              } else if (this.currentPressedCell.isEnd) {
-                this.setEnd({ x: i, y: j });
-              }
-            }
-            this.algorithmController?.getData();
-            this.algorithmController?.reRenderBoard();
-            this.algorithmController?.reRunAnimatePath();
+            handleDragEnd(i, j);
           };
 
-          this.ifNull(currentElement).onmouseenter = (e: any) => {
+          currentElement.onmouseenter = (e: MouseEvent) => {
             e.preventDefault();
+            if (isDragging) {
+              handleDragOver(i, j);
+            }
+          };
 
-            if (isDragging && this.currentPressedCell) {
-              if (this.draggingStart_End === "start") {
-                this.setStart({ x: i, y: j });
-              } else if (this.draggingStart_End === "end") {
-                this.setEnd({ x: i, y: j });
-              } else if (isAddingWalls) {
-                if (!this.walls.some((wall) => wall.x === i && wall.y === j)) {
-                  this.addWalls({ x: i, y: j });
-                } else {
-                  this.removeWalls({ x: i, y: j });
+          currentElement.onmouseleave = (e: MouseEvent) => {
+            e.preventDefault();
+          };
+
+          // Touch events
+          currentElement.ontouchstart = (e: TouchEvent) => {
+            e.preventDefault();
+            handleDragStart(i, j);
+          };
+
+          currentElement.ontouchend = (e: TouchEvent) => {
+            e.preventDefault();
+            if (e.changedTouches.length > 0) {
+              const touch = e.changedTouches[0];
+              const element = document.elementFromPoint(
+                touch.clientX,
+                touch.clientY
+              );
+              const cellId = (element as HTMLElement)?.closest(
+                '[id^="cell-"]'
+              )?.id;
+              if (cellId) {
+                const match = cellId.match(/^cell-(\d+)-(\d+)/);
+                if (match) {
+                  handleDragEnd(parseInt(match[1], 10), parseInt(match[2], 10));
+                  return;
                 }
-              } else {
-                this.removeWalls({ x: i, y: j });
               }
-              this.algorithmController?.reRenderBoard();
             }
+            handleDragEnd(i, j);
           };
 
-          this.ifNull(currentElement).onmouseleave = (e: any) => {
+          currentElement.ontouchmove = (e: TouchEvent) => {
             e.preventDefault();
-            if (isDragging && this.currentPressedCell) {
-              if (
-                this.draggingStart_End === "start" ||
-                this.currentPressedCell.isStart
-              ) {
-                this.draggingStart_End = "start";
-                this.removeStart({ x: i, y: j });
-              } else if (
-                this.currentPressedCell.isEnd ||
-                this.draggingStart_End === "end"
-              ) {
-                this.draggingStart_End = "end";
-                this.removeEnd({ x: i, y: j });
+            if (isDragging && e.touches.length > 0) {
+              const touch = e.touches[0];
+              const targetCell = pointerToCell(touch.clientX, touch.clientY);
+              if (targetCell) {
+                handleDragOver(targetCell.i, targetCell.j);
               }
-              this.algorithmController?.reRenderBoard();
             }
           };
         }
       }
     }
+
+    // Global mousemove listener to track dragging across cells
+    const handleMouseMove = (e: MouseEvent | PointerEvent) => {
+      if (!isDragging || !this.currentPressedCell) return;
+
+      const targetCell = pointerToCell(e.clientX, e.clientY);
+      if (targetCell) {
+        handleDragOver(targetCell.i, targetCell.j);
+      }
+    };
+
+    // Store listener reference for cleanup
+    this.globalMouseMoveListener = handleMouseMove;
+    document.addEventListener("mousemove", this.globalMouseMoveListener);
+    document.addEventListener("pointermove", this.globalMouseMoveListener);
   }
 }

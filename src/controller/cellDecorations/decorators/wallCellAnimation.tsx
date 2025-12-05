@@ -6,8 +6,8 @@ export class WallCellAnimation extends CellDecorator {
         id={`cell-${this.x}-${this.y}-wall`}
         className="hidden absolute bg-base-content"
         style={{
-          width: "calc(var(--dynamic-cell-size, 20px))",
-          height: "calc(var(--dynamic-cell-size, 20px))",
+          width: "calc(var(--dynamic-cell-size, 24px))",
+          height: "calc(var(--dynamic-cell-size, 24px))",
           zIndex: 10,
         }}
       />

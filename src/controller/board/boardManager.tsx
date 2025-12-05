@@ -117,8 +117,30 @@ export class BoardManager implements BoardController {
   }
 
   constructor(_cellState: CellState = new ManualCellState()) {
-    this.height = Math.floor((document.documentElement.clientHeight - 60) / 25);
-    this.width = Math.floor((document.documentElement.clientWidth - 30) / 20);
+    // Calculate initial dimensions accounting for UI elements
+    // Account for: navbar (~64px) + controls (~80px) + title/instructions (~100px) + padding (~40px) = ~284px
+    const availableHeight = Math.max(
+      400,
+      document.documentElement.clientHeight - 284
+    );
+    const availableWidth = Math.max(
+      400,
+      document.documentElement.clientWidth - 80
+    ); // padding only
+
+    // Use 24px as target cell size (matches CSS default)
+    const targetCellSize = 24;
+
+    // Calculate grid dimensions with reasonable maximums
+    this.height = Math.max(
+      8,
+      Math.min(20, Math.floor(availableHeight / targetCellSize))
+    );
+    this.width = Math.max(
+      12,
+      Math.min(32, Math.floor(availableWidth / targetCellSize))
+    );
+
     this.board = new Board({ y: this.height, x: this.width });
 
     this.grid = this.board.grid;
@@ -214,7 +236,11 @@ export class BoardManager implements BoardController {
       this.start,
       this.end,
       this.strategy,
-      this.cellState
+      this.cellState,
+      this.walls,
+      this.currentAlgorithmController ??
+        this.cellState.getAlgorithmController(),
+      this.renderer
     );
   }
   setHuristicModel(huristicModel: HuristicModel): void {

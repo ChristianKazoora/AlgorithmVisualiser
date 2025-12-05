@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "react-visualiser-101"
+  },
+  "targets": {
+    "react-visualiser-101": {
+      "hosting": {
+        "algo-viz": [
+          "react-visualiser-101"
+        ],
+        "algo-viz-new": [
+          "algo-viz-new"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

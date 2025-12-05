@@ -8,15 +8,15 @@ export class StartCellAnimation extends CellDecorator {
         <div
           className="flex justify-center items-center"
           style={{
-            width: "calc(var(--dynamic-cell-size, 20px))",
-            height: "calc(var(--dynamic-cell-size, 20px))",
+            width: "calc(var(--dynamic-cell-size, 24px))",
+            height: "calc(var(--dynamic-cell-size, 24px))",
           }}
         >
           <PiAirplaneTakeoffThin
             className="text-success"
             style={{
-              width: "calc(var(--dynamic-cell-size, 20px) * 0.85)",
-              height: "calc(var(--dynamic-cell-size, 20px) * 0.85)",
+              width: "calc(var(--dynamic-cell-size, 24px) * 0.9)",
+              height: "calc(var(--dynamic-cell-size, 24px) * 0.9)",
             }}
           />
         </div>

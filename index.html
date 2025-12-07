@@ -2,9 +2,32 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" id="favicon" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Algo-Viz</title>
+    <script>
+      // Dynamic favicon based on theme
+      function updateFavicon() {
+        const favicon = document.getElementById("favicon");
+        const isDark = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+
+        if (isDark) {
+          favicon.href = "/logo-dark.svg";
+        } else {
+          favicon.href = "/logo.svg";
+        }
+      }
+
+      // Update on initial load
+      document.addEventListener("DOMContentLoaded", updateFavicon);
+
+      // Listen for theme changes
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addListener(updateFavicon);
+    </script>
   </head>
   <body>
     <div id="root"></div>
